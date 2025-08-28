@@ -33,7 +33,7 @@ public class User implements UserDetails{
     private String hashedPassword;
 
     @Column(name = "e_mail", nullable = false)
-    private String eMail;
+    private String email;
 
     @Column(name = "gender", length = 50)
     private String gender;
@@ -48,7 +48,6 @@ public class User implements UserDetails{
     private boolean isAccountNonLocked = true;
     private boolean isCredentialsNonExpired = true;
     private boolean isEnabled = true;
-
     @Override
     public boolean isAccountNonExpired() {
         return isAccountNonExpired;
