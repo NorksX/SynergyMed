@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SynergyMed – Branded Medicines</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root{--teal-1:#20b2aa;--teal-2:#48d1cc;--bg:#fefeff;--card:#ffffff;--muted:#6c757d;--text:#1f2937;--shadow:0 20px 40px rgba(0,0,0,0.10);--shadow-sm:0 6px 18px rgba(0,0,0,0.08)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100vh;background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);color:var(--text);padding:28px;display:flex;justify-content:center}
+        .page{width:100%;max-width:1200px}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff;padding:20px 24px;border-radius:20px;box-shadow:var(--shadow)}
+        .btn{display:inline-block;border:none;cursor:pointer;text-decoration:none;padding:12px 16px;border-radius:12px;font-weight:600;letter-spacing:.5px;transition:.2s ease}
+        .btn-primary{background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff;box-shadow:0 10px 20px rgba(32,178,170,.25)}
+        .btn-primary:hover{transform:translateY(-2px)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px}
+        .card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
+        .thumb{width:100%;height:240px;object-fit:cover;background:#eef2f3;display:block}
+        .content{padding:14px 16px 18px}
+        .title{font-weight:700;margin:6px 0 2px}
+        .muted{color:var(--muted);font-size:.92rem}
+        .row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+        .price{font-weight:800}
+        .btn-outline{background:#fff;border:2px solid rgba(32,178,170,.25);color:#20b2aa;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:600;transition:.2s ease}
+        .btn-outline:hover{border-color:#20b2aa;box-shadow:0 6px 14px rgba(32,178,170,.18)}
+        @media (max-width:560px){body{padding:16px}.header{padding:16px}}
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="header">
+        <h2>Branded Medicines</h2>
+        <a class="btn btn-primary" th:href="@{/branded-medicines/new}">Create</a>
+    </div>
+
+    <div class="grid">
+        <div class="card" th:each="bm : ${medicines}">
+            <img class="thumb" th:src="@{${firstImageById[bm.id]}}" alt="product image">
+            <div class="content">
+                <div class="title" th:text="${bm.name}">Name</div>
+                <div class="muted" th:text="${bm.dosageForm}">Dosage Form</div>
+                <div class="row">
+                    <div class="price" th:text="${'$' + #numbers.formatDecimal(bm.price, 1, 'COMMA', 2, 'POINT')}">$0.00</div>
+                    <div>
+                        <form th:action="@{/branded-medicines/{id}/delete(id=${bm.id})}" method="post" style="display:inline">
+                            <button type="submit" class="btn-outline" style="margin-right:8px;color:#b3261e;border-color:#f0caca">Delete</button>
+                        </form>
+                        <a class="btn-outline" th:href="@{/branded-medicines/{id}/edit(id=${bm.id})}">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

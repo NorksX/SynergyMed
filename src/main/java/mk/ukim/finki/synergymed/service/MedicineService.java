@@ -7,9 +7,15 @@ import mk.ukim.finki.synergymed.models.Medicine;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface MedicineService {
+    Optional<Medicine> findById(Integer id);
 
-    List<Medicine> findAllMedicine();
-    Medicine save(String medicineName,String activeIngredients) throws IOException;
+    List<Medicine> findAll();
+    Medicine save(String medicineName,String activeIngredients);
+
+    Medicine update(Integer id, String medicineName, String activeIngredients);
+
+    void deleteById(Integer id);
 }
