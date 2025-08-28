@@ -26,7 +26,7 @@ public class BrandedMedicineServiceImpl implements BrandedMedicineService {
     private final ManufacturerRepository manufacturerRepository;
 
     @Value("${app.upload.branded-medicine-dir:uploads/images/branded_medicine/}")
-    private String uploadDir; // write to ./uploads/images/branded_medicine/
+    private String uploadDir;
 
     private static final List<String> ALLOWED_EXTENSIONS =
             Arrays.asList("jpg","jpeg","png","gif","webp");
@@ -41,108 +41,20 @@ public class BrandedMedicineServiceImpl implements BrandedMedicineService {
     }
 
     @Override
-    public List<Brandedmedicine> findAll() { return brandedMedicineRepository.findAll(); }
-
-    @Override
-    public Optional<Brandedmedicine> findById(Integer id) { return brandedMedicineRepository.findById(id); }
-
-    @Override
-    @Transactional
-    public Brandedmedicine create(Integer manufacturerId, BigDecimal price, String description,
-                                  String dosageForm, String strength, String originCountry,
-                                  String name, MultipartFile[] images) throws IOException {
-        Manufacturer m = manufacturerRepository.findById(manufacturerId)
-                .orElseThrow(() -> new EntityNotFoundException("Manufacturer not found: " + manufacturerId));
-        Brandedmedicine bm = new Brandedmedicine();
-        bm.setManufacturer(m);
-        bm.setPrice(price);
-        bm.setDescription(description);
-        bm.setDosageForm(dosageForm);
-        bm.setStrength(strength);
-        bm.setOriginCountry(originCountry);
-        bm.setName(name);
-
-        Brandedmedicine saved = brandedMedicineRepository.save(bm);
-        if (images != null && images.length > 0) {
-            processImageUploads(images, saved);
-        }
-        return saved;
+    public List<Brandedmedicine> findAll() {
+        return brandedMedicineRepository.findAll();
     }
 
     @Override
-    @Transactional
-    public Brandedmedicine update(Integer id, Integer manufacturerId, BigDecimal price, String description,
-                                  String dosageForm, String strength, String originCountry,
-                                  String name, MultipartFile[] images,
-                                  boolean replaceImagesIgnored) throws IOException {
-        Brandedmedicine bm = brandedMedicineRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Branded medicine not found: " + id));
-
-        if (manufacturerId != null) {
-            Manufacturer m = manufacturerRepository.findById(manufacturerId)
-                    .orElseThrow(() -> new EntityNotFoundException("Manufacturer not found: " + manufacturerId));
-            bm.setManufacturer(m);
-        }
-        if (price != null) bm.setPrice(price);
-        bm.setDescription(description);
-        bm.setDosageForm(dosageForm);
-        bm.setStrength(strength);
-        bm.setOriginCountry(originCountry);
-        bm.setName(name);
-
-        Brandedmedicine saved = brandedMedicineRepository.save(bm);
-        if (images != null && images.length > 0) {
-            processImageUploads(images, saved); // append only
-        }
-        return saved;
+    public Optional<Brandedmedicine> findById(Integer id) {
+        return brandedMedicineRepository.findById(id);
     }
 
-    @Override
-    @Transactional
-    public void addImages(Integer brandedMedicineId, MultipartFile[] images) throws IOException {
-        if (images == null || images.length == 0) return;
-        Brandedmedicine bm = brandedMedicineRepository.findById(brandedMedicineId)
-                .orElseThrow(() -> new EntityNotFoundException("Branded medicine not found: " + brandedMedicineId));
-        processImageUploads(images, bm);
-    }
-
-    @Override
-    @Transactional
-    public void deleteImage(Integer imageId) throws IOException {
-        Brandedmedicineimage img = brandedMedicineImageRepository.findById(imageId)
-                .orElseThrow(() -> new EntityNotFoundException("Branded medicine image not found: " + imageId));
-
-        Integer bmId = img.getBrandedMedicine().getId();
-        boolean wasMain = img.isMainImage();
-
-        deletePhysicalFileIfExists(img.getImage());
-        brandedMedicineImageRepository.deleteById(imageId);
-
-        if (wasMain) {
-            brandedMedicineImageRepository.findFirstByBrandedMedicineIdOrderByIdAsc(bmId)
-                    .ifPresent(next -> {
-                        next.setMainImage(true);
-                        brandedMedicineImageRepository.save(next);
-                    });
-        }
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(Integer id) throws IOException {
-        List<Brandedmedicineimage> imgs = brandedMedicineImageRepository.findByBrandedMedicineId(id);
-        for (Brandedmedicineimage img : imgs) deletePhysicalFileIfExists(img.getImage());
-        brandedMedicineImageRepository.deleteAll(imgs);
-        brandedMedicineRepository.deleteById(id);
-    }
-
-    // New: list images for edit page
     @Override
     public List<Brandedmedicineimage> listImages(Integer brandedMedicineId) {
         return brandedMedicineImageRepository.findByBrandedMedicineIdOrderByIdAsc(brandedMedicineId);
     }
 
-    // New: resolve card image URL (main or fallback, else placeholder)
     @Override
     public String cardImageUrl(Integer brandedMedicineId) {
         return brandedMedicineImageRepository.findFirstByBrandedMedicineIdAndMainImageTrue(brandedMedicineId)
@@ -153,7 +65,6 @@ public class BrandedMedicineServiceImpl implements BrandedMedicineService {
                         .orElse("/images/placeholder.png"));
     }
 
-    // New: convenience map for list pages
     @Override
     public Map<Integer, String> cardImageUrlsFor(List<Brandedmedicine> medicines) {
         Map<Integer,String> map = new HashMap<>();
@@ -167,57 +78,138 @@ public class BrandedMedicineServiceImpl implements BrandedMedicineService {
 
     @Override
     @Transactional
-    public void setMainImage(Integer brandedMedicineId, Integer imageId) {
-        Brandedmedicineimage chosen = brandedMedicineImageRepository.findById(imageId)
-                .orElseThrow(() -> new EntityNotFoundException("Image not found: " + imageId));
-        if (!Objects.equals(chosen.getBrandedMedicine().getId(), brandedMedicineId)) {
-            throw new IllegalArgumentException("Image does not belong to this Brandedmedicine");
+    public void saveAll(Integer id,
+                        Integer manufacturerId,
+                        BigDecimal price,
+                        String description,
+                        String dosageForm,
+                        String strength,
+                        String originCountry,
+                        String name,
+                        MultipartFile[] newImages,
+                        List<Integer> removeImageIds,
+                        Integer mainExistingId,
+                        Integer mainNewIndex) throws IOException {
+
+        Brandedmedicine bm;
+        if (id == null) {
+            bm = new Brandedmedicine();
+        } else {
+            bm = brandedMedicineRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Branded medicine not found: " + id));
         }
-        List<Brandedmedicineimage> all = brandedMedicineImageRepository.findByBrandedMedicineId(brandedMedicineId);
-        for (Brandedmedicineimage img : all) {
-            boolean shouldBeMain = Objects.equals(img.getId(), imageId);
-            if (img.isMainImage() != shouldBeMain) {
-                img.setMainImage(shouldBeMain);
-                brandedMedicineImageRepository.save(img);
+
+        Manufacturer m = manufacturerRepository.findById(manufacturerId)
+                .orElseThrow(() -> new EntityNotFoundException("Manufacturer not found: " + manufacturerId));
+        bm.setManufacturer(m);
+        bm.setPrice(price);
+        bm.setDescription(description);
+        bm.setDosageForm(dosageForm);
+        bm.setStrength(strength);
+        bm.setOriginCountry(originCountry);
+        bm.setName(name);
+
+        Brandedmedicine saved = brandedMedicineRepository.save(bm);
+
+        if (removeImageIds != null && !removeImageIds.isEmpty()) {
+            List<Brandedmedicineimage> toRemove = brandedMedicineImageRepository.findAllById(removeImageIds);
+            for (Brandedmedicineimage img : toRemove) {
+                if (!Objects.equals(img.getBrandedMedicine().getId(), saved.getId())) continue;
+                deletePhysicalFileIfExists(img.getImage());
+            }
+            brandedMedicineImageRepository.deleteAll(toRemove);
+        }
+
+        List<Brandedmedicineimage> appended = new ArrayList<>();
+        if (newImages != null) {
+            Path base = ensureUploadPath();
+            long ts = System.currentTimeMillis();
+            int seq = 0;
+            for (MultipartFile file : newImages) {
+                if (file == null || file.isEmpty()) continue;
+                validateImageFile(file);
+
+                String original = Optional.ofNullable(file.getOriginalFilename()).orElse("image");
+                String ext = getFileExtension(original).toLowerCase(Locale.ROOT);
+                String filename = String.format("branded_medicine_%d_%d_%03d.%s", saved.getId(), ts, ++seq, ext);
+
+                Path dest = base.resolve(filename);
+                Files.copy(file.getInputStream(), dest, StandardCopyOption.REPLACE_EXISTING);
+
+                String url = "/uploads/images/branded_medicine/" + filename;
+
+                Brandedmedicineimage img = new Brandedmedicineimage();
+                img.setBrandedMedicine(saved);
+                img.setImage(url);
+                img.setMainImage(false);
+                appended.add(brandedMedicineImageRepository.save(img));
+            }
+        }
+
+        Integer targetMainId = null;
+
+        if (mainExistingId != null) {
+            brandedMedicineImageRepository.findById(mainExistingId).ifPresent(img -> {
+                if (Objects.equals(img.getBrandedMedicine().getId(), saved.getId())) {
+                    // capture via array holder
+                }
+            });
+            if (brandedMedicineImageRepository.findById(mainExistingId)
+                    .filter(img -> Objects.equals(img.getBrandedMedicine().getId(), saved.getId()))
+                    .isPresent()) {
+                targetMainId = mainExistingId;
+            }
+        }
+
+        if (targetMainId == null && mainNewIndex != null) {
+            if (mainNewIndex >= 0 && mainNewIndex < appended.size()) {
+                targetMainId = appended.get(mainNewIndex).getId();
+            }
+        }
+
+        if (targetMainId == null) {
+            Optional<Brandedmedicineimage> curMain = brandedMedicineImageRepository
+                    .findFirstByBrandedMedicineIdAndMainImageTrue(saved.getId());
+            if (curMain.isPresent()) {
+                targetMainId = curMain.get().getId();
+            } else {
+                targetMainId = brandedMedicineImageRepository
+                        .findFirstByBrandedMedicineIdOrderByIdAsc(saved.getId())
+                        .map(Brandedmedicineimage::getId).orElse(null);
+            }
+        }
+
+        if (targetMainId != null) {
+            List<Brandedmedicineimage> all = brandedMedicineImageRepository.findByBrandedMedicineId(saved.getId());
+            for (Brandedmedicineimage img : all) {
+                boolean shouldBeMain = Objects.equals(img.getId(), targetMainId);
+                if (img.isMainImage() != shouldBeMain) {
+                    img.setMainImage(shouldBeMain);
+                    brandedMedicineImageRepository.save(img);
+                }
             }
         }
     }
-
-    // ---------- helpers ----------
-
-    private void processImageUploads(MultipartFile[] images, Brandedmedicine bm) throws IOException {
-        Path base = ensureUploadPath();
-        long ts = System.currentTimeMillis();
-        int i = 0;
-
-        boolean hasMain = brandedMedicineImageRepository.existsByBrandedMedicineIdAndMainImageTrue(bm.getId());
-
-        for (MultipartFile file : images) {
-            if (file == null || file.isEmpty()) continue;
-            validateImageFile(file);
-
-            String original = Optional.ofNullable(file.getOriginalFilename()).orElse("image");
-            String ext = getFileExtension(original).toLowerCase(Locale.ROOT);
-            String filename = String.format("branded_medicine_%d_%d_%03d.%s", bm.getId(), ts, ++i, ext);
-
-            Path dest = base.resolve(filename);
-            Files.copy(file.getInputStream(), dest, StandardCopyOption.REPLACE_EXISTING);
-
-            String url = "/uploads/images/branded_medicine/" + filename;
-
-            Brandedmedicineimage img = new Brandedmedicineimage();
-            img.setBrandedMedicine(bm);
-            img.setImage(url);
-            img.setMainImage(!hasMain && i == 1); // first image if no main yet
-            brandedMedicineImageRepository.save(img);
+    @Override
+    @Transactional
+    public void deleteById(Integer id) throws IOException {
+        List<Brandedmedicineimage> imgs = brandedMedicineImageRepository.findByBrandedMedicineId(id);
+        for (Brandedmedicineimage img : imgs) {
+            deletePhysicalFileIfExists(img.getImage());
         }
+
+        brandedMedicineImageRepository.deleteAll(imgs);
+
+        brandedMedicineRepository.deleteById(id);
     }
+
 
     private Path ensureUploadPath() throws IOException {
         Path p = Paths.get(uploadDir);
         if (!Files.exists(p)) Files.createDirectories(p);
         return p;
     }
+
 
     private void deletePhysicalFileIfExists(String storedUrl) throws IOException {
         if (storedUrl == null || storedUrl.isBlank()) return;

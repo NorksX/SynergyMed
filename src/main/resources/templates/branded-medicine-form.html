@@ -5,52 +5,27 @@
     <title th:text="${mode=='create' ? 'Create Branded Medicine' : 'Edit Branded Medicine'}">Form</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        :root{
-            --teal-1:#20b2aa;--teal-2:#48d1cc;--bg:#fefeff;--card:#ffffff;--muted:#6c757d;
-            --shadow:0 20px 40px rgba(0,0,0,.1);
-        }
+        :root{--teal-1:#20b2aa;--teal-2:#48d1cc;--bg:#fefeff;--card:#ffffff;--muted:#6c757d;--shadow:0 20px 40px rgba(0,0,0,.1)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height:100vh; display:flex; align-items:flex-start; justify-content:center;
-            background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%); padding:24px;
-        }
-        .wrap{width:100%; max-width:900px; background:#fff; border-radius:20px; overflow:hidden; box-shadow:var(--shadow)}
-        .head{background:linear-gradient(135deg,var(--teal-1),var(--teal-2)); color:#fff; padding:26px 24px}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);padding:24px}
+        .wrap{width:100%;max-width:900px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+        .head{background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff;padding:26px 24px}
         .body{padding:26px 24px}
-        .row{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px}
-        .row-1{display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:6px}
-        label{display:block; margin-bottom:8px; color:#334155; font-weight:600; font-size:.95rem}
-        input,select,textarea{
-            width:100%; padding:14px 12px; border:2px solid #e6ebf0; border-radius:12px; background:#f8fafc;
-            transition:.2s ease; font-size:1rem
-        }
+        .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+        .row-1{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:6px}
+        label{display:block;margin-bottom:8px;color:#334155;font-weight:600;font-size:.95rem}
+        input,select,textarea{width:100%;padding:14px 12px;border:2px solid #e6ebf0;border-radius:12px;background:#f8fafc;transition:.2s ease;font-size:1rem}
         textarea{min-height:110px}
-        input:focus,select:focus,textarea:focus{outline:none; border-color:var(--teal-1); background:#fff; box-shadow:0 0 0 3px rgba(32,178,170,.12)}
-        .hint{color:var(--muted); font-size:.86rem; margin-top:4px}
-        .section-title{margin:24px 0 10px; font-weight:800; color:#334155}
-        .actions{display:flex; gap:12px; padding-top:12px; flex-wrap:wrap}
-        .btn{border:none; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:700; letter-spacing:.4px}
-        .btn-primary{background:linear-gradient(135deg,var(--teal-1),var(--teal-2)); color:#fff; box-shadow:0 10px 20px rgba(32,178,170,.25)}
-        .btn-secondary{background:#fff; color:#111; border:2px solid rgba(32,178,170,.25)}
-        .btn-upload{background:#fff; color:#20b2aa; border:2px dashed rgba(32,178,170,.45)}
-        .btn:hover{transform:translateY(-1px)}
-
-        /* Gallery (separate from main form to avoid nested forms) */
-        .gallery{ padding:0 24px 24px 24px; }
-        .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:12px; }
-        .img-card{ position:relative; background:#f8fafc; border:1px solid #e6ebf0; border-radius:12px; padding:8px; }
-        .thumb{ width:100%; height:110px; object-fit:cover; border-radius:8px; display:block; }
-        .chip{ margin-top:8px; color:#20b2aa; font-weight:700; text-align:center; }
-        .icon-btn{
-            background:#fff; border:1px solid #e5e7eb; border-radius:50%; width:28px; height:28px;
-            cursor:pointer; line-height:26px; text-align:center; font-weight:700;
-        }
-        .small-btn{
-            background:#fff; border:2px solid rgba(32,178,170,.25); color:#20b2aa;
-            padding:6px 10px; border-radius:10px; cursor:pointer; font-weight:600;
-        }
-        @media (max-width:720px){ .row{grid-template-columns:1fr} }
+        input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal-1);background:#fff;box-shadow:0 0 0 3px rgba(32,178,170,.12)}
+        .hint{color:var(--muted);font-size:.86rem;margin-top:4px}
+        .actions{display:flex;gap:12px;padding-top:12px;flex-wrap:wrap}
+        .btn{border:none;padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:700;letter-spacing:.4px}
+        .btn-primary{background:linear-gradient(135deg,var(--teal-1),var(--teal-2));color:#fff;box-shadow:0 10px 20px rgba(32,178,170,.25)}
+        .btn-secondary{background:#fff;color:#111;border:2px solid rgba(32,178,170,.25)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+        .img-card{position:relative;background:#f8fafc;border:1px solid #e6ebf0;border-radius:12px;padding:8px}
+        .thumb{width:100%;height:110px;object-fit:cover;border-radius:8px;display:block}
+        @media (max-width:720px){.row{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -60,89 +35,19 @@
     </div>
 
     <div class="body">
-        <!-- CREATE MODE: one form, two submit targets using formaction -->
-        <form th:if="${mode=='create'}"
-              th:action="@{/branded-medicines}"  <!-- default for the 'Create' button -->
-        method="post" enctype="multipart/form-data">
-
-        <div class="row">
-            <div>
-                <label>Manufacturer</label>
-                <select name="manufacturerId" required>
-                    <option value="" disabled selected>Select manufacturer</option>
-                    <option th:each="m : ${manufacturers}" th:value="${m.id}" th:text="${m.company.companyName}">Manufacturer</option>
-                </select>
-                <div class="hint">Pick the company that manufactured this medicine.</div>
-            </div>
-            <div>
-                <label>Price</label>
-                <input type="number" step="0.01" name="price" required/>
-            </div>
-        </div>
-
-        <div class="row">
-            <div>
-                <label>Dosage Form</label>
-                <input type="text" name="dosageForm" required/>
-            </div>
-            <div>
-                <label>Strength</label>
-                <input type="text" name="strength" required/>
-            </div>
-        </div>
-
-        <div class="row">
-            <div>
-                <label>Origin Country</label>
-                <input type="text" name="originCountry"/>
-            </div>
-            <div>
-                <label>Name</label>
-                <input type="text" name="name" required/>
-            </div>
-        </div>
-
-        <div class="row-1">
-            <div>
-                <label>Description</label>
-                <textarea name="description"></textarea>
-            </div>
-            <div>
-                <label>Images</label>
-                <input type="file" name="images" multiple accept="image/*"/>
-                <div class="hint">PNG, JPG, GIF, WEBP up to 5MB each. Uploaded files are saved with the record.</div>
-            </div>
-        </div>
-
-        <div class="actions">
-            <!-- Upload (create the record with images, then stay on edit to choose main) -->
-            <button class="btn btn-upload" type="submit"
-                    th:formaction="@{/branded-medicines/create-and-stay}">
-                Upload
-            </button>
-
-            <!-- Create (create with images and return home) -->
-            <button class="btn btn-primary" type="submit">
-                Create
-            </button>
-
-            <a class="btn btn-secondary" th:href="@{/}">Cancel</a>
-        </div>
-        </form>
-
-        <!-- EDIT MODE: update fields and exit to home -->
-        <form th:if="${mode=='edit'}"
-              th:action="@{/branded-medicines/{id}/update-and-exit(id=${bm.id})}"
-              method="post" enctype="multipart/form-data">
+        <!-- Single SAVE form for both create and edit -->
+        <form th:action="@{/branded-medicines/save}" method="post" enctype="multipart/form-data" id="saveForm">
+            <input type="hidden" name="id" th:if="${mode=='edit'}" th:value="${bm.id}"/>
 
             <div class="row">
                 <div>
                     <label>Manufacturer</label>
                     <select name="manufacturerId" required>
+                        <option th:if="${mode=='create'}" value="" disabled selected>Select manufacturer</option>
                         <option th:each="m : ${manufacturers}"
                                 th:value="${m.id}"
                                 th:text="${m.company.companyName}"
-                                th:selected="${bm != null and bm.manufacturer != null and m.id == bm.manufacturer.id}">
+                                th:selected="${mode=='edit' and bm.manufacturer != null and m.id == bm.manufacturer.id}">
                             Manufacturer
                         </option>
                     </select>
@@ -150,84 +55,228 @@
                 </div>
                 <div>
                     <label>Price</label>
-                    <input type="number" step="0.01" name="price" th:value="${bm.price}" required/>
+                    <input type="number" step="0.01" name="price" th:value="${mode=='edit' ? bm.price : ''}" required/>
                 </div>
             </div>
 
             <div class="row">
                 <div>
                     <label>Dosage Form</label>
-                    <input type="text" name="dosageForm" th:value="${bm.dosageForm}" required/>
+                    <input type="text" name="dosageForm" th:value="${mode=='edit' ? bm.dosageForm : ''}" required/>
                 </div>
                 <div>
                     <label>Strength</label>
-                    <input type="text" name="strength" th:value="${bm.strength}" required/>
+                    <input type="text" name="strength" th:value="${mode=='edit' ? bm.strength : ''}" required/>
                 </div>
             </div>
 
             <div class="row">
                 <div>
                     <label>Origin Country</label>
-                    <input type="text" name="originCountry" th:value="${bm.originCountry}"/>
+                    <input type="text" name="originCountry" th:value="${mode=='edit' ? bm.originCountry : ''}"/>
                 </div>
                 <div>
                     <label>Name</label>
-                    <input type="text" name="name" th:value="${bm.name}" required/>
+                    <input type="text" name="name" th:value="${mode=='edit' ? bm.name : ''}" required/>
                 </div>
             </div>
 
             <div class="row-1">
                 <div>
                     <label>Description</label>
-                    <textarea name="description" th:text="${bm.description}"></textarea>
+                    <textarea name="description" th:text="${mode=='edit' ? bm.description : ''}"></textarea>
                 </div>
                 <div>
-                    <label>Append Images</label>
-                    <input type="file" name="images" multiple accept="image/*"/>
-                    <div class="hint">Newly selected images will be appended and saved on Update.</div>
+                    <label>New Images (preview only until Save)</label>
+                    <input type="file" id="newImages" name="images" multiple accept="image/*"/>
+                    <div class="hint">Choose multiple images to preview; they are saved only when Save is clicked.</div>
+                    <div id="preview" class="grid" style="margin-top:12px;"></div>
                 </div>
             </div>
 
+            <!-- Existing images (edit mode) -->
+            <div th:if="${mode=='edit' and images != null and !images.isEmpty()}" style="margin-top:18px;">
+                <div class="grid">
+                    <div class="img-card" th:each="img : ${images}">
+                        <img class="thumb" th:src="@{${img.image}}" alt="image">
+                        <input type="hidden" name="removeImageIds" th:value="${img.id}" disabled>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                            <button type="button" class="btn-remove-existing"
+                                    th:attr="data-id=${img.id}"
+                                    style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:4px 8px;cursor:pointer;">
+                                Remove
+                            </button>
+                            <label style="margin-left:8px;">
+                                <input type="radio" name="mainPick" th:value="${'existing:'+img.id}"
+                                       th:checked="${img.mainImage}">
+                                Main
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden fields managed by JS (never "undefined") -->
+            <input type="hidden" id="mainExistingId" name="mainExistingId">
+            <input type="hidden" id="mainNewIndex"   name="mainNewIndex">
+
             <div class="actions">
-                <!-- Update (save fields and images, then go home) -->
-                <button class="btn btn-primary" type="submit"
-                        th:formaction="@{/branded-medicines/{id}/update(id=${bm.id})}">
-                    Update
-                </button>
-
-                <!-- Update & Exit (save fields only, exit) -->
-                <button class="btn btn-secondary" type="submit">
-                    Update & Exit
-                </button>
-
+                <button class="btn btn-primary" type="submit">Save</button>
                 <a class="btn btn-secondary" th:href="@{/}">Cancel</a>
             </div>
         </form>
     </div>
-
-    <!-- IMAGE GALLERY (outside any form to avoid nested forms) -->
-    <div class="gallery" th:if="${mode=='edit' and images != null and !images.isEmpty()}">
-        <div class="grid">
-            <div class="img-card" th:each="img : ${images}">
-                <img class="thumb" th:src="@{${img.image}}" alt="image"/>
-
-                <!-- Delete (standalone form) -->
-                <form th:action="@{/branded-medicines/{bmId}/images/{imageId}/delete(bmId=${bm.id},imageId=${img.id})}"
-                      method="post" style="position:absolute;top:6px;right:6px;">
-                    <button type="submit" class="icon-btn" title="Remove">×</button>
-                </form>
-
-                <!-- Main badge or Set as main (standalone form) -->
-                <div th:if="${img.mainImage}" class="chip">Main</div>
-                <form th:if="${!img.mainImage}"
-                      th:action="@{/branded-medicines/{bmId}/images/{imageId}/set-main(bmId=${bm.id},imageId=${img.id})}"
-                      method="post" style="margin-top:8px;text-align:center;">
-                    <button type="submit" class="small-btn">Set as main</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
 </div>
+
+<script>
+    // Hidden fields for the server (avoid "undefined")
+    const mainExistingId = document.getElementById('mainExistingId');
+    const mainNewIndex   = document.getElementById('mainNewIndex');
+
+    // 1) Existing remove buttons toggle hidden remove ids
+    function wireExistingRemoveButtons() {
+        document.querySelectorAll('.btn-remove-existing').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const card = btn.closest('.img-card');
+                const hidden = card.querySelector('input[type="hidden"][name="removeImageIds"]');
+                const wasEnabled = !hidden.disabled;
+                hidden.disabled = wasEnabled ? true : false;
+                btn.textContent = wasEnabled ? 'Remove' : 'Undo';
+                btn.style.borderColor = wasEnabled ? '#e5e7eb' : '#f0caca';
+                btn.style.color = wasEnabled ? '#111' : '#b3261e';
+
+                // If this was main and now removed, clear main and pick a fallback below
+                const radio = card.querySelector('input[type="radio"][name="mainPick"]');
+                if (!hidden.disabled && radio && radio.checked) {
+                    radio.checked = false;
+                    mainExistingId.value = '';
+                    chooseFallbackMain();
+                }
+            });
+        });
+    }
+    wireExistingRemoveButtons();
+
+    // 2) One radio group across existing and new
+    document.addEventListener('change', (e) => {
+        const t = e.target;
+        if (t && t.name === 'mainPick' && t.type === 'radio') {
+            const v = String(t.value || '');
+            if (v.startsWith('existing:')) {
+                mainExistingId.value = v.split(':')[1] || '';
+                mainNewIndex.value = '';
+            } else if (v.startsWith('new:')) {
+                mainNewIndex.value = v.split(':')[1] || '';
+                mainExistingId.value = '';
+            }
+        }
+    });
+
+    // 3) Aggregate multiple selections with DataTransfer + FileReader previews
+    const fileInput = document.getElementById('newImages');
+    const preview   = document.getElementById('preview');
+    const saveForm  = document.getElementById('saveForm');
+    let aggregated  = [];
+
+    function syncInputFiles() {
+        const dt = new DataTransfer();
+        aggregated.forEach(f => dt.items.add(f));
+        fileInput.files = dt.files;
+    }
+
+    function buildPreviewCard(dataUrl, fileName, idx) {
+        const card = document.createElement('div');
+        card.className = 'img-card';
+        card.innerHTML = `
+    <img class="thumb" src="${dataUrl}" alt="${fileName}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+      <label>
+        <input type="radio" name="mainPick" value="new:${idx}"> Main (new)
+      </label>
+      <button type="button" class="remove-new-btn" data-index="${idx}"
+              style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:4px 8px;cursor:pointer;">
+        Remove
+      </button>
+    </div>
+  `;
+        return card;
+    }
+
+    function renderPreview() {
+        preview.innerHTML = '';
+        aggregated.forEach((file, idx) => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const card = buildPreviewCard(e.target.result, file.name, idx);
+                preview.appendChild(card);
+                const removeBtn = card.querySelector('.remove-new-btn');
+                removeBtn.addEventListener('click', () => {
+                    const i = parseInt(removeBtn.getAttribute('data-index'), 10);
+                    if (mainNewIndex.value === String(i)) mainNewIndex.value = '';
+                    aggregated.splice(i, 1);
+                    syncInputFiles();
+                    renderPreview();
+                    if (!mainExistingId.value && !mainNewIndex.value) chooseFallbackMain();
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+
+        if (!mainExistingId.value && !mainNewIndex.value && aggregated.length > 0) {
+            mainNewIndex.value = '0';
+            const first = preview.querySelector('input[type="radio"][name="mainPick"][value="new:0"]');
+            if (first) first.checked = true;
+        }
+    }
+
+    function chooseFallbackMain() {
+        const existingCards = document.querySelectorAll('.img-card input[type="hidden"][name="removeImageIds"]');
+        for (const hidden of existingCards) {
+            if (hidden.disabled) {
+                const card = hidden.closest('.img-card');
+                const r = card.querySelector('input[type="radio"][name="mainPick"][value^="existing:"]');
+                if (r) {
+                    r.checked = true;
+                    const v = r.value.split(':')[1] || '';
+                    mainExistingId.value = v;
+                    mainNewIndex.value = '';
+                    return;
+                }
+            }
+        }
+        const newRadio = preview.querySelector('input[type="radio"][name="mainPick"][value^="new:"]');
+        if (newRadio) {
+            newRadio.checked = true;
+            mainExistingId.value = '';
+            mainNewIndex.value = newRadio.value.split(':')[1] || '';
+        } else {
+            mainExistingId.value = '';
+            mainNewIndex.value = '';
+        }
+    }
+
+    fileInput?.addEventListener('change', function () {
+        const files = Array.from(this.files || []);
+        files.forEach(f => { if (/^image\//.test(f.type)) aggregated.push(f); });
+        this.value = ''; // allow re-selecting same file
+        syncInputFiles();
+        renderPreview();
+        if (!mainExistingId.value && !mainNewIndex.value) chooseFallbackMain();
+    });
+
+    (function initMainFromExisting() {
+        const checked = document.querySelector('input[type="radio"][name="mainPick"]:checked');
+        if (checked) {
+            const v = checked.value || '';
+            if (v.startsWith('existing:')) mainExistingId.value = v.split(':')[1] || '';
+            if (v.startsWith('new:'))      mainNewIndex.value   = v.split(':')[1] || '';
+        }
+    })();
+
+    saveForm?.addEventListener('submit', () => {
+        if (mainExistingId.value === 'undefined') mainExistingId.value = '';
+        if (mainNewIndex.value   === 'undefined') mainNewIndex.value   = '';
+    });
+</script>
 </body>
 </html>

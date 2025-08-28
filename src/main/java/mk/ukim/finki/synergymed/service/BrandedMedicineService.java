@@ -14,28 +14,6 @@ public interface BrandedMedicineService {
     List<Brandedmedicine> findAll();
     Optional<Brandedmedicine> findById(Integer id);
 
-    Brandedmedicine create(Integer manufacturerId,
-                           BigDecimal price,
-                           String description,
-                           String dosageForm,
-                           String strength,
-                           String originCountry,
-                           String name,
-                           MultipartFile[] images) throws IOException;
-
-    Brandedmedicine update(Integer id,
-                           Integer manufacturerId,
-                           BigDecimal price,
-                           String description,
-                           String dosageForm,
-                           String strength,
-                           String originCountry,
-                           String name,
-                           MultipartFile[] images,
-                           boolean replaceImagesIgnored) throws IOException;
-
-    void addImages(Integer brandedMedicineId, MultipartFile[] images) throws IOException;
-    void deleteImage(Integer imageId) throws IOException;
     void deleteById(Integer id) throws IOException;
 
     // New service methods so controllers don’t call repositories
@@ -43,5 +21,16 @@ public interface BrandedMedicineService {
     String cardImageUrl(Integer brandedMedicineId); // main image or fallback
     Map<Integer,String> cardImageUrlsFor(List<Brandedmedicine> medicines);
 
-    void setMainImage(Integer brandedMedicineId, Integer imageId);
+    void saveAll(Integer id,
+            Integer manufacturerId,
+            BigDecimal price,
+            String description,
+            String dosageForm,
+            String strength,
+            String originCountry,
+            String name,
+            MultipartFile[] newImages,
+            List<Integer> removeImageIds,
+            Integer mainExistingId,
+            Integer mainNewIndex) throws IOException;
 }

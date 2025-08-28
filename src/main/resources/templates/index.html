@@ -43,7 +43,6 @@
                     <div class="price" th:text="${'$' + #numbers.formatDecimal(bm.price, 1, 'COMMA', 2, 'POINT')}">$0.00</div>
                     <div>
                         <form th:action="@{/branded-medicines/{id}/delete(id=${bm.id})}" method="post" style="display:inline">
-                            <!-- Add CSRF hidden input if Spring Security is active -->
                             <button type="submit" class="btn-outline" style="margin-right:8px;color:#b3261e;border-color:#f0caca">Delete</button>
                         </form>
                         <a class="btn-outline" th:href="@{/branded-medicines/{id}/edit(id=${bm.id})}">Edit</a>
