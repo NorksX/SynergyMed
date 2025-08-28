@@ -39,7 +39,7 @@ public class SecurityConfig {
 
                         // Static resources in /static, /public, /resources, /META-INF/resources
                         .requestMatchers(String.valueOf(PathRequest.toStaticResources().atCommonLocations())).permitAll()
-                        .requestMatchers("/", "/login", "/login.html", "/index.html", "/favicon.ico").permitAll()
+                        .requestMatchers("/", "/**", "/login", "/login.html", "/index.html", "/favicon.ico").permitAll()
 
                         // Public API/docs
                         .requestMatchers(
