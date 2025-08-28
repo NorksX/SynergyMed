@@ -10,7 +10,6 @@ import lombok.Setter;
 @Table(name = "pharmacist", schema = "synergymed")
 public class Pharmacist {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
     private Integer id;
 
