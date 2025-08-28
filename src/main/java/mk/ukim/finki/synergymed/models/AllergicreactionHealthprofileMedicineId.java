@@ -20,6 +20,13 @@ public class AllergicreactionHealthprofileMedicineId implements Serializable {
     @Column(name = "medicine_id", nullable = false)
     private Integer medicineId;
 
+    public AllergicreactionHealthprofileMedicineId() {}
+
+    public AllergicreactionHealthprofileMedicineId(Integer healthProfileId, Integer medicineId) {
+        this.healthProfileId = healthProfileId;
+        this.medicineId = medicineId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

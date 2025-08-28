@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynergyMed - Admin: Create Health Profile</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin:0 auto; }
+        .header {
+            background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1);
+            margin-bottom:30px; overflow:hidden;
+        }
+        .header-content {
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            color:white; padding:30px; text-align:center;
+        }
+        .header-content h1 { font-size:2.5rem; font-weight:300; margin-bottom:10px; }
+        .header-content p { font-size:1.1rem; opacity:.9; }
+        .admin-badge {
+            background: rgba(255,255,255,0.2);
+            padding:8px 16px; border-radius:20px;
+            font-size:.9rem; display:inline-block; margin-top:10px;
+        }
+        .nav-bar {
+            background:white; border-radius:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,.1);
+            margin-bottom:30px; padding:20px 30px;
+        }
+        .nav-links { display:flex; gap:20px; align-items:center; }
+        .nav-link {
+            color:#20b2aa; text-decoration:none;
+            padding:10px 20px; border-radius:25px;
+            transition:all .3s ease; font-weight:500;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            color:white;
+        }
+        .main-content { display:grid; gap:30px; }
+        .card {
+            background:white; border-radius:20px;
+            box-shadow:0 10px 30px rgba(0,0,0,.1);
+            overflow:hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            color:white; padding:25px 30px; font-size:1.3rem; font-weight:600;
+        }
+        .card-body { padding:30px; }
+        .search-form { display:flex; gap:15px; margin-bottom:20px; }
+        .search-input {
+            flex:1; padding:15px 20px; border:2px solid #e9ecef; border-radius:15px;
+            font-size:1rem; transition:all .3s ease;
+        }
+        .search-input:focus {
+            outline:none; border-color:#20b2aa;
+            box-shadow:0 0 0 3px rgba(32,178,170,.1);
+        }
+        .btn {
+            padding:15px 30px; border-radius:25px; font-weight:600; font-size:1rem;
+            text-decoration:none; border:none; cursor:pointer;
+            transition:all .3s ease; display:inline-block; text-align:center;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            color:white;
+        }
+        .btn-primary:hover {
+            transform:translateY(-2px);
+            box-shadow:0 5px 15px rgba(32,178,170,.4);
+        }
+        .btn-secondary {
+            background:#6c757d; color:white;
+        }
+        .btn-secondary:hover {
+            background:#5a6268; transform:translateY(-2px);
+        }
+        .clients-grid {
+            display:grid; gap:15px; margin-bottom:30px;
+            max-height:400px; overflow-y:auto;
+        }
+        .client-item {
+            background:#f8f9fa; border:2px solid #e9ecef;
+            border-radius:15px; padding:20px;
+            transition:all .3s ease; cursor:pointer;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .client-item:hover { border-color:#20b2aa; background:#f1fdfd; }
+        .client-item.selected {
+            border-color:#20b2aa;
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            color:white;
+        }
+        .blood-type-section { margin-top:30px; padding-top:30px; border-top:1px solid #e9ecef; display:none; }
+        .blood-type-section.visible { display:block; animation:fadeIn .3s ease; }
+        @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+        .blood-type-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(80px,1fr)); gap:15px; margin-top:15px; }
+        .blood-type-radio { display:none; }
+        .blood-type-label {
+            display:block; background:#f8f9fa; border:2px solid #e9ecef;
+            border-radius:15px; padding:20px 15px; text-align:center;
+            font-weight:bold; color:#666; cursor:pointer;
+            transition:all .3s ease;
+        }
+        .blood-type-radio:checked + .blood-type-label {
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            color:white; border-color:#20b2aa; transform:scale(1.05);
+        }
+        .blood-type-label:hover { border-color:#20b2aa; background:#f1fdfd; }
+        .form-actions { display:flex; gap:15px; justify-content:center; margin-top:30px; }
+        .alert { padding:15px 20px; border-radius:15px; margin-bottom:20px; font-weight:500; }
+        .alert-success { background:#d1edff; color:#0c5460; border:1px solid #bee5eb; }
+        .alert-danger { background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; }
+        .alert-info { background:#d1ecf1; color:#0c5460; border:1px solid #bee5eb; }
+        .selected-client-info {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius:15px; padding:20px; margin-bottom:25px; border-left:4px solid #20b2aa;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>Admin Panel</h1>
+            <p>Create Health Profiles for Clients</p>
+            <div class="admin-badge">Administrator Access</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="/admin/dashboard" class="nav-link">Dashboard</a>
+            <a href="/admin/clients" class="nav-link">Manage Clients</a>
+            <a href="/admin/health-profile/create" class="nav-link active">Create Health Profile</a>
+            <a href="/profile" class="nav-link">Back to Profile</a>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <div th:if="${success}" class="alert alert-success"><span th:text="${success}">Success</span></div>
+    <div th:if="${error}" class="alert alert-danger"><span th:text="${error}">Error</span></div>
+
+    <!-- Main -->
+    <div class="main-content">
+        <div class="card">
+            <div class="card-header">Create Health Profile for Client</div>
+            <div class="card-body">
+                <!-- Search -->
+                <form class="search-form" th:action="@{/admin/health-profile/create}" method="get">
+                    <input type="text" name="searchTerm" class="search-input"
+                           placeholder="Search clients by first or last name..."
+                           th:value="${searchTerm}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+
+                <!-- Clients -->
+                <div th:if="${!#lists.isEmpty(clients)}" class="clients-grid" id="clientsGrid">
+                    <div th:each="client : ${clients}"
+                         class="client-item"
+                         th:data-client-id="${client.id}"
+                         th:data-client-name="${client.users.firstName + ' ' + client.users.lastName}"
+                         onclick="selectClient(this)">
+                        <div>
+                            <h4 th:text="${client.users.firstName + ' ' + client.users.lastName}">John Doe</h4>
+                            <p th:text="${client.users.email}">john@email.com</p>
+                        </div>
+                        <div>ID: <span th:text="${client.id}">1</span></div>
+                    </div>
+                </div>
+
+                <!-- Empty -->
+                <div th:if="${#lists.isEmpty(clients)}" class="alert alert-info">No clients found.</div>
+
+                <!-- Form -->
+                <form th:action="@{/admin/health-profile/create}" method="post" id="createProfileForm">
+                    <input type="hidden" name="clientId" id="selectedClientId">
+                    <div id="selectedClientInfo" class="selected-client-info" style="display:none;">
+                        <h4>Creating profile for:</h4>
+                        <p id="selectedClientName"></p>
+                    </div>
+                    <div class="blood-type-section" id="bloodTypeSection">
+                        <h3>Select Blood Type</h3>
+                        <div class="blood-type-grid">
+                            <div><input type="radio" id="a+" name="bloodType" value="A+" class="blood-type-radio"><label for="a+" class="blood-type-label">A+</label></div>
+                            <div><input type="radio" id="a-" name="bloodType" value="A-" class="blood-type-radio"><label for="a-" class="blood-type-label">A-</label></div>
+                            <div><input type="radio" id="b+" name="bloodType" value="B+" class="blood-type-radio"><label for="b+" class="blood-type-label">B+</label></div>
+                            <div><input type="radio" id="b-" name="bloodType" value="B-" class="blood-type-radio"><label for="b-" class="blood-type-label">B-</label></div>
+                            <div><input type="radio" id="ab+" name="bloodType" value="AB+" class="blood-type-radio"><label for="ab+" class="blood-type-label">AB+</label></div>
+                            <div><input type="radio" id="ab-" name="bloodType" value="AB-" class="blood-type-radio"><label for="ab-" class="blood-type-label">AB-</label></div>
+                            <div><input type="radio" id="o+" name="bloodType" value="O+" class="blood-type-radio"><label for="o+" class="blood-type-label">O+</label></div>
+                            <div><input type="radio" id="o-" name="bloodType" value="O-" class="blood-type-radio"><label for="o-" class="blood-type-label">O-</label></div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearSelection()">Clear</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedClientId=null;
+    function selectClient(el){
+        document.querySelectorAll('.client-item').forEach(i=>i.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedClientId=el.getAttribute('data-client-id');
+        document.getElementById('selectedClientId').value=selectedClientId;
+        document.getElementById('selectedClientName').textContent=el.getAttribute('data-client-name');
+        document.getElementById('selectedClientInfo').style.display='block';
+        document.getElementById('bloodTypeSection').classList.add('visible');
+    }
+    function clearSelection(){
+        document.querySelectorAll('.client-item').forEach(i=>i.classList.remove('selected'));
+        document.querySelectorAll('.blood-type-radio').forEach(r=>r.checked=false);
+        document.getElementById('selectedClientInfo').style.display='none';
+        document.getElementById('bloodTypeSection').classList.remove('visible');
+        selectedClientId=null; document.getElementById('selectedClientId').value='';
+    }
+</script>
+</body>
+</html>

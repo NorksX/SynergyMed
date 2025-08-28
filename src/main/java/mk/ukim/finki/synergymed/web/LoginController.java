@@ -1,6 +1,8 @@
 package mk.ukim.finki.synergymed.web;
 
 import lombok.RequiredArgsConstructor;
+import mk.ukim.finki.synergymed.models.User;
+import mk.ukim.finki.synergymed.repositories.UserRepository;
 import mk.ukim.finki.synergymed.service.jwt.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,6 +21,7 @@ public class LoginController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserRepository userRepository; // Add this
 
     @GetMapping
     public String getLoginPage() {
@@ -38,13 +41,17 @@ public class LoginController {
             var userDetails = (UserDetails) authentication.getPrincipal();
             String token = jwtService.generate(userDetails);
 
-            // store jwt in session
+            // Fetch your custom User entity from database
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Store both UserDetails and your custom User entity
             session.setAttribute("jwt_token", token);
             session.setAttribute("username", username);
-            session.setAttribute("user", userDetails);
+            session.setAttribute("userDetails", userDetails); // Spring Security UserDetails
+            session.setAttribute("user", user); // Your custom User entity
 
-            // redirect to home after a successful login
-            return "redirect:/home";
+            return "redirect:/profile";
 
         } catch (BadCredentialsException e) {
             model.addAttribute("error", "Invalid username or password");
