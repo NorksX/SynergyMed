@@ -4,23 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SynergyMed - Profile</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
+    <!-- Shared header styles -->
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Stack header above centered content; remove body padding so header can touch edges */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
             min-height: 100vh;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* no body padding so the full-width header reaches the edges */
         }
 
+        /* Make the global header full-width, square corners, and stick to the very top */
+        .site-header {
+            position: sticky; top: 0; left: 0; right: 0; width: 100%;
+            border-radius: 0; margin: 0; z-index: 1000;
+        }
+
+        /* Centered page container now holds the side padding */
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 20px; /* moved from body */
         }
 
         .header {
@@ -44,8 +56,7 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            /* TODO: Replace with actual profile picture */
-            background: #888;
+            background: #888; /* TODO: Replace with actual profile picture */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -130,14 +141,9 @@
             font-weight: 600;
         }
 
-        .card-body {
-            padding: 30px;
-        }
+        .card-body { padding: 30px; }
 
-        .info-grid {
-            display: grid;
-            gap: 20px;
-        }
+        .info-grid { display: grid; gap: 20px; }
 
         .info-item {
             display: flex;
@@ -147,20 +153,10 @@
             border-bottom: 1px solid #f0f0f0;
         }
 
-        .info-item:last-child {
-            border-bottom: none;
-        }
+        .info-item:last-child { border-bottom: none; }
 
-        .info-label {
-            font-weight: 600;
-            color: #555;
-            font-size: 0.95rem;
-        }
-
-        .info-value {
-            color: #333;
-            font-size: 1rem;
-        }
+        .info-label { font-weight: 600; color: #555; font-size: 0.95rem; }
+        .info-value { color: #333; font-size: 1rem; }
 
         .blood-type {
             background: linear-gradient(135deg, #ff6b6b, #ee5a24);
@@ -186,11 +182,7 @@
             margin-bottom: 10px;
         }
 
-        .medicine-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
-        }
+        .medicine-name { font-weight: 600; color: #333; font-size: 1.1rem; }
 
         .severity {
             padding: 3px 12px;
@@ -199,45 +191,19 @@
             font-weight: 600;
             text-transform: uppercase;
         }
+        .severity.high { background: #fee; color: #c33; }
+        .severity.medium { background: #fff3cd; color: #856404; }
+        .severity.low { background: #d1ecf1; color: #0c5460; }
 
-        .severity.high {
-            background: #fee;
-            color: #c33;
-        }
-
-        .severity.medium {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .severity.low {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .allergy-details {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        .date-diagnosed {
-            color: #888;
-            font-size: 0.85rem;
-            margin-top: 8px;
-        }
+        .allergy-details { color: #666; font-size: 0.9rem; margin-top: 10px; }
+        .date-diagnosed { color: #888; font-size: 0.85rem; margin-top: 8px; }
 
         .no-data {
             text-align: center;
             padding: 40px;
             color: #888;
         }
-
-        .no-data-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
+        .no-data-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.3; }
 
         .logout-btn {
             margin-left: auto;
@@ -249,46 +215,27 @@
             transition: all 0.3s ease;
             font-weight: 500;
         }
-
         .logout-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(238, 90, 36, 0.4);
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
-
-            .profile-meta {
-                flex-direction: column;
-                gap: 10px;
-                align-items: center;
-            }
-
-            .nav-links {
-                flex-wrap: wrap;
-            }
-
-            .profile-picture {
-                width: 100px;
-                height: 100px;
-                font-size: 40px;
-            }
-
-            .profile-info h1 {
-                font-size: 2rem;
-            }
+            .main-content { grid-template-columns: 1fr; }
+            .header-content { flex-direction: column; text-align: center; gap: 20px; }
+            .profile-meta { flex-direction: column; gap: 10px; align-items: center; }
+            .nav-links { flex-wrap: wrap; }
+            .profile-picture { width: 100px; height: 100px; font-size: 40px; }
+            .profile-info h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
+
+<!-- Full-width global header OUTSIDE the container -->
+<!-- Pass null as activePage so no nav item is highlighted on the Profile page -->
+<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+
 <div class="container">
     <!-- Profile Header -->
     <div class="header">
@@ -333,9 +280,7 @@
 
         <!-- Personal Information Card -->
         <div class="card">
-            <div class="card-header">
-                Personal Information
-            </div>
+            <div class="card-header">Personal Information</div>
             <div class="card-body">
                 <div class="info-grid">
                     <div class="info-item">
@@ -368,9 +313,7 @@
 
         <!-- Health Profile Card -->
         <div class="card">
-            <div class="card-header">
-                Health Profile
-            </div>
+            <div class="card-header">Health Profile</div>
             <div class="card-body">
                 <div th:if="${hasHealthProfile}">
                     <div class="info-item">
@@ -415,5 +358,8 @@
         </div>
     </div>
 </div>
+
+<!-- Shared header dropdown script -->
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
 </body>
 </html>

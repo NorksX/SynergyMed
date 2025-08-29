@@ -21,4 +21,7 @@ public class Brandedmedicineimage {
     @Column(name = "image", nullable = false)
     private String image;
 
+    // New flag for “main” image
+    @Column(name = "is_main_image", nullable = false)
+    private boolean mainImage = false;
 }
