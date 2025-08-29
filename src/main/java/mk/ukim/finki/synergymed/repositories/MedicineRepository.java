@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface MedicineRepository extends JpaRepository<Medicine, Integer> {
     Optional<Medicine> getMedicineById(Integer id);
+    Optional<Medicine> getMedicineByMedicineName(String name);
+    boolean existsByMedicineName(String name);
 }
