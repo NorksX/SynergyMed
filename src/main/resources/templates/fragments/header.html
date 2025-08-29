@@ -1,0 +1,188 @@
+<!-- templates/fragments/header.html -->
+
+<!-- Head styles fragment -->
+<th:block th:fragment="headerStyles">
+    <style>
+        :root{
+            /* Light neutral palette */
+            --teal-1:#ffffff;      /* white */
+            --teal-2:#ece8df;      /* soft beige-gray */
+            --text:#1f2937;        /* dark gray text */
+            --muted:#4b5563;       /* medium gray text */
+            --shadow:0 20px 40px rgba(0,0,0,0.10);
+            --shadow-sm:0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        /* Header container */
+        .site-header{
+            position: sticky; top: 20px; z-index: 50;
+            display:flex; align-items:center; justify-content:space-between; gap:16px;
+            padding:14px 18px;
+            background: linear-gradient(135deg, var(--teal-1), var(--teal-2)); /* white → beige-gray */
+            color: var(--text);                         /* darker text for contrast */
+            border-radius:20px; box-shadow: var(--shadow);
+        }
+
+        /* Brand/logo */
+        .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit}
+        .logo{height:36px; width:auto; display:block; border-radius:10px}
+        .brand-name{font-weight:700; letter-spacing:.3px}
+
+        /* Primary nav */
+        .main-nav{display:flex; gap:10px; align-items:center}
+        .nav-btn{
+            display:inline-flex; align-items:center; gap:8px;
+            padding:10px 14px; border-radius:12px;
+            color:#111827;                                  /* dark text */
+            text-decoration:none; font-weight:600;
+            background: rgba(0,0,0,.06);                    /* subtle neutral chip */
+            border:1px solid rgba(0,0,0,.10);
+            transition: transform .15s ease, background .15s ease, box-shadow .15s ease, border-color .15s ease;
+        }
+        .nav-btn:hover{
+            transform: translateY(-1px);
+            background: rgba(0,0,0,.10);
+            border-color: rgba(0,0,0,.14);
+        }
+        .nav-btn.active{
+            box-shadow: 0 8px 18px rgba(0,0,0,.10);
+            background: rgba(0,0,0,.12);
+            border-color: rgba(0,0,0,.16);
+        }
+
+        /* Account area */
+        .account{margin-left:auto; display:flex; align-items:center}
+
+        /* Neutral login button to match light header */
+        .login-btn{
+            display:inline-flex; align-items:center; padding:10px 14px; border-radius:12px;
+            color:#111827; background:#ffffff;
+            text-decoration:none; font-weight:700;
+            border:1px solid rgba(0,0,0,.14);
+            box-shadow: 0 1px 2px rgba(0,0,0,.04);
+            transition:.15s ease;
+        }
+        .login-btn:hover{
+            border-color: rgba(0,0,0,.22);
+            background:#f3f4f6;
+            box-shadow: 0 6px 14px rgba(0,0,0,.10);
+        }
+
+        /* User menu button + dropdown */
+        .user-menu{position:relative}
+        .user-button{
+            display:flex; align-items:center; gap:8px;
+            padding:8px 10px; border-radius:14px; cursor:pointer;
+            background: rgba(0,0,0,.06);
+            border:1px solid rgba(0,0,0,.10);
+            color:#111827; font-weight:600;
+            transition: .15s ease;
+        }
+        .user-button:hover{
+            background: rgba(0,0,0,.10);
+            border-color: rgba(0,0,0,.14);
+        }
+        .user-button:focus-visible{outline:3px solid rgba(0,0,0,.25); outline-offset:2px}
+
+        .avatar{
+            width:28px; height:28px; border-radius:50%;
+            display:grid; place-items:center; font-weight:800; font-size:.9rem;
+            background:#e5e7eb; color:#111827;                 /* light chip, dark letter */
+        }
+        .user-name{max-width:160px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
+        .chev{opacity:.85}
+
+        .dropdown{
+            position:absolute; right:0; top: calc(100% + 10px); min-width:220px;
+            background:#ffffff; color: var(--text); border-radius:14px; box-shadow: var(--shadow-sm);
+            padding:8px; pointer-events:none; opacity:0; transform: translateY(-6px);
+            transition: opacity .12s ease, transform .12s ease;
+            border:1px solid rgba(0,0,0,.06);
+        }
+        .user-menu.open .dropdown{pointer-events:auto; opacity:1; transform: translateY(0)}
+        .dropdown-item{
+            display:flex; align-items:center; justify-content:space-between;
+            width:100%; text-decoration:none; background:transparent; border:none; cursor:pointer;
+            color: var(--text); padding:10px 12px; border-radius:10px; font-weight:600;
+        }
+        .dropdown-item:hover{background:#f3f4f6}
+        .dropdown-item.danger{color:#b3261e}
+        .dropdown-item.danger:hover{background:#fdecec}
+
+        /* Responsive tweaks */
+        @media (max-width: 780px){
+            .site-header{flex-wrap:wrap; row-gap:10px}
+            .main-nav{order:3; width:100%; justify-content:center}
+            .account{margin-left:0; margin-right:0}
+            .user-name{display:none}
+        }
+    </style>
+</th:block>
+
+<!-- Body header fragment (parameterized) -->
+<th:block th:fragment="siteHeader(activePage, username)">
+    <header class="site-header">
+        <a class="brand" th:href="@{/}">
+            <img src="/logo.png" alt="SynergyMed logo" class="logo">
+        </a>
+
+        <nav class="main-nav" aria-label="Primary">
+            <a class="nav-btn" th:href="@{/branded-medicines}"
+               th:classappend="${activePage}=='medicines' ? ' active'">Medicine</a>
+            <a class="nav-btn" th:href="@{/companies}"
+               th:classappend="${activePage}=='companies' ? ' active'">Companies</a>
+        </nav>
+
+        <div class="account">
+            <div class="user-menu" th:if="${username}">
+                <button class="user-button" id="userButton" type="button"
+                        aria-haspopup="true" aria-expanded="false" aria-controls="userDropdown">
+                    <span class="avatar" th:text="${#strings.substring(username,0,1).toUpperCase()}">U</span>
+                    <span class="user-name" th:text="${username}">username</span>
+                    <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor" d="M7 10l5 5 5-5z"/>
+                    </svg>
+                </button>
+                <div class="dropdown" id="userDropdown" role="menu" aria-labelledby="userButton">
+                    <a class="dropdown-item" th:href="@{/profile}" role="menuitem">Profile settings</a>
+                    <form th:action="@{/logout}" method="post" style="margin:0">
+                        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
+                        <button type="submit" class="dropdown-item danger" role="menuitem">Logout</button>
+                    </form>
+                </div>
+            </div>
+
+            <a class="login-btn" th:unless="${username}" th:href="@{/login}">Log in</a>
+        </div>
+    </header>
+</th:block>
+
+<!-- Footer scripts fragment -->
+<th:block th:fragment="headerScripts">
+    <script>
+        (function(){
+            const menu = document.querySelector('.user-menu');
+            if(!menu) return;
+            const btn = menu.querySelector('#userButton');
+
+            function closeMenu(){
+                menu.classList.remove('open');
+                btn && btn.setAttribute('aria-expanded','false');
+            }
+            function openMenu(){
+                menu.classList.add('open');
+                btn && btn.setAttribute('aria-expanded','true');
+            }
+            btn && btn.addEventListener('click', (e)=>{
+                e.stopPropagation();
+                menu.classList.contains('open') ? closeMenu() : openMenu();
+            });
+            document.addEventListener('click', (e)=>{
+                if(!menu.contains(e.target)) closeMenu();
+            });
+            document.addEventListener('keydown', (e)=>{
+                if(e.key === 'Escape') closeMenu();
+            });
+        })();
+    </script>
+</th:block>
