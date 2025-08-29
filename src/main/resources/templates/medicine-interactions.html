@@ -4,14 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SynergyMed - Medicine Interactions</title>
+
+    <!-- Header styles -->
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
-            min-height:100vh; padding:20px;
+            min-height:100vh;
         }
-        .container { max-width:1000px; margin:0 auto; }
+
+        /* Full-width global header - FIXED STYLING */
+        .site-header {
+            position:sticky;
+            top:0;
+            left:0;
+            right:0;
+            width:100%;
+            border-radius:0;
+            margin:0;
+            z-index:1000;
+            background:white !important; /* Force white background */
+            box-shadow:0 2px 10px rgba(0,0,0,0.1); /* Add subtle shadow */
+        }
+
+        .container { max-width:1000px; margin:0 auto; padding:20px; }
 
         .header { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); margin-bottom:30px; overflow:hidden; }
         .header-content { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:30px; text-align:center; }
@@ -83,6 +102,10 @@
     </style>
 </head>
 <body>
+
+<!-- Global header -->
+<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+
 <div class="container">
     <!-- Header -->
     <div class="header">
@@ -186,6 +209,9 @@
     </div>
 
 </div>
+
+<!-- Dropdown script -->
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
 
 <script>
     // Add loading state to search form

@@ -1,8 +1,6 @@
 package mk.ukim.finki.synergymed.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import mk.ukim.finki.synergymed.exceptions.InvalidInputException;
-import mk.ukim.finki.synergymed.exceptions.MedicineAlreadyExistsException;
 import mk.ukim.finki.synergymed.exceptions.MedicineDoesNotExistException;
 import mk.ukim.finki.synergymed.exceptions.MedicineInteractionAlreadyExistsException;
 import mk.ukim.finki.synergymed.models.Medicine;
@@ -15,106 +13,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import jakarta.persistence.EntityNotFoundException;
-import mk.ukim.finki.synergymed.models.Medicine;
-import mk.ukim.finki.synergymed.repositories.MedicineRepository;
-import mk.ukim.finki.synergymed.service.MedicineService;
-import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MedicineServiceImpl implements MedicineService {
+
     private final MedicineRepository medicineRepository;
     private final MedicineinteractionRepository medicineinteractionRepository;
-    @Override
-    public List<Medicine> findAllMedicine() {
-        return medicineRepository.findAll();
-    }
 
-    @Override
-    public Medicine findById(Integer id) {
-        return medicineRepository.findById(id)
-                .orElseThrow(MedicineDoesNotExistException::new);
-    }
-
-    @Override
-    public Medicine save(String medicineName, String activeIngredients) throws InvalidInputException, MedicineAlreadyExistsException {
-        if(medicineName == null || medicineName.isEmpty() || activeIngredients == null || activeIngredients.isEmpty()){
-            throw new RuntimeException("Please enter all fields.");
-        }
-        if(medicineRepository.existsByMedicineName(medicineName)){
-            throw new MedicineDoesNotExistException();
-        }
-
-        Medicine medicine = new Medicine();
-        medicine.setMedicineName(medicineName);
-        medicine.setActiveIngredient(activeIngredients);
-
-        return medicineRepository.save(medicine);
-    }
-
-    @Override
-    public List<Medicineinteraction> interactions(String medicineName) {
-        Optional<Medicine> medicine = medicineRepository.getMedicineByMedicineName(medicineName);
-
-        if (medicine.isEmpty()) {
-            throw new MedicineDoesNotExistException();
-        }
-
-        Integer medId = medicine.get().getId();
-
-        List<Medicineinteraction> interactionsAsFirst = medicineinteractionRepository.findById_MedicineId1(medId);
-        List<Medicineinteraction> interactionsAsSecond = medicineinteractionRepository.findById_MedicineId2(medId);
-
-        List<Medicineinteraction> allInteractions = new ArrayList<>();
-        allInteractions.addAll(interactionsAsFirst);
-        allInteractions.addAll(interactionsAsSecond);
-
-        return allInteractions;
-    }
-
-    @Override
-    public Medicineinteraction addInteraction(Medicine medicine1,
-                                              Medicine medicine2,
-                                              String type,
-                                              String description,
-                                              String severity) {
-        boolean exists = medicineinteractionRepository
-                .findById_MedicineId1AndId_MedicineId2(medicine1.getId(), medicine2.getId())
-                .isPresent()
-                || medicineinteractionRepository
-                .findById_MedicineId1AndId_MedicineId2(medicine2.getId(), medicine1.getId())
-                .isPresent();
-
-        if (exists) {
-            throw new MedicineInteractionAlreadyExistsException();
-        }
-
-        MedicineinteractionId id = new MedicineinteractionId();
-        id.setMedicineId1(medicine1.getId());
-        id.setMedicineId2(medicine2.getId());
-
-        Medicineinteraction interaction = new Medicineinteraction();
-        interaction.setId(id);
-        interaction.setMedicineId1(medicine1);
-        interaction.setMedicineId2(medicine2);
-        interaction.setType(type);
-        interaction.setDescription(description);
-        interaction.setSeverity(severity);
-
-        return medicineinteractionRepository.save(interaction);
-
-    }
-public class MedicineServiceImpl implements MedicineService {
-
-    private final MedicineRepository medicineRepository;
-
-    public MedicineServiceImpl(MedicineRepository medicineRepository) {
-        this.medicineRepository = medicineRepository;
-    }
 
     @Override
     public List<Medicine> findAll() {
@@ -148,6 +57,58 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public void deleteById(Integer id) {
         this.medicineRepository.deleteById(id);
+    }
+
+    @Override
+    public Medicineinteraction addInteraction(Medicine medicine1,
+                                              Medicine medicine2,
+                                              String type,
+                                              String description,
+                                              String severity) {
+        boolean exists = medicineinteractionRepository
+                .findById_MedicineId1AndId_MedicineId2(medicine1.getId(), medicine2.getId())
+                .isPresent()
+                || medicineinteractionRepository
+                .findById_MedicineId1AndId_MedicineId2(medicine2.getId(), medicine1.getId())
+                .isPresent();
+
+        if (exists) {
+            throw new MedicineInteractionAlreadyExistsException();
+        }
+
+        MedicineinteractionId id = new MedicineinteractionId();
+        id.setMedicineId1(medicine1.getId());
+        id.setMedicineId2(medicine2.getId());
+
+        Medicineinteraction interaction = new Medicineinteraction();
+        interaction.setId(id);
+        interaction.setMedicineId1(medicine1);
+        interaction.setMedicineId2(medicine2);
+        interaction.setType(type);
+        interaction.setDescription(description);
+        interaction.setSeverity(severity);
+
+        return medicineinteractionRepository.save(interaction);
+    }
+
+    @Override
+    public List<Medicineinteraction> interactions(String medicineName) {
+        Optional<Medicine> medicine = medicineRepository.getMedicineByMedicineName(medicineName);
+
+        if (medicine.isEmpty()) {
+            throw new MedicineDoesNotExistException();
+        }
+
+        Integer medId = medicine.get().getId();
+
+        List<Medicineinteraction> interactionsAsFirst = medicineinteractionRepository.findById_MedicineId1(medId);
+        List<Medicineinteraction> interactionsAsSecond = medicineinteractionRepository.findById_MedicineId2(medId);
+
+        List<Medicineinteraction> allInteractions = new ArrayList<>();
+        allInteractions.addAll(interactionsAsFirst);
+        allInteractions.addAll(interactionsAsSecond);
+
+        return allInteractions;
     }
 
 }

@@ -40,14 +40,16 @@
 
         /* Force the global site header to be full-width, square corners, top-attached */
         .site-header{
-            position: sticky;       /* stays attached while scrolling */
+            position: sticky;
             top:0;
             left:0;
             right:0;
             width:100%;
-            border-radius:0;        /* remove rounded corners */
-            margin:0;               /* no outer gap */
-            z-index:1000;           /* keep above content */
+            border-radius:0;
+            margin:0;
+            z-index:1000;
+            background:white !important; /* Force white background */
+            box-shadow:0 2px 10px rgba(0,0,0,0.1); /* Add subtle shadow */
         }
 
         /* Optional: space between global header and the page section header */
@@ -105,7 +107,7 @@
                 <div class="title" th:text="${bm.name}">Name</div>
                 <div class="muted" th:text="${bm.dosageForm}">Dosage Form</div>
                 <div class="row">
-                    <div class="price" th:text="${'$' + #numbers.formatDecimal(bm.price, 1, 'COMMA', 2, 'POINT')}">$0.00</div>
+                    <div class="price" th:text="${#numbers.formatDecimal(bm.price, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</div>
                     <div>
                         <form th:action="@{/branded-medicines/{id}/delete(id=${bm.id})}" method="post" style="display:inline">
                             <button type="submit" class="btn-outline" style="margin-right:8px;color:#b3261e;border-color:#f0caca">Delete</button>

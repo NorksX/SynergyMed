@@ -4,15 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SynergyMed - Admin: Create Health Profile</title>
+
+    <!-- Shared header styles -->
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
             min-height: 100vh;
-            padding: 20px;
         }
-        .container { max-width: 1200px; margin:0 auto; }
+        .site-header {
+            position: sticky; top:0; left:0; right:0;
+            width: 100%;
+            border-radius: 0;
+            z-index: 1000;
+        }
+        .container { max-width: 1200px; margin:0 auto; padding:20px; }
         .header {
             background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1);
             margin-bottom:30px; overflow:hidden;
@@ -33,7 +42,7 @@
             box-shadow:0 5px 15px rgba(0,0,0,.1);
             margin-bottom:30px; padding:20px 30px;
         }
-        .nav-links { display:flex; gap:20px; align-items:center; }
+        .nav-links { display:flex; gap:20px; align-items:center; flex-wrap:wrap; }
         .nav-link {
             color:#20b2aa; text-decoration:none;
             padding:10px 20px; border-radius:25px;
@@ -126,6 +135,10 @@
     </style>
 </head>
 <body>
+
+<!-- Full-width global header -->
+<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+
 <div class="container">
     <!-- Header -->
     <div class="header">
@@ -211,6 +224,9 @@
         </div>
     </div>
 </div>
+
+<!-- Shared header dropdown script -->
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
 
 <script>
     let selectedClientId=null;
