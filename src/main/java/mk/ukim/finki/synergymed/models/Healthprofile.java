@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -20,5 +23,8 @@ public class Healthprofile {
 
     @Column(name = "blood_type", length = 10)
     private String bloodType;
+
+    @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AllergicreactionHealthprofileMedicine> allergicReactions = new ArrayList<>();
 
 }
