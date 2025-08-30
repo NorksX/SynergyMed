@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SynergyMed – Shopping Cart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
+    <style>
+        :root{
+            --teal-1:#20b2aa; --teal-2:#48d1cc; --muted:#6c757d;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+
+        body{
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            min-height:100vh;
+            background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);
+            color:#1f2937;
+        }
+
+        /* Full-width global header - FIXED STYLING */
+        .site-header{
+            position:sticky;
+            top:0;
+            left:0;
+            right:0;
+            width:100%;
+            border-radius:0;
+            margin:0;
+            z-index:1000;
+            background:white !important;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .cart-container{max-width:1000px;margin:28px auto;padding:20px;background:white;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,0.1)}
+        .cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+        .cart-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #eee}
+        .cart-item img{width:100px;height:80px;object-fit:cover;border-radius:10px;margin-right:18px}
+        .cart-info{flex:1}
+        .cart-title{font-weight:700;font-size:1.1rem}
+        .cart-qty{display:flex;align-items:center;gap:6px;margin-top:8px}
+        .btn-outline{background:#fff;border:2px solid rgba(32,178,170,.25);color:#20b2aa;padding:6px 10px;border-radius:8px;text-decoration:none;font-weight:600;transition:.2s ease}
+        .btn-outline:hover{border-color:#20b2aa;box-shadow:0 6px 14px rgba(32,178,170,.18)}
+        .btn-remove{color:#b3261e;border-color:#f0caca}
+        .cart-total{text-align:right;margin-top:20px;font-size:1.4rem;font-weight:700}
+        .btn-checkout{margin-top:20px;display:inline-block;background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:600;transition:.2s ease}
+        .btn-checkout:hover{transform:translateY(-2px)}
+    </style>
+</head>
+<body>
+<th:block th:replace="fragments/header :: siteHeader('cart', ${username})"></th:block>
+
+<div class="cart-container">
+    <div class="cart-header">
+        <h2>Your Shopping Cart</h2>
+        <a th:href="@{/branded-medicines}" class="btn-outline">← Continue Shopping</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(items)}">
+        <p>Your cart is empty.</p>
+    </div>
+
+    <div th:each="entry : ${items}" class="cart-item">
+        <!-- Safe image rendering -->
+        <img th:if="${firstImageById != null}"
+             th:src="@{${firstImageById[entry.key.id]}}" alt="medicine">
+        <img th:if="${firstImageById == null}"
+             src="/images/default-medicine.png" alt="medicine">
+
+        <div class="cart-info">
+            <div class="cart-title" th:text="${entry.key.name}">Medicine</div>
+            <div class="muted" th:text="${entry.key.dosageForm}">Dosage</div>
+            <div class="cart-qty">
+                <!-- Minus button -->
+                <form th:action="@{/cart/minus/{id}(id=${entry.key.id})}" method="post" style="display:inline">
+                    <button type="submit" class="btn-outline">−</button>
+                </form>
+                <!-- Plus button -->
+                <form th:action="@{/cart/plus/{id}(id=${entry.key.id})}" method="post" style="display:inline">
+                    <button type="submit" class="btn-outline">＋</button>
+                </form>
+                <!-- Remove button -->
+                <form th:action="@{/cart/remove/{id}(id=${entry.key.id})}" method="post" style="display:inline">
+                    <button type="submit" class="btn-outline btn-remove">Remove</button>
+                </form>
+            </div>
+        </div>
+        <div th:text="${#numbers.formatDecimal(entry.key.price * entry.value, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0 ден.</div>
+    </div>
+
+    <div class="cart-total">
+        Total: <span th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</span>
+    </div>
+
+    <a class="btn-checkout" th:href="@{/payment}">Proceed to Payment</a>
+</div>
+
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>

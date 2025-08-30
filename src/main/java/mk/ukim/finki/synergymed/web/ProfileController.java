@@ -21,7 +21,6 @@ public class ProfileController {
 
     @GetMapping
     public String getProfilePage(HttpSession session, Model model) {
-        // Get your custom User entity directly from session
         User user = (User) session.getAttribute("user");
         String username = (String) session.getAttribute("username");
 
