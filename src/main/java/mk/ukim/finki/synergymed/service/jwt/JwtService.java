@@ -14,6 +14,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class JwtService {
@@ -39,11 +40,12 @@ public class JwtService {
                 .toList();
 
         return Jwts.builder()
-                .subject(ud.getUsername())     // 0.12.x
+                .subject(ud.getUsername())
                 .claim("roles", roles)
+                .id(UUID.randomUUID().toString())
                 .issuedAt(now)
                 .expiration(exp)
-                .signWith(key)                 // <— let JJWT infer HS256/384/512 from key size
+                .signWith(key)
                 .compact();
     }
 

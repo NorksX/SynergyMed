@@ -4,8 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.lang.NonNull;
 import mk.ukim.finki.synergymed.service.jwt.JwtService;
+import mk.ukim.finki.synergymed.service.jwt.TokenBlacklistService;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,11 +21,15 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService; // your AppUserDetails bean
+    private final UserDetailsService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
-    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService){
+    public JwtAuthFilter(JwtService jwtService,
+                         UserDetailsService userDetailsService,
+                         TokenBlacklistService tokenBlacklistService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Override
@@ -37,9 +42,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             try {
-                var claims = jwtService.parse(token).getPayload();
-                var username = claims.getSubject();
+                var jws = jwtService.parse(token);
+                var claims = jws.getPayload();
 
+                // check if token is blacklisted
+                String jti = claims.getId();
+                if (jti != null && tokenBlacklistService.contains(jti)) {
+                    res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has been revoked");
+                    return; // stop filter chain
+                }
+
+                var username = claims.getSubject();
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails ud = userDetailsService.loadUserByUsername(username);
                     var auth = new UsernamePasswordAuthenticationToken(ud, null, ud.getAuthorities());
@@ -47,9 +60,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
 
-                // TODO: 28.8.2025 HANDLE INVALID JWT TOKEN PROPERLY
-            } catch (Exception ignored) {
-                // invalid/expired token -> leave context unauthenticated
+            } catch (Exception e) {
+                // invalid/expired token -> block request
+                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
+                return;
             }
         }
         chain.doFilter(req, res);
