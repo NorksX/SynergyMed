@@ -17,4 +17,11 @@ public class UserServiceImpl implements UserService {
                 .findById(id)
                 .orElseThrow(UserNotFoundException::new);
     }
+
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository
+                .findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+    }
 }
