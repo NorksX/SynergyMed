@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,4 +42,6 @@ public class Clientorder {
     @Column(name = "total_price", nullable = false)
     private Integer totalPrice;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClientorderBrandedmedicine> items = new ArrayList<>();
 }

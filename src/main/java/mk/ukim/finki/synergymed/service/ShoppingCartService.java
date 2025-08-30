@@ -1,6 +1,7 @@
 package mk.ukim.finki.synergymed.service;
 
 import mk.ukim.finki.synergymed.models.Brandedmedicine;
+import mk.ukim.finki.synergymed.models.Client;
 import mk.ukim.finki.synergymed.models.Shoppingcart;
 
 import java.math.BigDecimal;
@@ -13,4 +14,5 @@ public interface ShoppingCartService {
     BigDecimal getTotal(Shoppingcart cart);
     void clearCart(Shoppingcart cart);
     public void decreaseMedicine(Shoppingcart cart, Brandedmedicine medicine);
+    Shoppingcart getOrCreateCart(Client client);
 }

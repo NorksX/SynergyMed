@@ -2,11 +2,9 @@ package mk.ukim.finki.synergymed.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import mk.ukim.finki.synergymed.models.Brandedmedicine;
-import mk.ukim.finki.synergymed.models.Shoppingcart;
-import mk.ukim.finki.synergymed.models.ShoppingcartBrandedmedicine;
-import mk.ukim.finki.synergymed.models.ShoppingcartBrandedmedicineId;
+import mk.ukim.finki.synergymed.models.*;
 import mk.ukim.finki.synergymed.repositories.ShoppingcartBrandedmedicineRepository;
+import mk.ukim.finki.synergymed.repositories.ShoppingcartRepository;
 import mk.ukim.finki.synergymed.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +19,7 @@ import java.util.Map;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShoppingcartBrandedmedicineRepository cartMedicineRepo;
+    private final ShoppingcartRepository shoppingcartRepo;
 
     @Override
     public void addMedicine(Shoppingcart cart, Brandedmedicine medicine, int quantity) {
@@ -81,6 +80,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .map(entry -> entry.getKey().getPrice()
                         .multiply(BigDecimal.valueOf(entry.getValue())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    public Shoppingcart getOrCreateCart(Client client) {
+        return shoppingcartRepo.findByClient(client)
+                .orElseGet(() -> {
+                    Shoppingcart cart = new Shoppingcart();
+                    cart.setClient(client);
+                    return shoppingcartRepo.save(cart);
+                });
     }
 
     @Override
