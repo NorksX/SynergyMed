@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SynergyMed - Manage Allergies</title>
+  <title>SynergyMed - Checkout</title>
 
-  <!-- Shared header styles -->
   <th:block th:replace="fragments/header :: headerStyles"></th:block>
 
   <style>
@@ -30,12 +29,6 @@
     .header-content h1 { font-size:2.5rem; font-weight:300; margin-bottom:10px; }
     .header-content p { font-size:1.1rem; opacity:.9; }
 
-    .nav-bar { background:white; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,.1); margin-bottom:30px; padding:20px 30px; }
-    .nav-links { display:flex; gap:20px; align-items:center; flex-wrap:wrap; }
-    .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:all .3s ease; font-weight:500; }
-    .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
-    .back-btn { margin-left:auto; background:linear-gradient(135deg,#6c757d,#495057); color:white; }
-
     .card { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; margin-bottom:30px; }
     .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:25px 30px; font-size:1.3rem; font-weight:600; }
     .card-body { padding:30px; }
@@ -45,140 +38,66 @@
     .form-control { width:100%; padding:15px 20px; border:2px solid #e1e5e9; border-radius:12px; font-size:1rem; transition:all .3s ease; background:#f8f9fa; }
     .form-control:focus { outline:none; border-color:#20b2aa; background:white; box-shadow:0 0 0 3px rgba(32,178,170,.1); }
     select.form-control { cursor:pointer; }
-    textarea.form-control { resize:vertical; min-height:100px; }
 
-    .severity-options { display:flex; gap:15px; margin-top:10px; }
-    .severity-option { flex:1; }
-    .severity-option input[type="radio"] { display:none; }
-    .severity-label { display:block; padding:12px 20px; border:2px solid #e1e5e9; border-radius:10px; text-align:center; cursor:pointer; transition:all .3s ease; font-weight:500; }
-    .severity-option input[type="radio"]:checked + .severity-label.low { background:#d1ecf1; border-color:#0c5460; color:#0c5460; }
-    .severity-option input[type="radio"]:checked + .severity-label.medium { background:#fff3cd; border-color:#856404; color:#856404; }
-    .severity-option input[type="radio"]:checked + .severity-label.high { background:#fee; border-color:#c33; color:#c33; }
+    .payment-methods { display:flex; gap:15px; flex-wrap:wrap; }
+    .payment-option { flex:1; }
+    .payment-option input[type="radio"] { display:none; }
+    .payment-label { display:block; padding:15px; border:2px solid #e1e5e9; border-radius:12px; text-align:center; cursor:pointer; transition:all .3s ease; font-weight:500; background:#f8f9fa; }
+    .payment-option input[type="radio"]:checked + .payment-label { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border-color:#20b2aa; box-shadow:0 8px 20px rgba(32,178,170,.3); }
 
     .btn-submit { width:100%; padding:15px; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; transition:.3s; text-transform:uppercase; letter-spacing:1px; }
     .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(32,178,170,.3); }
     .btn-submit:active { transform:translateY(0); }
 
-    .alert { padding:15px; border-radius:8px; margin-bottom:20px; font-size:.9rem; }
-    .alert-danger { background-color:#fee; color:#c33; border:1px solid #fcc; }
-    .alert-success { background-color:#efe; color:#363; border:1px solid #cfc; }
-
-    .allergy-item { background:white; border-radius:10px; padding:15px; margin-bottom:10px; border-left:4px solid #20b2aa; display:flex; justify-content:space-between; align-items:center; }
-    .allergy-info { flex:1; }
-    .medicine-name { font-weight:600; color:#333; margin-bottom:5px; }
-    .allergy-description { color:#666; font-size:.9rem; }
-    .severity-badge { padding:4px 12px; border-radius:15px; font-size:.8rem; font-weight:600; text-transform:uppercase; }
-    .severity-badge.high { background:#fee; color:#c33; }
-    .severity-badge.medium { background:#fff3cd; color:#856404; }
-    .severity-badge.low { background:#d1ecf1; color:#0c5460; }
-
-    .no-allergies { text-align:center; color:#888; font-style:italic; }
-
-    @media (max-width:768px){
-      .severity-options{flex-direction:column;}
-      .nav-links{flex-wrap:wrap;}
-      .allergy-item{flex-direction:column; align-items:flex-start; gap:10px;}
-    }
+    .summary { margin-top:20px; font-size:1.2rem; font-weight:600; text-align:right; }
   </style>
 </head>
 <body>
 
-<!-- Full-width global header -->
 <th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
 
 <div class="container">
   <!-- Header -->
   <div class="header">
     <div class="header-content">
-      <h1>Manage Allergies</h1>
-      <p th:text="${'Managing allergic reactions for ' + user.firstName + ' ' + user.lastName}">
-        Managing allergic reactions for John Doe
-      </p>
+      <h1>Checkout</h1>
+      <p>Complete your order securely</p>
     </div>
   </div>
 
-  <!-- Navigation -->
-  <div class="nav-bar">
-    <div class="nav-links">
-      <a th:href="@{/profile}" class="nav-link">Profile</a>
-      <a href="#" class="nav-link active">Manage Allergies</a>
-      <a th:href="@{/profile}" class="nav-link back-btn">Back to Profile</a>
-    </div>
-  </div>
-
-  <!-- Current Allergies -->
+  <!-- Payment Form -->
   <div class="card">
-    <div class="card-header">Current Allergic Reactions</div>
+    <div class="card-header">Payment Details</div>
     <div class="card-body">
-      <div th:if="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}">
-        <div th:each="allergy : ${healthProfile.allergicReactions}" class="allergy-item">
-          <div class="allergy-info">
-            <div class="medicine-name" th:text="${allergy.medicine.medicineName}">Aspirin</div>
-            <div class="allergy-description" th:text="${allergy.description}">Causes severe skin reactions</div>
-          </div>
-          <span th:class="${'severity-badge ' + #strings.toLowerCase(allergy.severity)}"
-                th:text="${allergy.severity}">HIGH</span>
-        </div>
-      </div>
-      <div th:unless="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}" class="no-allergies">
-        No allergic reactions recorded yet.
-      </div>
-    </div>
-  </div>
+      <form th:action="@{/payment}" method="post">
 
-  <!-- Add New Allergy Form -->
-  <div class="card">
-    <div class="card-header">Add New Allergic Reaction</div>
-    <div class="card-body">
-      <!-- Messages -->
-      <div th:if="${error}" class="alert alert-danger"><span th:text="${error}">Error message</span></div>
-      <div th:if="${success}" class="alert alert-success"><span th:text="${success}">Success message</span></div>
-
-      <form th:action="@{/allergies/add}" method="post" id="allergyForm">
+        <!-- Payment Methods -->
         <div class="form-group">
-          <label for="medicineId">Medicine</label>
-          <select id="medicineId" name="medicineId" class="form-control" required>
-            <option value="">Select a medicine...</option>
-            <option th:each="medicine : ${medicines}"
-                    th:value="${medicine.id}"
-                    th:text="${medicine.medicineName + ' (' + medicine.activeIngredient + ')'}">
-              Aspirin (Acetylsalicylic acid)
-            </option>
+          <label>Choose Payment Method</label>
+          <div class="payment-methods">
+            <div th:each="method : ${methods}" class="payment-option">
+              <input type="radio" th:id="${'method-' + method.id}" name="paymentMethodId" th:value="${method.id}" required>
+              <label th:for="${'method-' + method.id}" class="payment-label" th:text="${method.methodName}">Card</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delivery Company -->
+        <div class="form-group">
+          <label for="deliveryCompanyId">Choose Delivery Company</label>
+          <select id="deliveryCompanyId" name="deliveryCompanyId" class="form-control" required>
+            <option value="">Select a delivery company...</option>
+            <option th:each="dc : ${deliveryCompanies}" th:value="${dc.id}" th:text="${dc.name}">DHL</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="dateDiagnosed">Date Diagnosed</label>
-          <input type="date" id="dateDiagnosed" name="dateDiagnosed" class="form-control"
-                 th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
+        <!-- Total Summary -->
+        <div class="summary">
+          Total: <span th:text="${#numbers.formatDecimal(total,1,'COMMA',2,'POINT')} + ' ден.'">0.00 ден.</span>
         </div>
 
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea id="description" name="description" class="form-control"
-                    placeholder="Describe the allergic reaction symptoms, triggers, and any additional details..."
-                    required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Severity Level</label>
-          <div class="severity-options">
-            <div class="severity-option">
-              <input type="radio" id="low" name="severity" value="LOW" required>
-              <label for="low" class="severity-label low">Low</label>
-            </div>
-            <div class="severity-option">
-              <input type="radio" id="medium" name="severity" value="MEDIUM" required>
-              <label for="medium" class="severity-label medium">Medium</label>
-            </div>
-            <div class="severity-option">
-              <input type="radio" id="high" name="severity" value="HIGH" required>
-              <label for="high" class="severity-label high">High</label>
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-submit">Add Allergic Reaction</button>
+        <br>
+        <button type="submit" class="btn-submit">Confirm & Pay</button>
       </form>
     </div>
   </div>
@@ -186,18 +105,5 @@
 
 <th:block th:replace="fragments/header :: headerScripts"></th:block>
 
-<script>
-  document.getElementById('allergyForm').addEventListener('submit', function() {
-    const btn = this.querySelector('.btn-submit');
-    btn.textContent = 'Adding...';
-    btn.disabled = true;
-  });
-  document.querySelectorAll('input[name="severity"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-      document.querySelectorAll('.severity-label').forEach(label => { label.style.transform = 'scale(1)'; });
-      if (this.checked) this.nextElementSibling.style.transform = 'scale(1.05)';
-    });
-  });
-</script>
 </body>
 </html>
