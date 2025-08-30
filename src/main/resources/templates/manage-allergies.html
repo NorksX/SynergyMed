@@ -4,32 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SynergyMed - Manage Allergies</title>
+
+  <!-- Shared header styles -->
+  <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
-      min-height:100vh; padding:20px;
+      min-height:100vh;
     }
-    .container { max-width:800px; margin:0 auto; }
+
+    .site-header {
+      position: sticky; top:0; left:0; right:0;
+      width: 100%;
+      border-radius: 0;
+      z-index: 1000;
+    }
+
+    .container { max-width:1200px; margin:0 auto; padding:20px; }
+
     .header { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); margin-bottom:30px; overflow:hidden; }
     .header-content { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:30px; text-align:center; }
     .header-content h1 { font-size:2.5rem; font-weight:300; margin-bottom:10px; }
     .header-content p { font-size:1.1rem; opacity:.9; }
+
     .nav-bar { background:white; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,.1); margin-bottom:30px; padding:20px 30px; }
-    .nav-links { display:flex; gap:20px; align-items:center; }
+    .nav-links { display:flex; gap:20px; align-items:center; flex-wrap:wrap; }
     .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:all .3s ease; font-weight:500; }
     .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
     .back-btn { margin-left:auto; background:linear-gradient(135deg,#6c757d,#495057); color:white; }
+
     .card { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; margin-bottom:30px; }
     .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:25px 30px; font-size:1.3rem; font-weight:600; }
     .card-body { padding:30px; }
+
     .form-group { margin-bottom:25px; }
     .form-group label { display:block; margin-bottom:8px; color:#555; font-weight:500; font-size:.9rem; }
     .form-control { width:100%; padding:15px 20px; border:2px solid #e1e5e9; border-radius:12px; font-size:1rem; transition:all .3s ease; background:#f8f9fa; }
     .form-control:focus { outline:none; border-color:#20b2aa; background:white; box-shadow:0 0 0 3px rgba(32,178,170,.1); }
     select.form-control { cursor:pointer; }
     textarea.form-control { resize:vertical; min-height:100px; }
+
     .severity-options { display:flex; gap:15px; margin-top:10px; }
     .severity-option { flex:1; }
     .severity-option input[type="radio"] { display:none; }
@@ -37,14 +54,15 @@
     .severity-option input[type="radio"]:checked + .severity-label.low { background:#d1ecf1; border-color:#0c5460; color:#0c5460; }
     .severity-option input[type="radio"]:checked + .severity-label.medium { background:#fff3cd; border-color:#856404; color:#856404; }
     .severity-option input[type="radio"]:checked + .severity-label.high { background:#fee; border-color:#c33; color:#c33; }
-    .btn-submit { width:100%; padding:15px; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; transition:all .3s ease; text-transform:uppercase; letter-spacing:1px; }
+
+    .btn-submit { width:100%; padding:15px; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; transition:.3s; text-transform:uppercase; letter-spacing:1px; }
     .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(32,178,170,.3); }
     .btn-submit:active { transform:translateY(0); }
+
     .alert { padding:15px; border-radius:8px; margin-bottom:20px; font-size:.9rem; }
     .alert-danger { background-color:#fee; color:#c33; border:1px solid #fcc; }
     .alert-success { background-color:#efe; color:#363; border:1px solid #cfc; }
-    .current-allergies { background:#f8f9fa; border-radius:15px; padding:20px; margin-bottom:20px; }
-    .current-allergies h3 { color:#333; margin-bottom:15px; font-size:1.1rem; }
+
     .allergy-item { background:white; border-radius:10px; padding:15px; margin-bottom:10px; border-left:4px solid #20b2aa; display:flex; justify-content:space-between; align-items:center; }
     .allergy-info { flex:1; }
     .medicine-name { font-weight:600; color:#333; margin-bottom:5px; }
@@ -53,11 +71,21 @@
     .severity-badge.high { background:#fee; color:#c33; }
     .severity-badge.medium { background:#fff3cd; color:#856404; }
     .severity-badge.low { background:#d1ecf1; color:#0c5460; }
+
     .no-allergies { text-align:center; color:#888; font-style:italic; }
-    @media (max-width:768px){ .severity-options{flex-direction:column;} .nav-links{flex-wrap:wrap;} .allergy-item{flex-direction:column; align-items:flex-start; gap:10px;} }
+
+    @media (max-width:768px){
+      .severity-options{flex-direction:column;}
+      .nav-links{flex-wrap:wrap;}
+      .allergy-item{flex-direction:column; align-items:flex-start; gap:10px;}
+    }
   </style>
 </head>
 <body>
+
+<!-- Full-width global header -->
+<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+
 <div class="container">
   <!-- Header -->
   <div class="header">
@@ -155,6 +183,8 @@
     </div>
   </div>
 </div>
+
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
 
 <script>
   document.getElementById('allergyForm').addEventListener('submit', function() {

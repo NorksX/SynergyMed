@@ -5,40 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SynergyMed - Profile</title>
 
-    <!-- Shared header styles -->
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        /* Stack header above centered content; remove body padding so header can touch edges */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* no body padding so the full-width header reaches the edges */
         }
 
-        /* Make the global header full-width, square corners, and stick to the very top */
         .site-header {
-            position: sticky; top: 0; left: 0; right: 0; width: 100%;
-            border-radius: 0; margin: 0; z-index: 1000;
+            position: sticky; top: 0; left: 0; right: 0;
+            width: 100%;
+            border-radius: 0;
+            z-index: 1000;
         }
 
-        /* Centered page container now holds the side padding */
+        /* container same size as admin example */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px; /* moved from body */
+            padding: 20px;
         }
 
         .header {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .1);
             margin-bottom: 30px;
             overflow: hidden;
         }
@@ -53,187 +47,74 @@
         }
 
         .profile-picture {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: #888; /* TODO: Replace with actual profile picture */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            font-weight: bold;
-            color: white;
-            flex-shrink: 0;
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            width: 120px; height: 120px; border-radius: 50%;
+            background: #888; display: flex; align-items: center; justify-content: center;
+            font-size: 48px; font-weight: bold; color: white;
+            border: 4px solid rgba(255,255,255,.3);
         }
 
-        .profile-info h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 10px;
-        }
+        .profile-info h1 { font-size: 2.5rem; font-weight: 300; margin-bottom: 10px; }
+        .profile-info p { font-size: 1.1rem; opacity: .9; margin-bottom: 5px; }
 
-        .profile-info p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 5px;
-        }
-
-        .profile-meta {
-            display: flex;
-            gap: 30px;
-            margin-top: 15px;
-        }
-
-        .meta-item {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 0.9rem;
-        }
+        .profile-meta { display: flex; gap: 30px; margin-top: 15px; flex-wrap: wrap; }
+        .meta-item { background: rgba(255,255,255,.2); padding: 8px 16px; border-radius: 20px; font-size: .9rem; }
 
         .nav-bar {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            padding: 20px 30px;
+            background: white; border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.1);
+            margin-bottom: 30px; padding: 20px 30px;
         }
+        .nav-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:.3s; font-weight:500; }
+        .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
 
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: #20b2aa;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: linear-gradient(135deg, #20b2aa, #48d1cc);
-            color: white;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
+        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
 
         .card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: white; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.1);
             overflow: hidden;
         }
-
-        .card-header {
-            background: linear-gradient(135deg, #20b2aa, #48d1cc);
-            color: white;
-            padding: 25px 30px;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
+        .card-header { background: linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:25px 30px; font-size:1.3rem; font-weight:600; }
         .card-body { padding: 30px; }
 
         .info-grid { display: grid; gap: 20px; }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
+        .info-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f0f0f0; }
         .info-item:last-child { border-bottom: none; }
 
-        .info-label { font-weight: 600; color: #555; font-size: 0.95rem; }
+        .info-label { font-weight: 600; color: #555; font-size: .95rem; }
         .info-value { color: #333; font-size: 1rem; }
 
-        .blood-type {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
+        .blood-type { background: linear-gradient(135deg,#ff6b6b,#ee5a24); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
 
-        .allergy-item {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #20b2aa;
-        }
+        .allergy-item { background:#f8f9fa; border-radius:15px; padding:20px; margin-bottom:15px; border-left:4px solid #20b2aa; }
+        .allergy-header { display:flex; justify-content:space-between; margin-bottom:10px; }
+        .medicine-name { font-weight:600; }
 
-        .allergy-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+        .severity { padding:3px 12px; border-radius:15px; font-size:.8rem; font-weight:600; text-transform:uppercase; }
+        .severity.high { background:#fee; color:#c33; }
+        .severity.medium { background:#fff3cd; color:#856404; }
+        .severity.low { background:#d1ecf1; color:#0c5460; }
 
-        .medicine-name { font-weight: 600; color: #333; font-size: 1.1rem; }
+        .allergy-details { color:#666; font-size:.9rem; margin-top:10px; }
+        .date-diagnosed { color:#888; font-size:.85rem; margin-top:8px; }
 
-        .severity {
-            padding: 3px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .severity.high { background: #fee; color: #c33; }
-        .severity.medium { background: #fff3cd; color: #856404; }
-        .severity.low { background: #d1ecf1; color: #0c5460; }
-
-        .allergy-details { color: #666; font-size: 0.9rem; margin-top: 10px; }
-        .date-diagnosed { color: #888; font-size: 0.85rem; margin-top: 8px; }
-
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-        }
-        .no-data-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.3; }
+        .no-data { text-align: center; padding: 40px; color: #888; }
+        .no-data-icon { font-size: 4rem; margin-bottom: 20px; opacity: .3; }
 
         .logout-btn {
-            margin-left: auto;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-weight: 500;
+            margin-left:auto; background:linear-gradient(135deg,#ff6b6b,#ee5a24);
+            color:white; padding:10px 20px; border-radius:25px; text-decoration:none; font-weight:500; transition:.3s;
         }
-        .logout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(238, 90, 36, 0.4);
-        }
+        .logout-btn:hover { transform:translateY(-2px); box-shadow:0 5px 15px rgba(238,90,36,.4); }
 
-        @media (max-width: 768px) {
+        @media(max-width: 992px) {
             .main-content { grid-template-columns: 1fr; }
-            .header-content { flex-direction: column; text-align: center; gap: 20px; }
-            .profile-meta { flex-direction: column; gap: 10px; align-items: center; }
-            .nav-links { flex-wrap: wrap; }
-            .profile-picture { width: 100px; height: 100px; font-size: 40px; }
-            .profile-info h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- Full-width global header OUTSIDE the container -->
-<!-- Pass null as activePage so no nav item is highlighted on the Profile page -->
 <th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
 
 <div class="container">
@@ -241,7 +122,6 @@
     <div class="header">
         <div class="header-content">
             <div class="profile-picture">
-                <!-- TODO: Replace with actual profile picture -->
                 <span th:text="${user.firstName.substring(0,1).toUpperCase() + user.lastName.substring(0,1).toUpperCase()}">AB</span>
             </div>
             <div class="profile-info">
@@ -263,103 +143,58 @@
             <a href="#" class="nav-link active">Profile</a>
             <a href="#" class="nav-link">Medical History</a>
             <a href="/allergies/manage" class="nav-link">Manage Allergies</a>
-            <a href="/login" class="logout-btn">Logout</a>
+            <a href="/logout" class="logout-btn">Logout</a>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Success/Error Messages -->
-        <div th:if="${success}" class="alert alert-success" style="grid-column: 1 / -1; margin-bottom: 20px;">
-            <span th:text="${success}">Success message</span>
-        </div>
-
-        <div th:if="${error}" class="alert alert-danger" style="grid-column: 1 / -1; margin-bottom: 20px;">
-            <span th:text="${error}">Error message</span>
-        </div>
-
-        <!-- Personal Information Card -->
+        <!-- Personal Info -->
         <div class="card">
             <div class="card-header">Personal Information</div>
             <div class="card-body">
                 <div class="info-grid">
-                    <div class="info-item">
-                        <span class="info-label">Full Name</span>
-                        <span class="info-value" th:text="${user.firstName + ' ' + user.lastName}">John Doe</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Username</span>
-                        <span class="info-value" th:text="${username}">johndoe</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Email</span>
-                        <span class="info-value" th:text="${user.email}">john.doe@email.com</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Date of Birth</span>
-                        <span class="info-value" th:text="${#temporals.format(user.dateOfBirth, 'dd MMM yyyy')}">15 Jan 1990</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Gender</span>
-                        <span class="info-value" th:text="${user.gender ?: 'Not specified'}">Male</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Member Since</span>
-                        <span class="info-value" th:text="${#temporals.format(user.dateCreated, 'dd MMM yyyy')}">01 Jan 2024</span>
-                    </div>
+                    <div class="info-item"><span class="info-label">Full Name</span><span class="info-value" th:text="${user.firstName + ' ' + user.lastName}">John Doe</span></div>
+                    <div class="info-item"><span class="info-label">Username</span><span class="info-value" th:text="${username}">johndoe</span></div>
+                    <div class="info-item"><span class="info-label">Email</span><span class="info-value" th:text="${user.email}">john@email.com</span></div>
+                    <div class="info-item"><span class="info-label">Date of Birth</span><span class="info-value" th:text="${#temporals.format(user.dateOfBirth, 'dd MMM yyyy')}">15 Jan 1990</span></div>
+                    <div class="info-item"><span class="info-label">Gender</span><span class="info-value" th:text="${user.gender ?: 'Not specified'}">Male</span></div>
+                    <div class="info-item"><span class="info-label">Member Since</span><span class="info-value" th:text="${#temporals.format(user.dateCreated, 'dd MMM yyyy')}">01 Jan 2024</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Health Profile Card -->
+        <!-- Health Profile -->
         <div class="card">
             <div class="card-header">Health Profile</div>
             <div class="card-body">
                 <div th:if="${hasHealthProfile}">
-                    <div class="info-item">
-                        <span class="info-label">Blood Type</span>
-                        <span class="blood-type" th:text="${healthProfile.bloodType}">O+</span>
-                    </div>
-
+                    <div class="info-item"><span class="info-label">Blood Type</span><span class="blood-type" th:text="${healthProfile.bloodType}">O+</span></div>
                     <div style="margin-top: 30px;">
-                        <h3 style="color: #333; margin-bottom: 20px; font-size: 1.2rem;">Allergic Reactions</h3>
-
+                        <h3 style="color:#333; margin-bottom:20px;">Allergic Reactions</h3>
                         <div th:if="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}">
                             <div th:each="allergy : ${healthProfile.allergicReactions}" class="allergy-item">
                                 <div class="allergy-header">
                                     <span class="medicine-name" th:text="${allergy.medicine.medicineName}">Aspirin</span>
-                                    <span class="severity"
-                                          th:class="'severity ' + ${#strings.toLowerCase(allergy.severity)}"
-                                          th:text="${allergy.severity}">HIGH</span>
+                                    <span class="severity" th:class="'severity ' + ${#strings.toLowerCase(allergy.severity)}" th:text="${allergy.severity}">HIGH</span>
                                 </div>
-                                <div class="allergy-details" th:text="${allergy.description}">
-                                    Causes severe skin reactions and difficulty breathing
-                                </div>
-                                <div class="date-diagnosed">
-                                    Diagnosed: <span th:text="${#temporals.format(allergy.dateDiagnosed, 'dd MMM yyyy')}">15 Jan 2023</span>
-                                </div>
+                                <div class="allergy-details" th:text="${allergy.description}">Details here</div>
+                                <div class="date-diagnosed">Diagnosed: <span th:text="${#temporals.format(allergy.dateDiagnosed, 'dd MMM yyyy')}">15 Jan 2023</span></div>
                             </div>
                         </div>
-
                         <div th:unless="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}" class="no-data">
-                            <div class="no-data-icon">🏥</div>
-                            <p>No allergic reactions recorded</p>
-                            <small>Your medical history appears clean!</small>
+                            <div class="no-data-icon">🏥</div><p>No allergic reactions recorded</p>
                         </div>
                     </div>
                 </div>
-
                 <div th:unless="${hasHealthProfile}" class="no-data">
-                    <div class="no-data-icon">📋</div>
-                    <p>No health profile found</p>
-                    <small>Contact your healthcare provider to create a health profile.</small>
+                    <div class="no-data-icon">📋</div><p>No health profile found</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Shared header dropdown script -->
 <th:block th:replace="fragments/header :: headerScripts"></th:block>
 </body>
 </html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynergyMed - Add Interaction</title>
+
+    <!-- Header styles -->
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
+            min-height:100vh;
+        }
+
+        /* Full-width global header - FIXED STYLING */
+        .site-header {
+            position:sticky;
+            top:0;
+            left:0;
+            right:0;
+            width:100%;
+            border-radius:0;
+            margin:0;
+            z-index:1000;
+            background:white !important; /* Force white background */
+            box-shadow:0 2px 10px rgba(0,0,0,0.1); /* Add subtle shadow */
+        }
+
+        .container { max-width:800px; margin:0 auto; padding:20px; }
+
+        .header { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); margin-bottom:30px; overflow:hidden; }
+        .header-content { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:30px; text-align:center; }
+        .header-content h1 { font-size:2.2rem; font-weight:300; margin-bottom:10px; }
+        .header-content p { font-size:1rem; opacity:.9; }
+
+        .card { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; margin-bottom:30px; }
+        .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:20px 30px; font-size:1.3rem; font-weight:600; }
+        .card-body { padding:30px; }
+
+        .form-group { margin-bottom:25px; }
+        .form-control { width:100%; padding:15px 20px; border:2px solid #e1e5e9; border-radius:12px; font-size:1rem; transition:all .3s ease; background:#f8f9fa; }
+        .form-control:focus { outline:none; border-color:#20b2aa; background:white; box-shadow:0 0 0 3px rgba(32,178,170,.1); }
+
+        .btn-submit { width:100%; padding:15px; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; transition:all .3s ease; text-transform:uppercase; letter-spacing:1px; }
+        .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(32,178,170,.3); }
+        .btn-submit:active { transform:translateY(0); }
+
+        /* Alerts */
+        .alert { padding:15px; border-radius:12px; margin-bottom:20px; font-size:.9rem; }
+        .alert-danger { background-color:#fee; color:#c33; border:1px solid #fcc; }
+        .alert-success { background-color:#efe; color:#363; border:1px solid #cfc; }
+
+        /* Severity fancy buttons */
+        .severity-options { display:flex; gap:20px; justify-content:space-between; margin-top:15px; }
+        .severity-option { flex:1; }
+        .severity-option input { display:none; }
+        .severity-label {
+            display:block;
+            padding:15px;
+            border-radius:12px;
+            text-align:center;
+            cursor:pointer;
+            font-weight:700;
+            text-transform:uppercase;
+            transition:all .3s ease;
+            border:2px solid transparent;
+            font-size:0.95rem;
+            letter-spacing:1px;
+            box-shadow:0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .severity-low    { background:linear-gradient(135deg,#d1ecf1,#b3e6f0); color:#0c5460; border-color:#0c5460; }
+        .severity-medium { background:linear-gradient(135deg,#fff3cd,#ffe082); color:#856404; border-color:#856404; }
+        .severity-high   { background:linear-gradient(135deg,#f8d7da,#f5b7b1); color:#721c24; border-color:#721c24; }
+
+        .severity-option input:checked + .severity-label {
+            transform:scale(1.07);
+            box-shadow:0 0 15px rgba(0,0,0,0.25);
+            border-width:3px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Global header -->
+<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>Add Interaction</h1>
+            <p>Select two different medicines and define their interaction</p>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    <div th:if="${hasError}" class="alert alert-danger">
+        <span th:text="${error}">Error message</span>
+    </div>
+    <div th:if="${hasSuccess}" class="alert alert-success">
+        <span th:text="${success}">Success message</span>
+    </div>
+
+    <!-- Add Interaction Form -->
+    <div class="card">
+        <div class="card-header">Interaction Form</div>
+        <div class="card-body">
+            <form th:action="@{/medicine/interactions/add}" method="post">
+
+                <div class="form-group">
+                    <label for="medicine1Id">First Medicine</label>
+                    <select id="medicine1Id" name="medicine1Id" class="form-control" required>
+                        <option value="">-- Select medicine --</option>
+                        <option th:each="med : ${medicineList}"
+                                th:value="${med.id}"
+                                th:text="${med.medicineName + ' (' + med.activeIngredient + ')'}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="medicine2Id">Second Medicine</label>
+                    <select id="medicine2Id" name="medicine2Id" class="form-control" required>
+                        <option value="">-- Select another medicine --</option>
+                        <option th:each="med : ${medicineList}"
+                                th:value="${med.id}"
+                                th:text="${med.medicineName + ' (' + med.activeIngredient + ')'}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Severity Level</label>
+                    <div class="severity-options">
+                        <div class="severity-option">
+                            <input type="radio" id="low" name="severity" value="НИСКА" required>
+                            <label for="low" class="severity-label severity-low">LOW</label>
+                        </div>
+                        <div class="severity-option">
+                            <input type="radio" id="medium" name="severity" value="УМЕРЕНА" required>
+                            <label for="medium" class="severity-label severity-medium">MEDIUM</label>
+                        </div>
+                        <div class="severity-option">
+                            <input type="radio" id="high" name="severity" value="ВИСОКА" required>
+                            <label for="high" class="severity-label severity-high">HIGH</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Interaction Type</label>
+                    <input type="text" id="type" name="type" class="form-control" placeholder="Pharmacological, Clinical..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" class="form-control" rows="4"
+                              placeholder="Enter detailed explanation for the interaction..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Add Interaction</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Dropdown script -->
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>
