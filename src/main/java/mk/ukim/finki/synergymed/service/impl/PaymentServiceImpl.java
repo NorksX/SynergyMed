@@ -37,7 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentMethod(method);
         payment.setPaymentDate(LocalDate.now());
         payment.setAmount(total.intValue());
-        payment.setStatus("PENDING");
+        payment.setStatus("во тек");
         paymentRepo.save(payment);
 
 
@@ -51,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
         order.setPayment(payment);
         order.setOrderDate(LocalDate.now());
         order.setExpectedArrivalDate(LocalDate.now().plusDays(7));
-        order.setStatus("PROCESSING");
+        order.setStatus("во тек");
         order.setTotalPrice(total.intValue());
 
         shoppingCartService.getMedicinesInCart(cart).forEach((medicine, qty) -> {
@@ -94,7 +94,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         orderRepo.save(order);
 
-        payment.setStatus("COMPLETED");
+        payment.setStatus("завршено");
         paymentRepo.save(payment);
 
         shoppingCartService.clearCart(cart);
