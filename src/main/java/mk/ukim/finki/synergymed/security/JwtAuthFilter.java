@@ -2,6 +2,7 @@ package mk.ukim.finki.synergymed.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mk.ukim.finki.synergymed.service.jwt.JwtService;
@@ -32,40 +33,57 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.tokenBlacklistService = tokenBlacklistService;
     }
 
+    private String tokenFromHeader(HttpServletRequest req) {
+        String h = req.getHeader("Authorization");
+        return (h != null && h.startsWith("Bearer ")) ? h.substring(7) : null;
+    }
+
+    private String tokenFromCookie(HttpServletRequest req, String name) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies == null) return null;
+        for (Cookie c : cookies) {
+            if (name.equals(c.getName())) return c.getValue();
+        }
+        return null;
+    }
+
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest req,
-                                    @NonNull HttpServletResponse res,
-                                    @NonNull FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain chain
+    ) throws ServletException, IOException {
 
-        String header = req.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+        // If already authenticated, continue
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        String token = tokenFromHeader(request);
+        if (token == null) token = tokenFromCookie(request, "AUTH");
+
+        if (token != null) {
             try {
-                var jws = jwtService.parse(token);
+                var jws = jwtService.parse(token); // validates signature + exp
                 var claims = jws.getPayload();
-
-                // check if token is blacklisted
+                String username = claims.getSubject();
                 String jti = claims.getId();
-                if (jti != null && tokenBlacklistService.contains(jti)) {
-                    res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has been revoked");
-                    return; // stop filter chain
-                }
 
-                var username = claims.getSubject();
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails ud = userDetailsService.loadUserByUsername(username);
-                    var auth = new UsernamePasswordAuthenticationToken(ud, null, ud.getAuthorities());
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                if (username != null && !tokenBlacklistService.contains(jti)) {
+                    UserDetails user = userDetailsService.loadUserByUsername(username);
+                    if (user != null) {
+                        UsernamePasswordAuthenticationToken auth =
+                                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                    }
                 }
-
-            } catch (Exception e) {
-                // invalid/expired token -> block request
-                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
-                return;
+            } catch (Exception ignore) {
+                // invalid/expired/blacklisted → anonymous
             }
         }
-        chain.doFilter(req, res);
+
+        chain.doFilter(request, response);
     }
 }

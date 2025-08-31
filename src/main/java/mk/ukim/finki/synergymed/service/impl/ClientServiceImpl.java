@@ -36,4 +36,10 @@ public class ClientServiceImpl implements ClientService {
     public List<Client> findAll() {
         return clientRepository.findAll();
     }
+
+    public boolean isVerified(Integer userId) {
+        return clientRepository.findById(userId)
+                .map(c -> Boolean.TRUE.equals(c.getIsVerified()))
+                .orElse(false);
+    }
 }

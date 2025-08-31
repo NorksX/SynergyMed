@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${'Facility Contact – ' + facility.facilityName}">Facility Contact</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100vh;background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);color:#1f2937}
+        .page{width:100%;max-width:900px;padding:28px;margin:0 auto}
+        .card{background:#fff;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.10);margin-bottom:28px;overflow:hidden}
+        .card-header{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;padding:20px 24px;font-size:1.3rem;font-weight:600}
+        .card-body{padding:22px}
+        .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;gap:12px}
+        label{font-weight:600;color:#374151;min-width:100px}
+        input[type=text]{padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;flex:1}
+        .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+        .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-weight:600;cursor:pointer}
+        .btn-primary{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:white;border:none}
+        .btn-danger{color:#b3261e;border-color:#f0caca}
+        .muted{color:#6c757d}
+    </style>
+</head>
+<body>
+<th:block th:replace="fragments/header :: siteHeader('facilities', ${username})"></th:block>
+
+<div class="page">
+    <div class="card">
+        <div class="card-header" th:text="${'Contact – ' + facility.facilityName + ' (' + company.companyName + ')'}">Contact</div>
+        <div class="card-body">
+
+            <!-- Single form handles both create and update -->
+            <form th:action="@{/companies/{cid}/facilities/{id}/contacts/save(cid=${company.id}, id=${facility.id})}" method="post">
+                <!-- When updating, send contactId; in create mode contact is null so input is absent -->
+                <input type="hidden" name="contactId" th:if="${contact != null}" th:value="${contact.id}">
+
+                <div class="row">
+                    <label for="phone">Phone</label>
+                    <input id="phone" name="phone" type="text"
+                           th:value="${contact != null ? contact.phone : ''}"
+                           placeholder="+389 70 000 000">
+                </div>
+
+                <div class="row">
+                    <label for="address">Address</label>
+                    <input id="address" name="address" type="text"
+                           th:value="${contact != null ? contact.address : ''}"
+                           placeholder="Street, City">
+                </div>
+
+                <div class="actions">
+                    <!-- Primary button toggles label based on create vs update -->
+                    <button type="submit" class="btn btn-primary"
+                            th:text="${contact != null} ? 'Update' : 'Create'">Create</button>
+
+                    <!-- Delete only visible when contact exists -->
+                    <form th:if="${contact != null}"
+                          th:action="@{/companies/{cid}/facilities/{id}/contacts/delete(cid=${company.id}, id=${facility.id})}"
+                          method="post" style="display:inline;">
+                        <input type="hidden" name="contactId" th:value="${contact.id}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+
+                    <a class="btn" th:href="@{/companies/{cid}/facilities(cid=${company.id})}">Back</a>
+                </div>
+            </form>
+
+            <!-- Helper text for empty state (optional) -->
+            <p class="muted" th:if="${contact == null}" style="margin-top:8px;">No contact exists yet — fill the fields and press Create.</p>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>

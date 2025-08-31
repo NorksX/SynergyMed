@@ -1,0 +1,60 @@
+<!-- templates/verification_approval.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verification Review</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100vh;background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);color:#1f2937}
+        .page{width:100%;max-width:900px;padding:28px;margin:0 auto}
+        .card{background:#fff;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.10);overflow:hidden;margin-bottom:28px}
+        .card-header{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;padding:20px 24px;font-size:1.3rem;font-weight:600}
+        .card-body{padding:22px}
+        .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0}
+        .label{font-weight:600;color:#374151;min-width:140px}
+        .val{flex:1}
+        .portrait{max-width:260px;border-radius:12px;border:1px solid #eef2f7;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+        .actions{display:flex;gap:12px;margin-top:18px}
+        .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-weight:600;cursor:pointer}
+        .btn-primary{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;border:none}
+        .btn-danger{color:#b3261e;border-color:#f0caca}
+    </style>
+</head>
+<body>
+<th:block th:replace="fragments/header :: siteHeader('verification', ${username})"></th:block>
+
+<div class="page">
+    <div class="card">
+        <div class="card-header" th:text="${item.client.users.firstName + ' ' + item.client.users.lastName}">Client Name</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="label">EMBG</div>
+                <div class="val" th:text="${item.embg}">0000000000000</div>
+            </div>
+            <div class="row" style="align-items:flex-start;">
+                <div class="label">Portrait</div>
+                <!-- Adjust the src mapping to how portraits are served in your app -->
+                <img class="portrait"
+                     th:src="@{'/uploads/images/portraits/' + ${item.portraitPhoto}}"
+                     alt="portrait">
+            </div>
+
+            <div class="actions">
+                <form th:action="@{/admin/verification/{id}/approve(id=${item.id})}" method="post">
+                    <button type="submit" class="btn btn-primary">Approve</button>
+                </form>
+                <form th:action="@{/admin/verification/{id}/deny(id=${item.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Deny</button>
+                </form>
+                <a class="btn" th:href="@{/admin/verification}">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>

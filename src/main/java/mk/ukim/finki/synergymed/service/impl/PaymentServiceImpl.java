@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepo;
     private final PaymentmethodRepository paymentmethodRepo;
     private final DeliverycompanyRepository deliveryRepo;
+    private final InventoryBrandedmedicineRepository inventoryBrandedmedicineRepository;
 
     @Override
     public Clientorder checkout(Client client, Shoppingcart cart, Integer paymentMethodId, Integer deliveryCompanyId) {
@@ -48,7 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
         order.setDeliveryCompany(deliveryCompany);
         order.setPayment(payment);
         order.setOrderDate(LocalDate.now());
-        order.setExpectedArrivalDate(LocalDate.now().plusDays(3));
+        order.setExpectedArrivalDate(LocalDate.now().plusDays(7));
         order.setStatus("PROCESSING");
         order.setTotalPrice(total.intValue());
 
@@ -64,6 +66,31 @@ public class PaymentServiceImpl implements PaymentService {
 
             order.getItems().add(line);
         });
+        for (ClientorderBrandedmedicine line : order.getItems()) {
+            int remaining = line.getQuantity();
+            Integer bmId = line.getBrandedMedicine().getId();
+
+            List<InventoryBrandedmedicine> facilities =
+                    inventoryBrandedmedicineRepository.lockAllByMedicineInPharmacies(bmId);
+
+            for (InventoryBrandedmedicine ibm : facilities) {
+                if (remaining <= 0) break;
+                int take = Math.min(ibm.getQuantity(), remaining);
+                if (take <= 0) continue;
+
+                ibm.setQuantity(ibm.getQuantity() - take);
+                ibm.setLastChanged(LocalDate.now());
+                inventoryBrandedmedicineRepository.save(ibm);
+
+                remaining -= take;
+
+            }
+
+            if (remaining > 0) {
+                throw new IllegalStateException("Insufficient stock for medicine id=" + bmId);
+            }
+        }
+        order.setStatus("во тек");
 
         orderRepo.save(order);
 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynergyMed - Profile</title>
+
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%); min-height: 100vh; }
+        .site-header { position: sticky; top: 0; left: 0; right: 0; width: 100%; border-radius: 0; z-index: 1000; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.1); margin-bottom: 30px; overflow: hidden; }
+        .header-content { background: linear-gradient(135deg, #20b2aa, #48d1cc); color: white; padding: 30px; display: flex; align-items: center; gap: 30px; }
+        .profile-picture { width: 120px; height: 120px; border-radius: 50%; background: #888; display: flex; align-items: center; justify-content: center;
+            font-size: 48px; font-weight: bold; color: white; border: 4px solid rgba(255,255,255,.3); }
+        .profile-info h1 { font-size: 2.5rem; font-weight: 300; margin-bottom: 10px; }
+        .profile-info p { font-size: 1.1rem; opacity: .9; margin-bottom: 5px; }
+        .profile-meta { display: flex; gap: 30px; margin-top: 15px; flex-wrap: wrap; }
+        .meta-item { background: rgba(255,255,255,.2); padding: 8px 16px; border-radius: 20px; font-size: .9rem; }
+
+        .nav-bar { background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,.1); margin-bottom: 30px; padding: 20px 30px; }
+        .nav-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:.3s; font-weight:500; }
+        .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
+        .logout-btn { margin-left:auto; background:linear-gradient(135deg,#ff6b6b,#ee5a24); color:white; padding:10px 20px; border-radius:25px;
+            text-decoration:none; font-weight:600; border:none; box-shadow:0 5px 15px rgba(238,90,36,.30); transition:.2s; display:inline-flex; align-items:center; }
+        .logout-btn:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(238,90,36,.35); }
+
+        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.1); overflow: hidden; }
+        .card-header { background: linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:25px 30px; font-size:1.3rem; font-weight:600; }
+        .card-body { padding: 30px; }
+
+        .info-grid { display: grid; gap: 20px; }
+        .info-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f0f0f0; }
+        .info-item:last-child { border-bottom: none; }
+        .info-label { font-weight: 600; color: #555; font-size: .95rem; }
+        .info-value { color: #333; font-size: 1rem; }
+
+        .rx-list { display: grid; gap: 14px; }
+        .rx { border:1px solid #eef2f7; border-radius:12px; padding:14px 16px; background:#fff; box-shadow: 0 4px 10px rgba(0,0,0,.04); }
+        .rx-title { font-weight:700; margin-bottom:6px; }
+        .rx-sub { color:#6b7280; font-size:.92rem; display:flex; gap:14px; flex-wrap:wrap; }
+        .muted { color:#6b7280; }
+
+        .pending-wrap { display:flex; align-items:center; justify-content:center; padding:24px; }
+        .pending-text { text-align:center; font-weight:600; color:#1f2937; }
+
+        @media (max-width: 992px) { .main-content { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+
+<div class="container">
+    <!-- Profile Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="profile-picture">
+                <span th:text="${user.firstName.substring(0,1).toUpperCase() + user.lastName.substring(0,1).toUpperCase()}">AB</span>
+            </div>
+            <div class="profile-info">
+                <h1 th:text="${user.firstName + ' ' + user.lastName}">John Doe</h1>
+                <p th:text="'@' + ${username}">@johndoe</p>
+                <p th:text="${user.email}">john@example.com</p>
+                <div class="profile-meta">
+                    <div class="meta-item" th:text="'Member since ' + ${#temporals.format(user.dateCreated, 'MMM yyyy')}">Member since Jan 2024</div>
+                    <div class="meta-item" th:text="'Age ' + ${T(java.time.Period).between(user.dateOfBirth, T(java.time.LocalDate).now()).getYears()}">Age 30</div>
+                    <div class="meta-item" th:text="${user.gender ?: 'Not specified'}">Male</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a th:href="@{/profile}" class="nav-link">Profile</a>
+            <a href="#" class="nav-link">Medical History</a>
+            <a th:href="@{/profile/prescriptions}" class="nav-link active">Prescriptions</a>
+            <a href="#" class="nav-link">Club Card</a>
+            <a th:href="@{/allergies/manage}" class="nav-link">Manage Allergies</a>
+            <a th:href="@{/profile/contacts}" class="nav-link">Contact Info</a>
+            <a th:href="@{/logout}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Left: Personal Information -->
+        <div class="card">
+            <div class="card-header">Personal Information</div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-item"><span class="info-label">Full Name</span><span class="info-value" th:text="${user.firstName + ' ' + user.lastName}">John Doe</span></div>
+                    <div class="info-item"><span class="info-label">Username</span><span class="info-value" th:text="${username}">johndoe</span></div>
+                    <div class="info-item"><span class="info-label">Email</span><span class="info-value" th:text="${user.email}">john@example.com</span></div>
+                    <div class="info-item"><span class="info-label">Date of Birth</span><span class="info-value" th:text="${#temporals.format(user.dateOfBirth, 'dd MMM yyyy')}">15 Jan 1990</span></div>
+                    <div class="info-item"><span class="info-label">Gender</span><span class="info-value" th:text="${user.gender ?: 'Not specified'}">Male</span></div>
+                    <div class="info-item"><span class="info-label">Member Since</span><span class="info-value" th:text="${#temporals.format(user.dateCreated, 'dd MMM yyyy')}">01 Jan 2024</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Prescriptions -->
+        <div class="card">
+            <div class="card-header">Prescriptions</div>
+            <div class="card-body">
+
+                <!-- Not verified -->
+                <div th:if="${!verified}">
+                    <!-- If sensitiveclientdata.verificationStatus == 'во тек' show pending text -->
+                    <div th:if="${sensitive != null and sensitive.verificationStatus == 'во тек'}" class="pending-wrap">
+                        <div class="pending-text">Фармацевт ќе ви ги прегледа вашите податоци во најбрз можен рок.</div>
+                    </div>
+
+                    <!-- Otherwise show Apply button -->
+                    <div th:if="${sensitive == null or sensitive.verificationStatus != 'во тек'}">
+                        <div class="muted" style="margin-bottom:10px;">
+                            Profile is not verified; prescriptions are available once verification is completed.
+                        </div>
+                        <a class="nav-link" th:href="@{/profile/verification/apply}"
+                           style="display:inline-block; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; border-radius:25px; padding:10px 20px; text-decoration:none; font-weight:600;">
+                            Apply for verification
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Verified: list prescriptions -->
+                <div th:if="${verified}">
+                    <div th:if="${#lists.isEmpty(prescriptions)}" class="muted">No prescriptions found.</div>
+
+                    <div class="rx-list" th:if="${!#lists.isEmpty(prescriptions)}">
+                        <div class="rx" th:each="p : ${prescriptions}">
+                            <div class="rx-title" th:text="${p.medicine.medicineName}">Medicine name</div>
+                            <div class="rx-sub">
+                                <span th:text="${'Issued by: ' + p.issuedBy}">Issued by</span>
+                                <span th:text="${'Issued: ' + #temporals.format(p.issuedAt, 'dd MMM yyyy')}">Issued</span>
+                                <span th:text="${'Valid to: ' + #temporals.format(p.validTo, 'dd MMM yyyy')}">Valid to</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>

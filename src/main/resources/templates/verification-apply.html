@@ -1,0 +1,60 @@
+<!-- templates/verification-apply.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Verification</title>
+
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100vh;background:linear-gradient(135deg,#a4ecba 0%,#f7f7f8 100%);color:#1f2937}
+        .page{width:100%;max-width:840px;padding:28px;margin:0 auto}
+        .card{background:#fff;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.10);overflow:hidden}
+        .card-header{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;padding:20px 24px;font-size:1.3rem;font-weight:600}
+        .card-body{padding:22px}
+        .row{display:flex;gap:14px;align-items:center;margin:12px 0}
+        label{min-width:140px;font-weight:600}
+        input[type=text]{flex:1;padding:12px;border:1px solid #e5e7eb;border-radius:10px}
+        input[type=file]{flex:1}
+        .actions{display:flex;gap:12px;margin-top:16px}
+        .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-weight:600;cursor:pointer}
+        .btn-primary{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;border:none}
+        .notice{margin-bottom:12px;padding:10px 12px;border-radius:10px;background:#f1f5f9;color:#0f172a}
+        .error{background:#fdecec;color:#b3261e}
+        .hint{color:#6b7280;font-size:.9rem}
+    </style>
+</head>
+<body>
+<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+
+<div class="page">
+    <div class="card">
+        <div class="card-header">Apply for Verification</div>
+        <div class="card-body">
+            <div th:if="${message}" class="notice" th:text="${message}">Message</div>
+            <div th:if="${error}" class="notice error" th:text="${error}">Error</div>
+
+            <form th:action="@{/profile/verification/apply}" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <label for="embg">EMBG</label>
+                    <input id="embg" name="embg" type="text" placeholder="EMBG" required>
+                </div>
+                <div class="row">
+                    <label for="portrait">Portrait photo</label>
+                    <input id="portrait" name="portrait" type="file" accept="image/*" required>
+                </div>
+                <div class="hint">Accepted: jpg, jpeg, png, webp, gif. Max 5MB.</div>
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                    <a class="btn" th:href="@{/profile/prescriptions}">Back to Prescriptions</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>

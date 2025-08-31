@@ -1,0 +1,141 @@
+<!-- templates/facility-inventory.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${'Inventory — ' + facility.facilityName}">Inventory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Shared header styles -->
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
+    <style>
+        :root {
+            --teal-1:#20b2aa; --teal-2:#48d1cc;
+            --bg:#fefeff; --card:#ffffff;
+            --muted:#6c757d; --text:#1f2937;
+            --shadow:0 20px 40px rgba(0,0,0,0.10);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            min-height:100vh;
+            background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);
+            color:var(--text);
+        }
+
+        /* Full-width global header - FIXED STYLING */
+        .site-header{
+            position:sticky; top:0; left:0; right:0; width:100%;
+            border-radius:0; margin:0; z-index:1000;
+            background:white !important;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .page{width:100%; max-width:1200px; padding:28px; margin:0 auto}
+
+        /* Card wrapper */
+        .card{
+            background:var(--card);
+            border-radius:18px;
+            box-shadow:var(--shadow);
+            margin-bottom:28px;
+            overflow:hidden;
+        }
+
+        .card-header{
+            background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+            color:#fff;
+            padding:20px 24px;
+            display:flex; justify-content:space-between; align-items:center;
+            font-size:1.3rem; font-weight:600;
+        }
+
+        .card-body{padding:22px}
+
+        .btn{
+            display:inline-block; text-decoration:none;
+            padding:12px 16px; border-radius:12px; font-weight:600;
+        }
+        .btn-primary{
+            background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+            color:#fff; box-shadow:0 10px 20px rgba(32,178,170,.25);
+        }
+
+        .list{display:grid; grid-template-columns:1fr; gap:12px;}
+
+        .row{
+            display:grid;
+            grid-template-columns:2fr 2fr 1fr 1.3fr;
+            gap:14px; align-items:center;
+            padding:14px 16px; background:#fff;
+            border:1px solid #eef2f7; border-radius:12px;
+        }
+
+        .muted{color:var(--muted); font-size:.92rem}
+
+        @media (max-width:800px){
+            .row{grid-template-columns:1fr; gap:6px;}
+        }
+    </style>
+</head>
+<body>
+
+<!-- Global header -->
+<th:block th:replace="fragments/header :: siteHeader('facilities', ${username})"></th:block>
+
+<div class="page">
+    <div class="card">
+        <div class="card-header">
+            <span th:text="${'Inventory — ' + facility.facilityName}">Inventory</span>
+            <a class="btn btn-primary"
+               th:href="@{/companies/{cid}/facilities(cid=${company.id})}">
+                Back to Facilities
+            </a>
+        </div>
+
+        <div class="card-body">
+            <div class="muted" th:text="${'Company: ' + company.companyName}" style="margin-bottom:10px;">
+                Company: ACME
+            </div>
+
+            <div th:if="${#lists.isEmpty(items)}" class="muted">
+                No stock entries yet for this facility.
+            </div>
+
+            <div class="list" th:if="${!#lists.isEmpty(items)}">
+                <div class="row" th:each="it : ${items}">
+                    <div>
+                        <div th:text="${it.brandedMedicine.name}">Medicine Name</div>
+                        <div class="muted"
+                             th:text="${'Manufacturer: ' + it.brandedMedicine.manufacturer.company.companyName}">
+                            Manufacturer
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="muted">Dosage</div>
+                        <div th:text="${it.brandedMedicine.dosageForm + ' • ' + it.brandedMedicine.strength}">
+                            Dosage • Strength
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="muted">Quantity</div>
+                        <div th:text="${it.quantity}">0</div>
+                    </div>
+
+                    <div>
+                        <div class="muted">Last stocked</div>
+                        <div th:text="${#temporals.format(it.lastChanged, 'dd MMM yyyy')}">01 Jan 2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Shared scripts -->
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>

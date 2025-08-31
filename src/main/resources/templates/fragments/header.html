@@ -131,6 +131,9 @@
                th:classappend="${activePage}=='medicines' ? ' active'">Medicine</a>
             <a class="nav-btn" th:href="@{/companies}"
                th:classappend="${activePage}=='companies' ? ' active'">Companies</a>
+            <!-- New: Verification list link -->
+            <a class="nav-btn" th:href="@{/admin/verification}"
+               th:classappend="${activePage}=='verification' ? ' active'">Verification</a>
         </nav>
 
         <div class="account">
@@ -145,6 +148,9 @@
                 </button>
                 <div class="dropdown" id="userDropdown" role="menu" aria-labelledby="userButton">
                     <a class="dropdown-item" th:href="@{/profile}" role="menuitem">Profile settings</a>
+                    <a class="dropdown-item" th:href="@{/orders}" role="menuitem">My orders</a>
+                    <!-- New: Cart link -->
+                    <a class="dropdown-item" th:href="@{/cart}" role="menuitem">Cart 🛒</a>
                     <form th:action="@{/logout}" method="post" style="margin:0">
                         <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
                         <button type="submit" class="dropdown-item danger" role="menuitem">Logout</button>

@@ -15,19 +15,10 @@
             min-height: 100vh;
         }
 
-        .site-header {
-            position: sticky; top: 0; left: 0; right: 0;
-            width: 100%;
-            border-radius: 0;
-            z-index: 1000;
-        }
+        .site-header { position: sticky; top: 0; left: 0; right: 0; width: 100%; border-radius: 0; z-index: 1000; }
 
-        /* container same size as admin example */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+        /* container same size and spacing as profile */
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
         .header {
             background: white;
@@ -68,6 +59,22 @@
         .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:.3s; font-weight:500; }
         .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
 
+        /* Ensure logout looks identical to profile */
+        .logout-btn {
+            margin-left:auto;
+            background:linear-gradient(135deg,#ff6b6b,#ee5a24);
+            color:#fff;
+            padding:10px 20px;
+            border-radius:25px;
+            text-decoration:none;
+            font-weight:600;
+            border:none;
+            box-shadow: 0 5px 15px rgba(238,90,36,.30);
+            transition: transform .2s ease, box-shadow .2s ease;
+            display:inline-flex; align-items:center; justify-content:center;
+        }
+        .logout-btn:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(238,90,36,.35); }
+
         .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
 
         .card {
@@ -85,32 +92,16 @@
         .info-label { font-weight: 600; color: #555; font-size: .95rem; }
         .info-value { color: #333; font-size: 1rem; }
 
-        .blood-type { background: linear-gradient(135deg,#ff6b6b,#ee5a24); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        /* Contact form rows (right column) */
+        .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0; gap:12px; }
+        label { font-weight:600; color:#374151; min-width:120px; }
+        input[type=text] { padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px; flex:1; }
+        .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; }
+        .btn { display:inline-block; padding:10px 16px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; font-weight:600; cursor:pointer; }
+        .btn-primary { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; border:none; }
+        .btn-danger { color:#b3261e; border-color:#f0caca; }
 
-        .allergy-item { background:#f8f9fa; border-radius:15px; padding:20px; margin-bottom:15px; border-left:4px solid #20b2aa; }
-        .allergy-header { display:flex; justify-content:space-between; margin-bottom:10px; }
-        .medicine-name { font-weight:600; }
-
-        .severity { padding:3px 12px; border-radius:15px; font-size:.8rem; font-weight:600; text-transform:uppercase; }
-        .severity.high { background:#fee; color:#c33; }
-        .severity.medium { background:#fff3cd; color:#856404; }
-        .severity.low { background:#d1ecf1; color:#0c5460; }
-
-        .allergy-details { color:#666; font-size:.9rem; margin-top:10px; }
-        .date-diagnosed { color:#888; font-size:.85rem; margin-top:8px; }
-
-        .no-data { text-align: center; padding: 40px; color: #888; }
-        .no-data-icon { font-size: 4rem; margin-bottom: 20px; opacity: .3; }
-
-        .logout-btn {
-            margin-left:auto; background:linear-gradient(135deg,#ff6b6b,#ee5a24);
-            color:white; padding:10px 20px; border-radius:25px; text-decoration:none; font-weight:500; transition:.3s;
-        }
-        .logout-btn:hover { transform:translateY(-2px); box-shadow:0 5px 15px rgba(238,90,36,.4); }
-
-        @media(max-width: 992px) {
-            .main-content { grid-template-columns: 1fr; }
-        }
+        @media(max-width: 992px) { .main-content { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -118,7 +109,7 @@
 <th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
 
 <div class="container">
-    <!-- Profile Header -->
+    <!-- Profile Header (same as profile) -->
     <div class="header">
         <div class="header-content">
             <div class="profile-picture">
@@ -137,7 +128,7 @@
         </div>
     </div>
 
-    <!-- Navigation -->
+    <!-- Nav with Contact Info active -->
     <div class="nav-bar">
         <div class="nav-links">
             <a th:href="@{/profile}" class="nav-link" th:classappend="${activeTab}=='profile' ? ' active'">Profile</a>
@@ -153,7 +144,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Personal Info -->
+        <!-- Left: same personal info card as profile -->
         <div class="card">
             <div class="card-header">Personal Information</div>
             <div class="card-body">
@@ -168,32 +159,43 @@
             </div>
         </div>
 
-        <!-- Health Profile -->
+        <!-- Right: Contact Information (two editable fields; create/update in one form) -->
         <div class="card">
-            <div class="card-header">Health Profile</div>
+            <div class="card-header">Contact Information</div>
             <div class="card-body">
-                <div th:if="${hasHealthProfile}">
-                    <div class="info-item"><span class="info-label">Blood Type</span><span class="blood-type" th:text="${healthProfile.bloodType}">O+</span></div>
-                    <div style="margin-top: 30px;">
-                        <h3 style="color:#333; margin-bottom:20px;">Allergic Reactions</h3>
-                        <div th:if="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}">
-                            <div th:each="allergy : ${healthProfile.allergicReactions}" class="allergy-item">
-                                <div class="allergy-header">
-                                    <span class="medicine-name" th:text="${allergy.medicine.medicineName}">Aspirin</span>
-                                    <span class="severity" th:class="'severity ' + ${#strings.toLowerCase(allergy.severity)}" th:text="${allergy.severity}">HIGH</span>
-                                </div>
-                                <div class="allergy-details" th:text="${allergy.description}">Details here</div>
-                                <div class="date-diagnosed">Diagnosed: <span th:text="${#temporals.format(allergy.dateDiagnosed, 'dd MMM yyyy')}">15 Jan 2023</span></div>
-                            </div>
-                        </div>
-                        <div th:unless="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}" class="no-data">
-                            <div class="no-data-icon">🏥</div><p>No allergic reactions recorded</p>
-                        </div>
+                <!-- Save form (create or update) -->
+                <form th:action="@{/profile/contacts/save}" method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:if="${contact != null}" th:value="${contact.id}">
+                    <div class="row">
+                        <label for="phone">Phone</label>
+                        <input id="phone" name="phone" type="text"
+                               th:value="${contact != null ? contact.phone : ''}"
+                               placeholder="+389 70 000 000">
                     </div>
-                </div>
-                <div th:unless="${hasHealthProfile}" class="no-data">
-                    <div class="no-data-icon">📋</div><p>No health profile found</p>
-                </div>
+                    <div class="row">
+                        <label for="address">Address</label>
+                        <input id="address" name="address" type="text"
+                               th:value="${contact != null ? contact.address : ''}"
+                               placeholder="Street, City">
+                    </div>
+                    <div class="actions" style="align-items:center;">
+                        <button type="submit" class="btn btn-primary"
+                                th:text="${contact != null} ? 'Update' : 'Create'">Create</button>
+                    </div>
+                </form>
+
+                <!-- Delete form (separate to avoid nested forms) -->
+                <form th:if="${contact != null}"
+                      th:action="@{/profile/contacts/delete}"
+                      method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${contact.id}">
+                    <button type="submit" class="btn btn-danger" style="margin-left:12px;">Delete</button>
+                </form>
+
+                <!-- Optional helper when creating -->
+                <p class="info-value" th:if="${contact == null}" style="margin-top:10px;color:#6b7280;">
+                    Fill the fields and press Create to add contact info.
+                </p>
             </div>
         </div>
     </div>

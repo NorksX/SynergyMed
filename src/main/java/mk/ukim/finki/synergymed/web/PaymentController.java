@@ -34,7 +34,6 @@ public class PaymentController {
 
         model.addAttribute("methods", paymentMethodService.findAll());
         model.addAttribute("deliveryCompanies", deliveryCompanyService.findAll());
-
         Client client = getClientFromSession(session);
         Shoppingcart cart = shoppingCartService.getOrCreateCart(client);
 
@@ -42,6 +41,8 @@ public class PaymentController {
 
         return "payment";
     }
+
+
 
     @PostMapping
     public String processPayment(@RequestParam Integer paymentMethodId,

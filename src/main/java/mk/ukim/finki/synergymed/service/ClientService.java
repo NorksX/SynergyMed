@@ -10,4 +10,7 @@ public interface ClientService {
     List<Client> findClientsWithoutHealthProfileByName(String searchTerm);
     Client findClientById(Integer clientId);
     List<Client> findAll();
+
+    boolean isVerified(Integer userId);
+
 }

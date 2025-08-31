@@ -1,0 +1,132 @@
+<!-- templates/facility-form.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${mode=='create' ? 'Create Facility' : 'Edit Facility'}">Facility</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Shared global header styles -->
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
+    <style>
+        :root {
+            --teal-1:#20b2aa;
+            --teal-2:#48d1cc;
+            --muted:#6c757d;
+            --shadow:0 20px 40px rgba(0,0,0,.1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            min-height:100vh;
+            background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);
+        }
+
+        /* Full-width global header - FIXED STYLING */
+        .site-header {
+            position:sticky;
+            top:0;
+            left:0;
+            right:0;
+            width:100%;
+            border-radius:0;
+            margin:0;
+            z-index:1000;
+            background:white !important;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-wrapper { padding:24px; }
+        .wrap {
+            width:100%;
+            max-width:720px;
+            margin:40px auto;
+            background:#fff;
+            border-radius:20px;
+            overflow:hidden;
+            box-shadow:var(--shadow);
+        }
+        .head {
+            background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+            color:#fff;
+            padding:26px 24px;
+        }
+        .body { padding:26px 24px; }
+        .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+        .row-1 { display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:6px; }
+        label { display:block; margin-bottom:8px; color:#334155; font-weight:600; font-size:.95rem; }
+        input {
+            width:100%; padding:14px 12px;
+            border:2px solid #e6ebf0;
+            border-radius:12px;
+            background:#f8fafc;
+            transition:.2s ease;
+            font-size:1rem;
+        }
+        input:focus {
+            outline:none; border-color:var(--teal-1);
+            background:#fff;
+            box-shadow:0 0 0 3px rgba(32,178,170,.12);
+        }
+        .actions { display:flex; gap:12px; padding:0 24px 24px 24px; }
+        .btn { border:none; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:700; letter-spacing:.4px; }
+        .btn-primary {
+            background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+            color:#fff;
+            box-shadow:0 10px 20px rgba(32,178,170,.25);
+        }
+        .btn-secondary {
+            background:#fff; color:#111;
+            border:2px solid rgba(32,178,170,.25);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Global sticky header (white, full width) -->
+<th:block th:replace="fragments/header :: siteHeader('facilities', ${username})"></th:block>
+
+<div class="content-wrapper">
+    <div class="wrap">
+        <div class="head">
+            <h2 th:text="${mode=='create' ? 'Create Facility' : 'Edit Facility'}">Facility</h2>
+        </div>
+
+        <div class="body">
+            <form th:action="${mode=='create'} ? @{/companies/{cid}/facilities(cid=${company.id})}
+                                 : @{/companies/{cid}/facilities/{id}/update(cid=${company.id}, id=${facility.id})}"
+                  method="post">
+
+                <div class="row">
+                    <div>
+                        <label>Facility Name</label>
+                        <input type="text" name="facilityName"
+                               th:value="${mode=='edit' ? facility.facilityName : ''}" required>
+                    </div>
+                    <div>
+                        <label>Code</label>
+                        <input type="text" name="code"
+                               th:value="${mode=='edit' ? facility.code : ''}" required>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" type="submit"
+                            th:text="${mode=='create' ? 'Create' : 'Update'}">
+                        Save
+                    </button>
+                    <a class="btn btn-secondary"
+                       th:href="@{/companies/{cid}/facilities(cid=${company.id})}">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts for dropdown etc. -->
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>

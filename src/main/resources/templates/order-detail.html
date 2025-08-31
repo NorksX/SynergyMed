@@ -1,0 +1,60 @@
+<!-- templates/order-detail.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${'Order #' + order.id + ' – Details'}">Order Details</title>
+
+    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
+            min-height:100vh;
+        }
+        .site-header { position:sticky; top:0; left:0; right:0; width:100%; border-radius:0; z-index:1000; }
+        .container { max-width:800px; margin:0 auto; padding:20px; }
+        .card { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; margin-top:50px; text-align:center; }
+        .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:30px; font-size:1.8rem; font-weight:600; }
+        .card-body { padding:40px 30px; }
+        .card-body p { margin-bottom:14px; font-size:1rem; color:#333; }
+        .success-icon { font-size:4rem; color:#20b2aa; margin-bottom:20px; }
+        .btn-back { display:inline-block; margin-top:25px; padding:12px 25px; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border-radius:12px; font-weight:600; text-decoration:none; transition:.3s; }
+        .btn-back:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(32,178,170,.3); }
+    </style>
+</head>
+<body>
+
+<th:block th:replace="fragments/header :: siteHeader('orders', ${username})"></th:block>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header" th:text="${'Order #' + order.id}">Order #123</div>
+        <div class="card-body">
+            <div class="success-icon">✔</div>
+
+            <p><strong>Date:</strong> <span th:text="${order.orderDate}">2025-08-30</span></p>
+            <p><strong>Status:</strong> <span th:text="${order.status}">во тек</span></p>
+            <p><strong>Total Paid:</strong> <span th:text="${order.totalPrice + ' ден.'}">0 ден.</span></p>
+            <p><strong>Expected Arrival:</strong> <span th:text="${order.expectedArrivalDate}">2025-09-05</span></p>
+
+            <p><strong>Delivery Company:</strong>
+                <span th:text="${deliveryCompany.company != null ? deliveryCompany.company.companyName : 'N/A'}">Courier</span>
+            </p>
+
+            <p><strong>Payment Status:</strong> <span th:text="${payment.status}">COMPLETED</span></p>
+            <p><strong>Payment Method:</strong>
+                <span th:text="${payment.paymentMethod != null ? payment.paymentMethod.methodName : '—'}">CARD</span>
+            </p>
+
+            <a class="btn-back" th:href="@{/orders}">Back to Orders</a>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments/header :: headerScripts"></th:block>
+</body>
+</html>
