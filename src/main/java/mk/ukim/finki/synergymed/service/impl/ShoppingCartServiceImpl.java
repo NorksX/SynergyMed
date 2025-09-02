@@ -1,14 +1,16 @@
 package mk.ukim.finki.synergymed.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.synergymed.models.*;
+import mk.ukim.finki.synergymed.repositories.InventoryBrandedmedicineRepository;
 import mk.ukim.finki.synergymed.repositories.ShoppingcartBrandedmedicineRepository;
 import mk.ukim.finki.synergymed.repositories.ShoppingcartRepository;
 import mk.ukim.finki.synergymed.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShoppingcartBrandedmedicineRepository cartMedicineRepo;
     private final ShoppingcartRepository shoppingcartRepo;
+    private final InventoryBrandedmedicineRepository inventoryBrandedmedicineRepository;
 
     @Override
     public void addMedicine(Shoppingcart cart, Brandedmedicine medicine, int quantity) {
@@ -96,4 +99,32 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void clearCart(Shoppingcart cart) {
         cartMedicineRepo.deleteAllByShoppingCart(cart);
     }
-}
+
+
+
+    @Override
+    public Map<Integer, Integer> getMaxAvailableFor(Collection<Integer> brandedMedicineIds) {
+        if (brandedMedicineIds == null || brandedMedicineIds.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Map<String, Object>> rows =
+                inventoryBrandedmedicineRepository.sumAsMapForPharmacies(brandedMedicineIds);
+
+        Map<Integer, Integer> out = new HashMap<>(rows.size());
+        for (Map<String, Object> m : rows) {
+            Number idNum = (Number) m.get("id");
+            Number qtyNum = (Number) m.get("qty");
+            if (idNum != null) {
+                int id = idNum.intValue();
+                int qty = (qtyNum == null) ? 0
+                        : Math.toIntExact(qtyNum.longValue());
+                out.put(id, qty);
+            }
+        }
+        for (Integer id : brandedMedicineIds) {
+            out.putIfAbsent(id, 0);
+        }
+        return out;
+    }
+    }

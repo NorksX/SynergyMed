@@ -2,6 +2,8 @@ package mk.ukim.finki.synergymed.web;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import mk.ukim.finki.synergymed.models.Client;
+import mk.ukim.finki.synergymed.models.Clubcard;
 import mk.ukim.finki.synergymed.models.Contactinformation;
 import mk.ukim.finki.synergymed.models.Healthprofile;
 import mk.ukim.finki.synergymed.models.User;
@@ -24,6 +26,9 @@ public class ProfileController {
     private final PrescriptionService prescriptionService;
     private final ClientService clientService;
 
+    // NEW: Inject the ClubCardService
+    private final ClubCardService clubCardService;
+
     @GetMapping
     public String getProfilePage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
@@ -39,6 +44,16 @@ public class ProfileController {
         } catch (Exception e) {
             model.addAttribute("hasHealthProfile", false);
         }
+
+        // NEW: Load club card for the profile landing page
+        try {
+            Optional<Clubcard> clubcard = clubCardService.getByClientId(user.getId());
+            model.addAttribute("clubcard", clubcard.orElse(null));
+            model.addAttribute("hasClubcard", clubcard.isPresent());
+        } catch (Exception e) {
+            model.addAttribute("hasClubcard", false);
+        }
+
         model.addAttribute("activeTab", "profile");
         return "profile";
     }
@@ -92,13 +107,12 @@ public class ProfileController {
         return clientService.isVerified(userId);
     }
 
-    /* GET /profile/prescriptions */
     @GetMapping("/prescriptions")
     public String prescriptions(jakarta.servlet.http.HttpSession session,
                                 org.springframework.ui.Model model) {
         var user = (mk.ukim.finki.synergymed.models.User) session.getAttribute("user");
         if (user == null) return "redirect:/login";
-        Integer clientId = user.getId(); // Client.id == User.id via @MapsId
+        Integer clientId = user.getId();
 
         boolean verified = isVerified(clientId);
         boolean pending = sensitiveClientDataService.latestForClient(clientId)
@@ -112,5 +126,29 @@ public class ProfileController {
         model.addAttribute("pending", pending);
         model.addAttribute("prescriptions", rx);
         return "profile-prescriptions";
+    }
+
+    @GetMapping("/clubcard")
+    public String profileClubcard(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        Optional<Clubcard> clubcard = clubCardService.getByClientId(user.getId());
+        model.addAttribute("clubcard", clubcard.orElse(null));
+        model.addAttribute("hasClubcard", clubcard.isPresent());
+        model.addAttribute("activeTab", "clubcard");
+        return "profile-clubcard";
+    }
+
+    @PostMapping("/clubcard/create")
+    public String createClubcard(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        if (clubCardService.getByClientId(user.getId()).isEmpty()) {
+            Client client = clientService.findClientById(user.getId());
+            clubCardService.createForClient(client);
+        }
+        return "redirect:/profile/clubcard";
     }
 }

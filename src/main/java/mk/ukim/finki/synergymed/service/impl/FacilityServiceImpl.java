@@ -1,6 +1,6 @@
 package mk.ukim.finki.synergymed.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import mk.ukim.finki.synergymed.models.*;
 import mk.ukim.finki.synergymed.repositories.FacilityRepository;
 import mk.ukim.finki.synergymed.repositories.InventoryBrandedmedicineRepository;

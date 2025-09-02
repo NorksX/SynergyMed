@@ -21,7 +21,7 @@ public class LoginController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserRepository userRepository; // Add this
+    private final UserRepository userRepository;
 
     @GetMapping
     public String getLoginPage() {

@@ -10,6 +10,8 @@ import mk.ukim.finki.synergymed.repositories.ManufacturerRepository;
 import mk.ukim.finki.synergymed.service.BrandedMedicineService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -77,7 +79,12 @@ public class BrandedMedicineServiceImpl implements BrandedMedicineService {
     }
 
     @Override
-    @Transactional
+    @Transactional(
+            rollbackFor = { Exception.class, java.io.IOException.class },
+            isolation = Isolation.READ_COMMITTED,
+            propagation = Propagation.REQUIRED,
+            timeout = 30
+    )
     public void saveAll(Integer id,
                         Integer manufacturerId,
                         BigDecimal price,

@@ -2,7 +2,9 @@ package mk.ukim.finki.synergymed.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
@@ -12,6 +14,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
 public class PharmacyCatalogId implements Serializable {
     private static final long serialVersionUID = 1717201987474340712L;
     @Column(name = "pharmacy_id", nullable = false)

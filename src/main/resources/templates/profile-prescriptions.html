@@ -82,9 +82,8 @@
     <div class="nav-bar">
         <div class="nav-links">
             <a th:href="@{/profile}" class="nav-link">Profile</a>
-            <a href="#" class="nav-link">Medical History</a>
             <a th:href="@{/profile/prescriptions}" class="nav-link active">Prescriptions</a>
-            <a href="#" class="nav-link">Club Card</a>
+            <a th:href="@{/profile/clubcard}" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Club Card</a>
             <a th:href="@{/allergies/manage}" class="nav-link">Manage Allergies</a>
             <a th:href="@{/profile/contacts}" class="nav-link">Contact Info</a>
             <a th:href="@{/logout}" class="logout-btn">Logout</a>

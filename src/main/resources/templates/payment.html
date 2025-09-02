@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <title>SynergyMed – Payment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <th:block th:replace="fragments/header :: headerStyles"></th:block>
-
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
@@ -15,48 +13,19 @@
       min-height:100vh;
       color:#1f2937;
     }
-
-    .site-header {
-      position: sticky; top:0; left:0; right:0;
-      width:100%; border-radius:0; z-index:1000;
-      background:white !important; box-shadow:0 2px 10px rgba(0,0,0,0.1);
-    }
-
+    .site-header { position: sticky; top:0; left:0; right:0; width:100%; border-radius:0; z-index:1000; background:white !important; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
     .container { max-width:800px; margin:40px auto; padding:20px; }
-
-    .card {
-      background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1);
-      overflow:hidden; margin-bottom:30px;
-    }
-    .card-header {
-      background:linear-gradient(135deg,#20b2aa,#48d1cc);
-      color:white; padding:25px 30px; font-size:1.3rem; font-weight:600;
-    }
+    .card { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; margin-bottom:30px; }
+    .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:25px 30px; font-size:1.3rem; font-weight:600; }
     .card-body { padding:30px; }
-
     .form-group { margin-bottom:25px; }
     .form-group label { display:block; margin-bottom:8px; color:#555; font-weight:500; font-size:.9rem; }
-    .form-control {
-      width:100%; padding:15px 20px; border:2px solid #e1e5e9; border-radius:12px;
-      font-size:1rem; transition:all .3s ease; background:#f8f9fa;
-    }
-    .form-control:focus {
-      outline:none; border-color:#20b2aa; background:white;
-      box-shadow:0 0 0 3px rgba(32,178,170,.1);
-    }
-
-    .btn-submit {
-      width:100%; padding:15px; background:linear-gradient(135deg,#20b2aa,#48d1cc);
-      color:white; border:none; border-radius:12px;
-      font-size:1rem; font-weight:600; cursor:pointer; transition:.3s;
-      text-transform:uppercase; letter-spacing:1px;
-    }
+    .form-control { width:100%; padding:15px 20px; border:2px solid #e1e5e9; border-radius:12px; font-size:1rem; transition:all .3s ease; background:#f8f9fa; }
+    .form-control:focus { outline:none; border-color:#20b2aa; background:white; box-shadow:0 0 0 3px rgba(32,178,170,.1); }
+    .btn-submit { width:100%; padding:15px; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border:none; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; transition:.3s; text-transform:uppercase; letter-spacing:1px; }
     .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(32,178,170,.3); }
-
-    .cart-total {
-      text-align:right; font-size:1.3rem; font-weight:700;
-      margin-top:20px; color:#20b2aa;
-    }
+    .cart-total { text-align:right; font-size:1.1rem; font-weight:700; margin-top:10px; }
+    .muted { color:#6c757d }
   </style>
 </head>
 <body>
@@ -67,34 +36,30 @@
     <div class="card-header">Complete Your Payment</div>
     <div class="card-body">
       <form th:action="@{/payment}" method="post">
-        <!-- Payment Method -->
+        <input type="hidden" name="useCard" th:value="${useCard}">
         <div class="form-group">
           <label for="paymentMethodId">Select Payment Method</label>
           <select id="paymentMethodId" name="paymentMethodId" class="form-control" required>
             <option value="">Choose a payment method...</option>
-            <option th:each="pm : ${methods}"
-                    th:value="${pm.id}"
-                    th:text="${pm.methodName}">Credit Card</option>
+            <option th:each="pm : ${methods}" th:value="${pm.id}" th:text="${pm.methodName}">Card</option>
           </select>
         </div>
 
-        <!-- Delivery Company -->
         <div class="form-group">
           <label for="deliveryCompanyId">Select Delivery Company</label>
           <select id="deliveryCompanyId" name="deliveryCompanyId" class="form-control" required>
             <option value="">Choose a delivery company...</option>
-            <option th:each="dc : ${deliveryCompanies}"
-                    th:value="${dc.id}"
-                    th:text="${dc.company.companyName}">FedEx</option>
+            <option th:each="dc : ${deliveryCompanies}" th:value="${dc.id}" th:text="${dc.company.companyName}">Courier</option>
           </select>
         </div>
 
-        <!-- Total -->
         <div class="cart-total">
+          <div class="muted" th:if="${discount != null && discount > 0}">
+            Discount: <span th:text="${discount + ' ден.'}">0 ден.</span>
+          </div>
           Total: <span th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</span>
         </div>
 
-        <!-- Submit -->
         <button type="submit" class="btn-submit">Pay Now</button>
       </form>
     </div>

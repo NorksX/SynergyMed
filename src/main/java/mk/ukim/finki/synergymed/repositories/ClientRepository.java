@@ -19,6 +19,8 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     Optional<Client> findByUsers(User user);
 
+    boolean existsById(Integer userId);
+
 
 
 

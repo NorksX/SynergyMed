@@ -10,6 +10,7 @@ import mk.ukim.finki.synergymed.repositories.ClientRepository;
 import mk.ukim.finki.synergymed.repositories.ShoppingcartRepository;
 import mk.ukim.finki.synergymed.service.BrandedMedicineService;
 import mk.ukim.finki.synergymed.service.ShoppingCartService;
+import mk.ukim.finki.synergymed.service.ClubCardService; // NEW
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class ShoppingCartController {
     private final BrandedMedicineService brandedmedicineService;
     private final ClientRepository clientRepository;
     private final ShoppingcartRepository shoppingcartRepository;
+    private final ClubCardService clubCardService;
 
     @PostMapping("/add/{medicineId}")
     public String addToCart(@PathVariable Integer medicineId,
@@ -82,9 +84,11 @@ public class ShoppingCartController {
         model.addAttribute("items", shoppingCartService.getMedicinesInCart(cart));
         model.addAttribute("total", shoppingCartService.getTotal(cart));
         model.addAttribute("username", session.getAttribute("username"));
-
-        // TODO: 30.8.2025 FIX AFTER GETTING IMAGES IN DB 
+        // Images not yet available as per original TODO
         model.addAttribute("firstImageById", null);
+
+        clubCardService.getByClientId(client.getId())
+                .ifPresent(card -> model.addAttribute("clubCard", card));
 
         return "cart";
     }

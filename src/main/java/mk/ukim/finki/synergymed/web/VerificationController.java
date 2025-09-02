@@ -15,8 +15,6 @@ import java.util.List;
 public class VerificationController {
 
     private final VerificationReviewService reviewService;
-
-    // Grid of pending applications
     @GetMapping
     public String list(Model model) {
         List<Sensitiveclientdata> pending = reviewService.listPending();
@@ -24,7 +22,6 @@ public class VerificationController {
         return "verification-list";
     }
 
-    // Detail page
     @GetMapping("/{id}")
     public String detail(@PathVariable Integer id, Model model) {
         Sensitiveclientdata row = reviewService.get(id).orElseThrow();
@@ -32,14 +29,12 @@ public class VerificationController {
         return "verification-approval";
     }
 
-    // Approve
     @PostMapping("/{id}/approve")
     public String approve(@PathVariable Integer id) {
         reviewService.approve(id);
         return "redirect:/admin/verification";
     }
 
-    // Deny
     @PostMapping("/{id}/deny")
     public String deny(@PathVariable Integer id) {
         reviewService.deny(id);
