@@ -1,11 +1,14 @@
 package mk.ukim.finki.synergymed.web;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.synergymed.models.Contactinformation;
 import mk.ukim.finki.synergymed.models.Healthprofile;
 import mk.ukim.finki.synergymed.models.User;
+import mk.ukim.finki.synergymed.repositories.UserRepository;
 import mk.ukim.finki.synergymed.service.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,19 +21,33 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProfileController {
 
+    private final UserRepository userRepository;
     private final HealthProfileService healthProfileService;
     private final ContactInformationService contactInformationService;
     private final SensitiveClientDataService sensitiveClientDataService;
     private final PrescriptionService prescriptionService;
     private final ClientService clientService;
 
+    private User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = auth.getPrincipal();
+        String username;
+
+        if (principal instanceof UserDetails ud) {
+            username = ud.getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+    }
+
     @GetMapping
-    public String getProfilePage(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        String username = (String) session.getAttribute("username");
-        if (user == null || username == null) return "redirect:/login";
+    public String getProfilePage(Model model) {
+        User user = getCurrentUser();
         model.addAttribute("user", user);
-        model.addAttribute("username", username);
+        model.addAttribute("username", user.getUsername());
 
         try {
             Optional<Healthprofile> healthProfile = healthProfileService.getByClientId(user.getId());
@@ -43,11 +60,9 @@ public class ProfileController {
         return "profile";
     }
 
-    // Contact Info tab
     @GetMapping("/contacts")
-    public String profileContacts(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
+    public String profileContacts(Model model) {
+        User user = getCurrentUser();
         List<Contactinformation> list = contactInformationService.listForUser(user.getId());
         Contactinformation contact = list.isEmpty() ? null : list.get(0);
         model.addAttribute("contact", contact);
@@ -56,9 +71,8 @@ public class ProfileController {
     }
 
     @GetMapping("/contacts/new")
-    public String newProfileContact(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
+    public String newProfileContact(Model model) {
+        getCurrentUser(); // just to ensure authenticated
         model.addAttribute("context", "profile");
         model.addAttribute("postUrl", "/profile/contacts/save");
         model.addAttribute("backUrl", "/profile/contacts");
@@ -68,10 +82,8 @@ public class ProfileController {
     @PostMapping("/contacts/save")
     public String saveProfileContact(@RequestParam(required = false) Integer id,
                                      @RequestParam(required = false) String phone,
-                                     @RequestParam(required = false) String address,
-                                     HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
+                                     @RequestParam(required = false) String address) {
+        User user = getCurrentUser();
         if (id == null) {
             contactInformationService.createForUser(user.getId(), phone, address);
         } else {
@@ -81,9 +93,8 @@ public class ProfileController {
     }
 
     @PostMapping("/contacts/delete")
-    public String deleteProfileContact(@RequestParam Integer id, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
+    public String deleteProfileContact(@RequestParam Integer id) {
+        User user = getCurrentUser();
         contactInformationService.deleteForUser(id, user.getId());
         return "redirect:/profile/contacts";
     }
@@ -92,20 +103,17 @@ public class ProfileController {
         return clientService.isVerified(userId);
     }
 
-    /* GET /profile/prescriptions */
     @GetMapping("/prescriptions")
-    public String prescriptions(jakarta.servlet.http.HttpSession session,
-                                org.springframework.ui.Model model) {
-        var user = (mk.ukim.finki.synergymed.models.User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
-        Integer clientId = user.getId(); // Client.id == User.id via @MapsId
+    public String prescriptions(Model model) {
+        User user = getCurrentUser();
+        Integer clientId = user.getId();
 
         boolean verified = isVerified(clientId);
         boolean pending = sensitiveClientDataService.latestForClient(clientId)
                 .map(s -> "во тек".equalsIgnoreCase(s.getVerificationStatus()))
                 .orElse(false);
 
-        var rx = verified ? prescriptionService.listForClient(clientId) : java.util.List.of();
+        var rx = verified ? prescriptionService.listForClient(clientId) : List.of();
 
         model.addAttribute("activeTab", "prescriptions");
         model.addAttribute("verified", verified);
