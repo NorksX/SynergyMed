@@ -1,6 +1,5 @@
 package mk.ukim.finki.synergymed.web;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.synergymed.models.Brandedmedicine;
 import mk.ukim.finki.synergymed.models.Client;
@@ -10,7 +9,10 @@ import mk.ukim.finki.synergymed.repositories.ClientRepository;
 import mk.ukim.finki.synergymed.repositories.ShoppingcartRepository;
 import mk.ukim.finki.synergymed.service.BrandedMedicineService;
 import mk.ukim.finki.synergymed.service.ShoppingCartService;
-import mk.ukim.finki.synergymed.service.ClubCardService; // NEW
+import mk.ukim.finki.synergymed.service.ClubCardService;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +28,28 @@ public class ShoppingCartController {
     private final ShoppingcartRepository shoppingcartRepository;
     private final ClubCardService clubCardService;
 
+    private Client getClient(@AuthenticationPrincipal UserDetails ud) {
+        User user = clientRepository.findByUsersUsername(ud.getUsername())
+                .map(Client::getUsers)
+                .orElseThrow(() -> new IllegalStateException("Client not found for user " + ud.getUsername()));
+        return clientRepository.findByUsers(user)
+                .orElseThrow(() -> new IllegalStateException("Client not found for user " + ud.getUsername()));
+    }
+
+    private Shoppingcart getOrCreateCart(Client client) {
+        return shoppingcartRepository.findByClient(client)
+                .orElseGet(() -> {
+                    Shoppingcart cart = new Shoppingcart();
+                    cart.setClient(client);
+                    return shoppingcartRepository.save(cart);
+                });
+    }
+
     @PostMapping("/add/{medicineId}")
     public String addToCart(@PathVariable Integer medicineId,
                             @RequestParam(defaultValue = "1") int quantity,
-                            HttpSession session) {
-        Client client = getClientFromSession(session);
+                            @AuthenticationPrincipal UserDetails ud) {
+        Client client = getClient(ud);
         Shoppingcart cart = getOrCreateCart(client);
 
         Brandedmedicine medicine = brandedmedicineService.findById(medicineId)
@@ -41,8 +60,9 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/plus/{medicineId}")
-    public String increaseQuantity(@PathVariable Integer medicineId, HttpSession session) {
-        Client client = getClientFromSession(session);
+    public String increaseQuantity(@PathVariable Integer medicineId,
+                                   @AuthenticationPrincipal UserDetails ud) {
+        Client client = getClient(ud);
         Shoppingcart cart = getOrCreateCart(client);
 
         Brandedmedicine medicine = brandedmedicineService.findById(medicineId)
@@ -53,8 +73,9 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/minus/{medicineId}")
-    public String decreaseQuantity(@PathVariable Integer medicineId, HttpSession session) {
-        Client client = getClientFromSession(session);
+    public String decreaseQuantity(@PathVariable Integer medicineId,
+                                   @AuthenticationPrincipal UserDetails ud) {
+        Client client = getClient(ud);
         Shoppingcart cart = getOrCreateCart(client);
 
         Brandedmedicine medicine = brandedmedicineService.findById(medicineId)
@@ -65,8 +86,9 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/remove/{medicineId}")
-    public String removeFromCart(@PathVariable Integer medicineId, HttpSession session) {
-        Client client = getClientFromSession(session);
+    public String removeFromCart(@PathVariable Integer medicineId,
+                                 @AuthenticationPrincipal UserDetails ud) {
+        Client client = getClient(ud);
         Shoppingcart cart = getOrCreateCart(client);
 
         Brandedmedicine medicine = brandedmedicineService.findById(medicineId)
@@ -77,40 +99,19 @@ public class ShoppingCartController {
     }
 
     @GetMapping
-    public String showCart(Model model, HttpSession session) {
-        Client client = getClientFromSession(session);
+    public String showCart(Model model,
+                           @AuthenticationPrincipal UserDetails ud) {
+        Client client = getClient(ud);
         Shoppingcart cart = getOrCreateCart(client);
 
         model.addAttribute("items", shoppingCartService.getMedicinesInCart(cart));
         model.addAttribute("total", shoppingCartService.getTotal(cart));
-        model.addAttribute("username", session.getAttribute("username"));
-        // Images not yet available as per original TODO
+        model.addAttribute("username", ud.getUsername());
         model.addAttribute("firstImageById", null);
 
         clubCardService.getByClientId(client.getId())
                 .ifPresent(card -> model.addAttribute("clubCard", card));
 
         return "cart";
-    }
-
-    private Client getClientFromSession(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        String username = (String) session.getAttribute("username");
-
-        if (user == null || username == null) {
-            throw new IllegalStateException("No user in session. Please login first.");
-        }
-
-        return clientRepository.findByUsers(user)
-                .orElseThrow(() -> new IllegalStateException("Client not found for user " + username));
-    }
-
-    private Shoppingcart getOrCreateCart(Client client) {
-        return shoppingcartRepository.findByClient(client)
-                .orElseGet(() -> {
-                    Shoppingcart cart = new Shoppingcart();
-                    cart.setClient(client);
-                    return shoppingcartRepository.save(cart);
-                });
     }
 }
