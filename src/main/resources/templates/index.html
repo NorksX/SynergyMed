@@ -248,11 +248,6 @@
                          th:text="${#numbers.formatDecimal(bm.price, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</div>
 
                     <div class="button-group">
-                        <form th:action="@{/cart/add/{id}(id=${bm.id})}" method="post" style="display:inline;flex:1">
-                            <button type="submit" class="btn-outline add-to-cart-btn"
-                                    th:data-name="${bm.name}"
-                                    style="width:100%">Add to Cart</button>
-                        </form>
                         <a class="btn-outline" th:href="@{/branded-medicines/{id}/edit(id=${bm.id})}">Edit</a>
                     </div>
                 </div>

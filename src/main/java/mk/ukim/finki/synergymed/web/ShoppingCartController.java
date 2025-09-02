@@ -9,6 +9,8 @@ import mk.ukim.finki.synergymed.repositories.ClientRepository;
 import mk.ukim.finki.synergymed.repositories.ShoppingcartRepository;
 import mk.ukim.finki.synergymed.service.BrandedMedicineService;
 import mk.ukim.finki.synergymed.service.ShoppingCartService;
+import mk.ukim.finki.synergymed.service.ClubCardService;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -24,8 +26,9 @@ public class ShoppingCartController {
     private final BrandedMedicineService brandedmedicineService;
     private final ClientRepository clientRepository;
     private final ShoppingcartRepository shoppingcartRepository;
+    private final ClubCardService clubCardService;
 
-    private Client getClient(UserDetails ud) {
+    private Client getClient(@AuthenticationPrincipal UserDetails ud) {
         User user = clientRepository.findByUsersUsername(ud.getUsername())
                 .map(Client::getUsers)
                 .orElseThrow(() -> new IllegalStateException("Client not found for user " + ud.getUsername()));
@@ -105,6 +108,9 @@ public class ShoppingCartController {
         model.addAttribute("total", shoppingCartService.getTotal(cart));
         model.addAttribute("username", ud.getUsername());
         model.addAttribute("firstImageById", null);
+
+        clubCardService.getByClientId(client.getId())
+                .ifPresent(card -> model.addAttribute("clubCard", card));
 
         return "cart";
     }

@@ -16,9 +16,8 @@ public interface BrandedMedicineService {
 
     void deleteById(Integer id) throws IOException;
 
-    // New service methods so controllers don’t call repositories
     List<Brandedmedicineimage> listImages(Integer brandedMedicineId);
-    String cardImageUrl(Integer brandedMedicineId); // main image or fallback
+    String cardImageUrl(Integer brandedMedicineId);
     Map<Integer,String> cardImageUrlsFor(List<Brandedmedicine> medicines);
 
     void saveAll(Integer id,

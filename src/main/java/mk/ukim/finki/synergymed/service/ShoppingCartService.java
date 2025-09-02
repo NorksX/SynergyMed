@@ -5,6 +5,7 @@ import mk.ukim.finki.synergymed.models.Client;
 import mk.ukim.finki.synergymed.models.Shoppingcart;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Map;
 
 public interface ShoppingCartService {
@@ -15,4 +16,6 @@ public interface ShoppingCartService {
     void clearCart(Shoppingcart cart);
     public void decreaseMedicine(Shoppingcart cart, Brandedmedicine medicine);
     Shoppingcart getOrCreateCart(Client client);
+    Map<Integer, Integer> getMaxAvailableFor(Collection<Integer> brandedMedicineIds);
+
 }

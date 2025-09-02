@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynergyMed - Profile</title>
+    <title>SynergyMed - Club Card</title>
 
+    <!-- Shared header styles -->
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
 
     <style>
@@ -15,6 +16,7 @@
             min-height: 100vh;
         }
 
+        /* Full-width sticky header (same look as examples) */
         .site-header {
             position: sticky; top: 0; left: 0; right: 0;
             width: 100%;
@@ -22,7 +24,7 @@
             z-index: 1000;
         }
 
-        /* container same size as admin example */
+        /* container same size as examples */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -68,6 +70,22 @@
         .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:.3s; font-weight:500; }
         .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
 
+        /* Ensure logout looks identical to examples */
+        .logout-btn {
+            margin-left:auto;
+            background:linear-gradient(135deg,#ff6b6b,#ee5a24);
+            color:#fff;
+            padding:10px 20px;
+            border-radius:25px;
+            text-decoration:none;
+            font-weight:600;
+            border:none;
+            box-shadow: 0 5px 15px rgba(238,90,36,.30);
+            transition: transform .2s ease, box-shadow .2s ease;
+            display:inline-flex; align-items:center; justify-content:center;
+        }
+        .logout-btn:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(238,90,36,.35); }
+
         .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
 
         .card {
@@ -85,40 +103,33 @@
         .info-label { font-weight: 600; color: #555; font-size: .95rem; }
         .info-value { color: #333; font-size: 1rem; }
 
-        .blood-type { background: linear-gradient(135deg,#ff6b6b,#ee5a24); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        /* Club card form styles (right column) */
+        .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0; gap:12px; }
+        label { font-weight:600; color:#374151; min-width:140px; }
+        select, input[type=text] { padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px; flex:1; background:#fff; }
+        .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; }
+        .btn { display:inline-block; padding:10px 16px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; font-weight:600; cursor:pointer; }
+        .btn-primary { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; border:none; }
+        .muted { color:#6b7280; }
 
-        .allergy-item { background:#f8f9fa; border-radius:15px; padding:20px; margin-bottom:15px; border-left:4px solid #20b2aa; }
-        .allergy-header { display:flex; justify-content:space-between; margin-bottom:10px; }
-        .medicine-name { font-weight:600; }
-
-        .severity { padding:3px 12px; border-radius:15px; font-size:.8rem; font-weight:600; text-transform:uppercase; }
-        .severity.high { background:#fee; color:#c33; }
-        .severity.medium { background:#fff3cd; color:#856404; }
-        .severity.low { background:#d1ecf1; color:#0c5460; }
-
-        .allergy-details { color:#666; font-size:.9rem; margin-top:10px; }
-        .date-diagnosed { color:#888; font-size:.85rem; margin-top:8px; }
-
-        .no-data { text-align: center; padding: 40px; color: #888; }
-        .no-data-icon { font-size: 4rem; margin-bottom: 20px; opacity: .3; }
-
-        .logout-btn {
-            margin-left:auto; background:linear-gradient(135deg,#ff6b6b,#ee5a24);
-            color:white; padding:10px 20px; border-radius:25px; text-decoration:none; font-weight:500; transition:.3s;
+        .stat {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:14px 16px; border:1px solid #eef2f7; border-radius:12px; margin-bottom:12px;
+            background:#f9fafb;
         }
-        .logout-btn:hover { transform:translateY(-2px); box-shadow:0 5px 15px rgba(238,90,36,.4); }
+        .stat-label { color:#6b7280; font-weight:600; }
+        .stat-value { color:#111827; font-weight:700; }
 
-        @media(max-width: 992px) {
-            .main-content { grid-template-columns: 1fr; }
-        }
+        @media(max-width: 992px) { .main-content { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
+<!-- Top site header; activePage null for profile area -->
 <th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
 
 <div class="container">
-    <!-- Profile Header -->
+    <!-- Profile Header (same as profile) -->
     <div class="header">
         <div class="header-content">
             <div class="profile-picture">
@@ -137,7 +148,7 @@
         </div>
     </div>
 
-    <!-- Navigation -->
+    <!-- Navigation with Club Card active -->
     <div class="nav-bar">
         <div class="nav-links">
             <a th:href="@{/profile}" class="nav-link" th:classappend="${activeTab}=='profile' ? ' active'">Profile</a>
@@ -149,10 +160,9 @@
         </div>
     </div>
 
-
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Personal Info -->
+        <!-- Left: Personal information (same as profile) -->
         <div class="card">
             <div class="card-header">Personal Information</div>
             <div class="card-body">
@@ -167,37 +177,49 @@
             </div>
         </div>
 
-        <!-- Health Profile -->
+        <!-- Right: Club Card -->
         <div class="card">
-            <div class="card-header">Health Profile</div>
+            <div class="card-header">Club Card</div>
             <div class="card-body">
-                <div th:if="${hasHealthProfile}">
-                    <div class="info-item"><span class="info-label">Blood Type</span><span class="blood-type" th:text="${healthProfile.bloodType}">O+</span></div>
-                    <div style="margin-top: 30px;">
-                        <h3 style="color:#333; margin-bottom:20px;">Allergic Reactions</h3>
-                        <div th:if="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}">
-                            <div th:each="allergy : ${healthProfile.allergicReactions}" class="allergy-item">
-                                <div class="allergy-header">
-                                    <span class="medicine-name" th:text="${allergy.medicine.medicineName}">Aspirin</span>
-                                    <span class="severity" th:class="'severity ' + ${#strings.toLowerCase(allergy.severity)}" th:text="${allergy.severity}">HIGH</span>
-                                </div>
-                                <div class="allergy-details" th:text="${allergy.description}">Details here</div>
-                                <div class="date-diagnosed">Diagnosed: <span th:text="${#temporals.format(allergy.dateDiagnosed, 'dd MMM yyyy')}">15 Jan 2023</span></div>
-                            </div>
-                        </div>
-                        <div th:unless="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}" class="no-data">
-                            <div class="no-data-icon">🏥</div><p>No allergic reactions recorded</p>
-                        </div>
+                <!-- If user already has a club card, show its data -->
+                <div th:if="${hasClubcard}">
+                    <div class="stat">
+                        <span class="stat-label">Program</span>
+                        <span class="stat-value" th:text="${clubcard.clubProgram}">Default Loyalty Program</span>
                     </div>
+                    <div class="stat">
+                        <span class="stat-label">Points</span>
+                        <span class="stat-value" th:text="${clubcard.points}">0</span>
+                    </div>
+                    <p class="muted" style="margin-top:10px;">Earn points with purchases and enjoy benefits under your current program.</p>
                 </div>
-                <div th:unless="${hasHealthProfile}" class="no-data">
-                    <div class="no-data-icon">📋</div><p>No health profile found</p>
+
+                <!-- Otherwise, allow creating a new card and choosing a program -->
+                <div th:unless="${hasClubcard}">
+                    <p class="muted" style="margin-bottom:14px;">No club card found. Choose a program and create a new card to start earning points.</p>
+                    <form th:action="@{/profile/clubcard/create}" method="post">
+                        <div class="row">
+                            <label for="program">Program</label>
+                            <select id="program" name="program" required>
+                                <option value="Default Loyalty Program" selected>Default Loyalty Program</option>
+                                <option value="Silver Rewards">Silver Rewards</option>
+                                <option value="Gold Rewards">Gold Rewards</option>
+                                <option value="Platinum Elite">Platinum Elite</option>
+                            </select>
+                        </div>
+
+                        <div class="actions" style="align-items:center;">
+                            <button type="submit" class="btn btn-primary">Create Club Card</button>
+                        </div>
+                    </form>
+                    <p class="muted" style="margin-top:10px;">Program benefits and point accrual may vary by tier.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Shared header behavior scripts -->
 <th:block th:replace="fragments/header :: headerScripts"></th:block>
 </body>
 </html>
