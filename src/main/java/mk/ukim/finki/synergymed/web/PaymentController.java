@@ -1,16 +1,18 @@
 package mk.ukim.finki.synergymed.web;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.synergymed.models.Client;
 import mk.ukim.finki.synergymed.models.Clientorder;
 import mk.ukim.finki.synergymed.models.Shoppingcart;
 import mk.ukim.finki.synergymed.models.User;
+import mk.ukim.finki.synergymed.repositories.UserRepository;
 import mk.ukim.finki.synergymed.service.ClientService;
 import mk.ukim.finki.synergymed.service.DeliveryCompanyService;
 import mk.ukim.finki.synergymed.service.PaymentMethodService;
 import mk.ukim.finki.synergymed.service.PaymentService;
 import mk.ukim.finki.synergymed.service.ShoppingCartService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,28 +30,33 @@ public class PaymentController {
     private final PaymentMethodService paymentMethodService;
     private final DeliveryCompanyService deliveryCompanyService;
     private final ClientService clientService;
+    private final UserRepository userRepository;
+
+    private User getCurrentUser(UserDetails ud) {
+        return userRepository.findByUsername(ud.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found: " + ud.getUsername()));
+    }
 
     @GetMapping
-    public String getPaymentPage(Model model, HttpSession session) {
+    public String getPaymentPage(@AuthenticationPrincipal UserDetails ud, Model model) {
+        User user = getCurrentUser(ud);
+        Client client = clientService.findClientById(user.getId());
+        Shoppingcart cart = shoppingCartService.getOrCreateCart(client);
 
         model.addAttribute("methods", paymentMethodService.findAll());
         model.addAttribute("deliveryCompanies", deliveryCompanyService.findAll());
-        Client client = getClientFromSession(session);
-        Shoppingcart cart = shoppingCartService.getOrCreateCart(client);
-
         model.addAttribute("total", shoppingCartService.getTotal(cart));
 
         return "payment";
     }
 
-
-
     @PostMapping
-    public String processPayment(@RequestParam Integer paymentMethodId,
+    public String processPayment(@AuthenticationPrincipal UserDetails ud,
+                                 @RequestParam Integer paymentMethodId,
                                  @RequestParam Integer deliveryCompanyId,
-                                 HttpSession session,
                                  Model model) {
-        Client client = getClientFromSession(session);
+        User user = getCurrentUser(ud);
+        Client client = clientService.findClientById(user.getId());
         Shoppingcart cart = shoppingCartService.getOrCreateCart(client);
 
         Clientorder order = paymentService.checkout(client, cart, paymentMethodId, deliveryCompanyId);
@@ -57,16 +64,5 @@ public class PaymentController {
         model.addAttribute("order", order);
         model.addAttribute("payment", order.getPayment());
         return "payment-success";
-    }
-
-    private Client getClientFromSession(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        String username = (String) session.getAttribute("username");
-
-        if (user == null || username == null) {
-            throw new IllegalStateException("No user in session. Please login first.");
-        }
-
-        return clientService.findClientById(user.getId());
     }
 }

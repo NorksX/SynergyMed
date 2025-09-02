@@ -6,8 +6,7 @@ import mk.ukim.finki.synergymed.models.Healthprofile;
 import mk.ukim.finki.synergymed.models.User;
 import mk.ukim.finki.synergymed.repositories.UserRepository;
 import mk.ukim.finki.synergymed.service.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,24 +27,14 @@ public class ProfileController {
     private final PrescriptionService prescriptionService;
     private final ClientService clientService;
 
-    private User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = auth.getPrincipal();
-        String username;
-
-        if (principal instanceof UserDetails ud) {
-            username = ud.getUsername();
-        } else {
-            username = principal.toString();
-        }
-
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+    private User getCurrentUser(UserDetails ud) {
+        return userRepository.findByUsername(ud.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found: " + ud.getUsername()));
     }
 
     @GetMapping
-    public String getProfilePage(Model model) {
-        User user = getCurrentUser();
+    public String getProfilePage(@AuthenticationPrincipal UserDetails ud, Model model) {
+        User user = getCurrentUser(ud);
         model.addAttribute("user", user);
         model.addAttribute("username", user.getUsername());
 
@@ -56,13 +45,14 @@ public class ProfileController {
         } catch (Exception e) {
             model.addAttribute("hasHealthProfile", false);
         }
+
         model.addAttribute("activeTab", "profile");
         return "profile";
     }
 
     @GetMapping("/contacts")
-    public String profileContacts(Model model) {
-        User user = getCurrentUser();
+    public String profileContacts(@AuthenticationPrincipal UserDetails ud, Model model) {
+        User user = getCurrentUser(ud);
         List<Contactinformation> list = contactInformationService.listForUser(user.getId());
         Contactinformation contact = list.isEmpty() ? null : list.get(0);
         model.addAttribute("contact", contact);
@@ -71,19 +61,16 @@ public class ProfileController {
     }
 
     @GetMapping("/contacts/new")
-    public String newProfileContact(Model model) {
-        getCurrentUser(); // just to ensure authenticated
-        model.addAttribute("context", "profile");
-        model.addAttribute("postUrl", "/profile/contacts/save");
-        model.addAttribute("backUrl", "/profile/contacts");
+    public String newProfileContact() {
         return "contact-form";
     }
 
     @PostMapping("/contacts/save")
-    public String saveProfileContact(@RequestParam(required = false) Integer id,
+    public String saveProfileContact(@AuthenticationPrincipal UserDetails ud,
+                                     @RequestParam(required = false) Integer id,
                                      @RequestParam(required = false) String phone,
                                      @RequestParam(required = false) String address) {
-        User user = getCurrentUser();
+        User user = getCurrentUser(ud);
         if (id == null) {
             contactInformationService.createForUser(user.getId(), phone, address);
         } else {
@@ -93,8 +80,9 @@ public class ProfileController {
     }
 
     @PostMapping("/contacts/delete")
-    public String deleteProfileContact(@RequestParam Integer id) {
-        User user = getCurrentUser();
+    public String deleteProfileContact(@AuthenticationPrincipal UserDetails ud,
+                                       @RequestParam Integer id) {
+        User user = getCurrentUser(ud);
         contactInformationService.deleteForUser(id, user.getId());
         return "redirect:/profile/contacts";
     }
@@ -104,8 +92,8 @@ public class ProfileController {
     }
 
     @GetMapping("/prescriptions")
-    public String prescriptions(Model model) {
-        User user = getCurrentUser();
+    public String prescriptions(@AuthenticationPrincipal UserDetails ud, Model model) {
+        User user = getCurrentUser(ud);
         Integer clientId = user.getId();
 
         boolean verified = isVerified(clientId);
