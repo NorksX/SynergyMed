@@ -3,14 +3,16 @@ package mk.ukim.finki.synergymed.web;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.synergymed.models.Client;
 import mk.ukim.finki.synergymed.models.User;
+import mk.ukim.finki.synergymed.repositories.UserRepository;
 import mk.ukim.finki.synergymed.service.ClientService;
 import mk.ukim.finki.synergymed.service.HealthProfileService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -20,23 +22,22 @@ public class HealthProfileController {
 
     private final HealthProfileService healthProfileService;
     private final ClientService clientService;
+    private final UserRepository userRepository;
 
-    // TODO: 28.8.2025 Only admins can access this
+    private User getCurrentUser(UserDetails ud) {
+        return userRepository.findByUsername(ud.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found: " + ud.getUsername()));
+    }
+
     @GetMapping("/create")
     public String getCreateHealthProfilePage(
             @RequestParam(required = false) String searchTerm,
-            HttpSession session,
+            @AuthenticationPrincipal UserDetails ud,
             Model model) {
 
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            return "redirect:/login";
-        }
-
+        User user = getCurrentUser(ud);
         model.addAttribute("user", user);
 
-        // Get clients without health profiles
         List<Client> clientsWithoutHealthProfile;
 
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
@@ -57,16 +58,10 @@ public class HealthProfileController {
     public String createHealthProfile(
             @RequestParam Integer clientId,
             @RequestParam String bloodType,
-            HttpSession session,
+            @AuthenticationPrincipal UserDetails ud,
             RedirectAttributes redirectAttributes) {
 
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        // TODO: Add admin role check here
+        User user = getCurrentUser(ud);
 
         try {
             Client client = clientService.findClientById(clientId);
@@ -77,8 +72,7 @@ public class HealthProfileController {
 
             return "redirect:/admin/health-profile/create";
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to create health profile: " + e.getMessage());
             return "redirect:/admin/health-profile/create";
         }
