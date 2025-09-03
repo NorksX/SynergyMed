@@ -38,14 +38,14 @@ public class BrandedMedicineController {
         return "index";
     }
 
-    @GetMapping("/branded-medicines/new")
+    @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("manufacturers", manufacturerService.findAll());
         model.addAttribute("mode", "create");
         return "branded-medicine-form";
     }
 
-    @GetMapping("/branded-medicines/{id}/edit")
+    @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Integer id, Model model) {
         Brandedmedicine bm = brandedMedicineService.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Branded medicine not found: " + id));
@@ -58,7 +58,7 @@ public class BrandedMedicineController {
         return "branded-medicine-form";
     }
 
-    @PostMapping("/branded-medicines/save")
+    @PostMapping("/save")
     public String save(
             @RequestParam(required = false) Integer id,
             @RequestParam Integer manufacturerId,
@@ -89,7 +89,7 @@ public class BrandedMedicineController {
     }
 
 
-    @PostMapping("/branded-medicines/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteBrandedMedicine(@PathVariable Integer id) throws IOException {
         brandedMedicineService.deleteById(id);
         return "redirect:/admin/branded-medicines";

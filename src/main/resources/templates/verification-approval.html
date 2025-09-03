@@ -9,6 +9,19 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100vh;background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);color:#1f2937}
+
+        .site-header{
+            position: sticky;
+            top:0; left:0; right:0;
+            width:100%;
+            border-radius:0;
+            margin:0;
+            z-index:1000;
+            background:#fff !important;
+            box-shadow:0 2px 10px rgba(0,0,0,.1);
+        }
+        .after-site-header{ height:16px; }
+
         .page{width:100%;max-width:900px;padding:28px;margin:0 auto}
         .card{background:#fff;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.10);overflow:hidden;margin-bottom:28px}
         .card-header{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;padding:20px 24px;font-size:1.3rem;font-weight:600}
@@ -25,6 +38,7 @@
 </head>
 <body>
 <th:block th:replace="fragments/header :: siteHeader('verification')"></th:block>
+<div class="after-site-header"></div>
 
 <div class="page">
     <div class="card">
@@ -42,13 +56,13 @@
             </div>
 
             <div class="actions">
-                <form th:action="@{/admin/verification/{id}/approve(id=${item.id})}" method="post">
+                <form th:action="@{/pharmacist/verification/{id}/approve(id=${item.id})}" method="post">
                     <button type="submit" class="btn btn-primary">Одобри</button>
                 </form>
-                <form th:action="@{/admin/verification/{id}/deny(id=${item.id})}" method="post">
+                <form th:action="@{/pharmacist/verification/{id}/deny(id=${item.id})}" method="post">
                     <button type="submit" class="btn btn-danger">Одби</button>
                 </form>
-                <a class="btn" th:href="@{/admin/verification}">Назад</a>
+                <a class="btn" th:href="@{/pharmacist/verification}">Назад</a>
             </div>
         </div>
     </div>

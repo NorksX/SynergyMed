@@ -5,198 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SynergyMed - Најава</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #a4ecba 0%, #fefeff 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
     }
-
-    .login-container {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      width: 100%;
-      max-width: 400px;
-      backdrop-filter: blur(10px);
-    }
-
-    .login-header {
-      background: linear-gradient(135deg, #20b2aa, #48d1cc);
-      padding: 40px 30px;
-      text-align: center;
-      color: white;
-    }
-
-    .login-header h1 {
-      font-size: 2rem;
-      font-weight: 300;
-      margin-bottom: 8px;
-    }
-
-    .login-header p {
-      opacity: 0.9;
-      font-size: 0.9rem;
-    }
-
-    .login-form {
-      padding: 40px 30px;
-    }
-
-    .form-group {
-      margin-bottom: 25px;
-      position: relative;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #555;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 15px 20px;
-      border: 2px solid #e1e5e9;
-      border-radius: 12px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: #f8f9fa;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: #20b2aa;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.1);
-    }
-
-    .btn-login {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #20b2aa, #48d1cc);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(32, 178, 170, 0.3);
-    }
-
-    .btn-login:active {
-      transform: translateY(0);
-    }
-
-    .alert {
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-    }
-
-    .alert-danger {
-      background-color: #fee;
-      color: #c33;
-      border: 1px solid #fcc;
-    }
-
-    .alert-success {
-      background-color: #efe;
-      color: #363;
-      border: 1px solid #cfc;
-    }
-
-    .forgot-password {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .forgot-password a {
-      color: #20b2aa;
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.3s ease;
-    }
-
-    .forgot-password a:hover {
-      color: #1a9999;
-      text-decoration: underline;
-    }
-
-    .loading {
-      display: none;
-      position: relative;
-    }
-
-    .loading::after {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      margin: auto;
-      border: 2px solid transparent;
-      border-top-color: #ffffff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    @keyframes spin {
-      0% { transform: translate(-50%, -50%) rotate(0deg); }
-      100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
-    .form-footer {
-      text-align: center;
-      padding: 20px 30px;
-      background-color: #f8f9fa;
-      border-top: 1px solid #e9ecef;
-    }
-
-    .form-footer p {
-      color: #6c757d;
-      font-size: 0.85rem;
-    }
-
+    .login-container { background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; width: 100%; max-width: 400px; backdrop-filter: blur(10px); }
+    .login-header { background: linear-gradient(135deg, #20b2aa, #48d1cc); padding: 40px 30px; text-align: center; color: white; }
+    .login-header h1 { font-size: 2rem; font-weight: 300; margin-bottom: 8px; }
+    .login-header p { opacity: 0.9; font-size: 0.9rem; }
+    .login-form { padding: 40px 30px; }
+    .form-group { margin-bottom: 25px; position: relative; }
+    .form-group label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; font-size: 0.9rem; }
+    .form-control { width: 100%; padding: 15px 20px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease; background: #f8f9fa; }
+    .form-control:focus { outline: none; border-color: #20b2aa; background: white; box-shadow: 0 0 0 3px rgba(32,178,170,0.1); }
+    .btn-login { width: 100%; padding: 15px; background: linear-gradient(135deg, #20b2aa, #48d1cc); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(32,178,170,0.3); }
+    .btn-login:active { transform: translateY(0); }
+    .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; }
+    .alert-danger { background-color: #fee; color: #c33; border: 1px solid #fcc; }
+    .alert-success { background-color: #efe; color: #363; border: 1px solid #cfc; }
+    .forgot-password { text-align: center; margin-top: 20px; }
+    .forgot-password a { color: #20b2aa; text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease; }
+    .forgot-password a:hover { color: #1a9999; text-decoration: underline; }
+    .loading { display: none; position: relative; }
+    .loading::after { content: ''; position: absolute; width: 20px; height: 20px; margin: auto; border: 2px solid transparent; border-top-color: #ffffff; border-radius: 50%; animation: spin 1s linear infinite; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    @keyframes spin { 0% { transform: translate(-50%,-50%) rotate(0deg); } 100% { transform: translate(-50%,-50%) rotate(360deg); } }
+    .form-footer { text-align: center; padding: 20px 30px; background-color: #f8f9fa; border-top: 1px solid #e9ecef; }
+    .form-footer p { color: #6c757d; font-size: 0.85rem; }
     @media (max-width: 480px) {
-      .login-container {
-        margin: 10px;
-        border-radius: 15px;
-      }
-
-      .login-header {
-        padding: 30px 20px;
-      }
-
-      .login-form {
-        padding: 30px 20px;
-      }
-
-      .login-header h1 {
-        font-size: 1.7rem;
-      }
+      .login-container { margin: 10px; border-radius: 15px; }
+      .login-header { padding: 30px 20px; }
+      .login-form { padding: 30px 20px; }
+      .login-header h1 { font-size: 1.7rem; }
     }
   </style>
 </head>
@@ -208,12 +50,17 @@
   </div>
 
   <div class="login-form">
-    <!-- Error message -->
+    <!-- Bad credentials (Spring Security redirects to /login?error) -->
+    <div th:if="${param.error}" class="alert alert-danger">
+      <span>Неточни корисничко име или лозинка.</span>
+    </div>
+
+    <!-- Error message from server-side model (optional, existing) -->
     <div th:if="${error}" class="alert alert-danger">
       <span th:text="${error}">Неточни креденцијали</span>
     </div>
 
-    <!-- Success message -->
+    <!-- Success message (e.g., from registration or logout) -->
     <div th:if="${message}" class="alert alert-success">
       <span th:text="${message}">Порака за успех</span>
     </div>
@@ -221,23 +68,14 @@
     <form th:action="@{/login}" method="post" id="loginForm">
       <div class="form-group">
         <label for="username">Корисничко име</label>
-        <input type="text"
-               id="username"
-               name="username"
-               class="form-control"
-               th:value="${username}"
-               placeholder="Внесете корисничко име"
-               required>
+        <input type="text" id="username" name="username" class="form-control"
+               th:value="${username}" placeholder="Внесете корисничко име" required>
       </div>
 
       <div class="form-group">
         <label for="password">Лозинка</label>
-        <input type="password"
-               id="password"
-               name="password"
-               class="form-control"
-               placeholder="Внесете лозинка"
-               required>
+        <input type="password" id="password" name="password" class="form-control"
+               placeholder="Внесете лозинка" required>
       </div>
 
       <button type="submit" class="btn-login" id="loginBtn">
@@ -261,23 +99,14 @@
     const btn = document.getElementById('loginBtn');
     const btnText = btn.querySelector('.btn-text');
     const loading = btn.querySelector('.loading');
-
     btnText.style.display = 'none';
     loading.style.display = 'block';
     btn.disabled = true;
   });
 
-  // Add input focus animations
   document.querySelectorAll('.form-control').forEach(input => {
-    input.addEventListener('focus', function() {
-      this.parentElement.classList.add('focused');
-    });
-
-    input.addEventListener('blur', function() {
-      if (!this.value) {
-        this.parentElement.classList.remove('focused');
-      }
-    });
+    input.addEventListener('focus', function() { this.parentElement.classList.add('focused'); });
+    input.addEventListener('blur', function() { if (!this.value) { this.parentElement.classList.remove('focused'); } });
   });
 </script>
 </body>

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/medicine/interactions")
+@RequestMapping("/pharmacist/medicine/interactions")
 @RequiredArgsConstructor
 public class MedicineInteractionController {
 

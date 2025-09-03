@@ -47,11 +47,21 @@
         .nav-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
         .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:.3s; font-weight:500; }
         .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
-        .logout-btn {
-            margin-left:auto; background:linear-gradient(135deg,#ff6b6b,#ee5а24); color:white; padding:10px 20px; border-radius:25px;
-            text-decoration:none; font-weight:600; border:none; box-shadow:0 5px 15px rgba(238,90,36,.30); transition:.2s; display:inline-flex; align-items:center;
+        .logout-btn{
+            margin-left:auto;
+            background-color:#ee5a24;
+            background-image:linear-gradient(135deg,#ff6b6b,#ee5a24);
+            color:#fff;
+            padding:10px 20px;
+            border-radius:25px;
+            text-decoration:none;
+            font-weight:600;
+            border:none;
+            box-shadow:0 5px 15px rgba(238,90,36,.30);
+            transition:.2s;
+            display:inline-flex; align-items:center;
         }
-        .logout-btn:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(238,90,36,.35); }
+        .logout-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 20px rgba(238,90,36,.35); }
 
         .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.1); overflow: hidden; }
@@ -104,12 +114,12 @@
     <!-- Navigation -->
     <div class="nav-bar">
         <div class="nav-links">
-            <a th:href="@{/profile}" class="nav-link">Профил</a>
-            <a th:href="@{/profile/prescriptions}" class="nav-link active">Рецепти</a>
-            <a th:href="@{/profile/clubcard}" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Клуб-картичка</a>
-            <a th:href="@{/allergies/manage}" class="nav-link">Управување со алергии</a>
-            <a th:href="@{/profile/contacts}" class="nav-link">Контакт податоци</a>
-            <a th:href="@{/logout}" class="logout-btn">Одјава</a>
+            <a th:href="@{/profile}" class="nav-link" th:classappend="${activeTab}=='profile' ? ' active'">Профил</a>
+            <a th:href="@{/profile/prescriptions}" sec:authorize="hasRole('CLIENT')" class="nav-link" th:classappend="${activeTab}=='prescriptions' ? ' active'">Рецепти</a>
+            <a th:href="@{/profile/clubcard}" sec:authorize="hasRole('CLIENT')" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Клуб-картичка</a>
+            <a th:href="@{/allergies/manage}" sec:authorize="hasRole('CLIENT')"  class="nav-link">Управување со алергии</a>
+            <a th:href="@{/profile/contacts}"  class="nav-link" th:classappend="${activeTab}=='contacts' ? ' active'">Контакт податоци</a>
+            <a th:href="@{/logout}" class="logout-btn">Одјави се</a>
         </div>
     </div>
 

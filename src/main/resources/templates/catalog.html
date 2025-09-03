@@ -45,7 +45,7 @@
     <div class="card">
         <div class="card-header">
             <span>Производи</span>
-            <a sec:authorize="hasRole('ADMIN')" class="btn btn-primary" th:href="@{/catalog/edit}">Измени ги достапните производи</a>
+            <a sec:authorize="hasAnyRole('PHARMACIST','ADMIN')" class="btn btn-primary" th:href="@{/catalog/edit}">Измени ги достапните производи</a>
         </div>
         <div class="card-body">
             <div th:if="${#lists.isEmpty(medicines)}" class="muted">Нема достапни производи.</div>
@@ -61,7 +61,7 @@
                         <div class="price" th:text="${#numbers.formatDecimal(m.price, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</div>
                         <form th:action="@{/cart/add/{id}(id=${m.id})}" method="post" style="display:inline;">
                             <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <button type="submit" class="btn-outline add-to-cart-btn" th:data-name="${m.name}">Додај во кошничка</button>
+                            <button type="submit" sec:authorize="hasRole('CLIENT')" class="btn-outline add-to-cart-btn" th:data-name="${m.name}">Додај во кошничка</button>
                         </form>
                     </div>
                 </div>

@@ -230,7 +230,7 @@
     <div class="header">
         <h2>Брендирани лекови</h2>
         <div class="header-buttons">
-            <a class="btn btn-primary" th:href="@{/branded-medicines/new}">Креирај</a>
+            <a class="btn btn-primary" th:href="@{/admin/branded-medicines/new}">Креирај</a>
         </div>
     </div>
 
@@ -248,7 +248,7 @@
                          th:text="${#numbers.formatDecimal(bm.price, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</div>
 
                     <div class="button-group">
-                        <a class="btn-outline" th:href="@{/branded-medicines/{id}/edit(id=${bm.id})}">Уреди</a>
+                        <a class="btn-outline" th:href="@{/admin/branded-medicines/{id}/edit(id=${bm.id})}">Уреди</a>
                     </div>
                 </div>
             </div>

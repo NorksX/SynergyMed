@@ -153,8 +153,7 @@
     <div class="nav-bar">
         <div class="nav-links">
             <a href="/admin/dashboard" class="nav-link">Табла</a>
-            <a href="/admin/clients" class="nav-link">Управување со клиенти</a>
-            <a href="/admin/health-profile/create" class="nav-link active">Креирај здравствен профил</a>
+            <a href="/pharmacist/health-profile/create" class="nav-link active">Креирај здравствен профил</a>
             <a href="/profile" class="nav-link">Назад кон профил</a>
         </div>
     </div>
@@ -169,7 +168,7 @@
             <div class="card-header">Креирај здравствен профил за клиент</div>
             <div class="card-body">
                 <!-- Search -->
-                <form class="search-form" th:action="@{/admin/health-profile/create}" method="get">
+                <form class="search-form" th:action="@{/pharmacist/health-profile/create}" method="get">
                     <input type="text" name="searchTerm" class="search-input"
                            placeholder="Пребарај клиенти по име или презиме..."
                            th:value="${searchTerm}">
@@ -195,7 +194,7 @@
                 <div th:if="${#lists.isEmpty(clients)}" class="alert alert-info">Нема пронајдени клиенти.</div>
 
                 <!-- Form -->
-                <form th:action="@{/admin/health-profile/create}" method="post" id="createProfileForm">
+                <form th:action="@{/pharmacist/health-profile/create}" method="post" id="createProfileForm">
                     <input type="hidden" name="clientId" id="selectedClientId">
                     <div id="selectedClientInfo" class="selected-client-info" style="display:none;">
                         <h4>Се креира профил за:</h4>
