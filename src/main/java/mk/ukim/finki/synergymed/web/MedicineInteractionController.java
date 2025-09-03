@@ -22,19 +22,24 @@ public class MedicineInteractionController {
     public String getInteractions(Model model) {
         List<Medicine> medicineList = medicineService.findAll();
         model.addAttribute("medicineList", medicineList);
-
         return "medicine-interactions";
     }
 
     @PostMapping("/search")
     public String searchInteractions(@RequestParam String searchTerm,
                                      Model model) {
-
         List<Medicine> medicineList = medicineService.findAll();
         model.addAttribute("medicineList", medicineList);
+        model.addAttribute("searchedMedicine", searchTerm);
+
         try {
             List<Medicineinteraction> interactions = medicineService.interactions(searchTerm);
             model.addAttribute("interactions", interactions);
+
+            if (interactions.isEmpty()) {
+                model.addAttribute("hasInfo", true);
+                model.addAttribute("info", "Нема пронајдени интеракции за " + searchTerm);
+            }
 
         } catch (RuntimeException ex) {
             model.addAttribute("hasError", true);
@@ -49,10 +54,11 @@ public class MedicineInteractionController {
 
         List<Medicine> medicineList = medicineService.findAll();
         model.addAttribute("medicineList", medicineList);
+
         try {
             Optional<Medicine> optMedicine = medicineService.findById(id);
             if (optMedicine.isEmpty()) {
-                throw new RuntimeException("Medicine not found");
+                throw new RuntimeException("Лекот не е пронајден");
             }
 
             Medicine medicine = optMedicine.get();
@@ -62,7 +68,7 @@ public class MedicineInteractionController {
 
             if (interactions.isEmpty()) {
                 model.addAttribute("hasInfo", true);
-                model.addAttribute("info", "No interactions found for " + medicine.getMedicineName());
+                model.addAttribute("info", "Нема пронајдени интеракции за " + medicine.getMedicineName());
             }
 
         } catch (RuntimeException ex) {
@@ -88,20 +94,21 @@ public class MedicineInteractionController {
                                   Model model) {
         try {
             if (medicine1Id.equals(medicine2Id)) {
-                throw new RuntimeException("You cannot select the same medicine twice.");
+                throw new RuntimeException("Не можете да изберете ист лек двапати.");
             }
 
             Optional<Medicine> med1 = medicineService.findById(medicine1Id);
             Optional<Medicine> med2 = medicineService.findById(medicine2Id);
 
             if (med1.isEmpty() || med2.isEmpty()) {
-                throw new RuntimeException("The selected medicine does not exist.");
+                throw new RuntimeException("Избраниот лек не постои.");
             }
 
             medicineService.addInteraction(med1.get(), med2.get(), type, description, severity);
 
             model.addAttribute("hasSuccess", true);
-            model.addAttribute("success", "Interaction successfully added.");
+            model.addAttribute("success", "Интеракцијата е успешно додадена.");
+
         } catch (RuntimeException ex) {
             model.addAttribute("hasError", true);
             model.addAttribute("error", ex.getMessage());
