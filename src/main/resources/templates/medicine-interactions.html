@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="mk" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SynergyMed - Интеракции на лекови</title>
 
-    <!-- Header styles -->
-    <th:block th:replace="fragments/header :: headerStyles"></th:block>
+    <!-- Header styles (новата синтакса со ~{}) -->
+    <th:block th:replace="~{fragments/header :: headerStyles}"></th:block>
 
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -16,18 +16,10 @@
             min-height:100vh;
         }
 
-        /* Full-width global header - FIXED STYLING */
         .site-header {
-            position:sticky;
-            top:0;
-            left:0;
-            right:0;
-            width:100%;
-            border-radius:0;
-            margin:0;
-            z-index:1000;
-            background:white !important; /* Force white background */
-            box-shadow:0 2px 10px rgba(0,0,0,0.1); /* Add subtle shadow */
+            position:sticky; top:0; left:0; right:0; width:100%;
+            border-radius:0; margin:0; z-index:1000; background:white !important;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
         }
 
         .container { max-width:1000px; margin:0 auto; padding:20px; }
@@ -64,7 +56,7 @@
 
         .medicine-name { font-weight:600; color:#333; margin-bottom:8px; font-size:1.2rem; }
         .medicine-ingredient { color:#666; font-size:0.9rem; margin-bottom:15px; font-style:italic; }
-        .check-interactions-btn { width:100%; padding:12px; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border:none; border-radius:10px; font-weight:600; cursor:pointer; transition:all .3s ease; text-decoration:none; display:block; text-align:center; }
+        .check-interactions-btn { width:100%; padding:12px; background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border:none; border-radius:10px; font-weight:600; cursor:pointer; transition:all .3с ease; text-decoration:none; display:block; text-align:center; }
         .check-interactions-btn:hover { color:white; transform:translateY(-2px); box-shadow:0 8px 20px rgba(32,178,170,.3); }
 
         .interaction-item { background:#f8f9fa; border-radius:15px; padding:20px; margin-bottom:15px; border-left:4px solid #20b2aa; position:relative; }
@@ -104,7 +96,7 @@
 <body>
 
 <!-- Global header -->
-<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
+<th:block th:replace="~{fragments/header :: siteHeader(${null})}"></th:block>
 
 <div class="container">
     <!-- Header -->
@@ -120,11 +112,11 @@
         <div class="nav-links">
             <a href="#" class="nav-link">Лекови</a>
             <a href="#" class="nav-link active">Интеракции</a>
-            <a href="#" class="nav-link back-btn">Назад кон таблата</a>
+            <a href="#" class="nav-link back-btn" th:href="@{/}">Назад кон таблата</a>
         </div>
     </div>
 
-    <!-- Alert Messages -->
+    <!-- Alerts -->
     <div th:if="${hasError}" class="alert alert-danger">
         <span th:text="${error}">Порака за грешка</span>
     </div>
@@ -133,7 +125,11 @@
         <span th:text="${info}">Информативна порака</span>
     </div>
 
-    <!-- Search Section -->
+    <div th:if="${hasSuccess}" class="alert alert-success">
+        <span th:text="${success}">Порака за успех</span>
+    </div>
+
+    <!-- Search -->
     <div class="card">
         <div class="card-header">Пребарај интеракции на лекови</div>
         <div class="card-body">
@@ -143,15 +139,83 @@
                            class="form-control"
                            name="searchTerm"
                            placeholder="Внесете име на лек за проверка на интеракции..."
-                           th:value="${searchedMedicine != null ? searchedMedicine : ''}">
+                           th:value="${searchedMedicine != null ? searchedMedicine : ''}"
+                           required>
                 </div>
                 <button type="submit" class="btn-submit">Пребарај интеракции</button>
             </form>
         </div>
     </div>
 
+    <!-- Current results summary -->
+    <div class="current-results" th:if="${searchedMedicine != null}">
+        <h3 th:text="'Пребарување за: ' + ${searchedMedicine}">Пребарување: </h3>
+        <p th:if="${interactions != null}"
+           th:text="'Пронајдени интеракции: ' + ${#lists.size(interactions)}">Пронајдени интеракции: 0</p>
+    </div>
+
     <!-- Interaction Results -->
     <div th:if="${interactions != null}" class="card">
         <div class="card-header">
             Резултати од интеракции
-            <span th:if="${searchedMedicine != null and !searched
+            <span th:if="${searchedMedicine != null}"
+                  th:text="' — за ' + ${searchedMedicine}"></span>
+        </div>
+
+        <div class="card-body">
+            <!-- No interactions -->
+            <div th:if="${#lists.isEmpty(interactions)}" class="no-interactions">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                <p>Нема пронајдени ризични интеракции за ова пребарување.</p>
+            </div>
+
+            <!-- List interactions -->
+            <div th:if="${!#lists.isEmpty(interactions)}">
+                <div th:each="interaction : ${interactions}"
+                     class="interaction-item"
+                     th:classappend="${'severity-' + (#strings.toLowerCase(interaction.severity != null ? interaction.severity : 'low'))}">
+
+                    <span class="severity-badge"
+                          th:classappend="${#strings.toLowerCase(interaction.severity != null ? interaction.severity : 'low')}"
+                          th:text="${interaction.severity != null ? interaction.severity : 'LOW'}">LOW</span>
+
+                    <!-- Medicine names -->
+                    <div class="interaction-medicines"
+                         th:text="${
+                            ((interaction.medicineId1 != null and interaction.medicineId1.medicineName != null)
+                                ? interaction.medicineId1.medicineName : 'Лек A')
+                            + ' + ' +
+                            ((interaction.medicineId2 != null and interaction.medicineId2.medicineName != null)
+                                ? interaction.medicineId2.medicineName : 'Лек B')
+                         }">Лек A + Лек B</div>
+
+                    <!-- Type -->
+                    <div class="interaction-type"
+                         th:text="${interaction.type != null ? interaction.type : 'Интеракција'}">Интеракција</div>
+
+                    <!-- Description -->
+                    <div class="interaction-description"
+                         th:text="${interaction.description ?: 'Нема детален опис.'}">Описание…</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All medicines -->
+    <div th:if="${medicineList != null and !#lists.isEmpty(medicineList)}" class="card">
+        <div class="card-header">Сите лекови - кликнете за проверка на интеракции</div>
+        <div class="card-body">
+            <div class="medicine-grid">
+                <div class="medicine-card" th:each="m : ${medicineList}">
+                    <div class="medicine-name" th:text="${m.medicineName}">Име на лек</div>
+                    <div class="medicine-ingredient" th:text="${m.activeIngredient}">Активна состојка</div>
+                    <a th:href="@{'/medicine/interactions/' + ${m.id}}"
+                       class="check-interactions-btn">Провери интеракции</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
