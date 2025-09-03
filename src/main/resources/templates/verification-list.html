@@ -3,7 +3,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Pending Verifications</title>
+    <title>Барања на чекање за верификација</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
     <style>
@@ -21,19 +21,19 @@
     </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader('verification', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('verification')"></th:block>
 
 <div class="page">
     <div class="card">
-        <div class="card-header">Pending Verifications</div>
+        <div class="card-header">Барања на чекање за верификација</div>
         <div class="card-body">
-            <div th:if="${#lists.isEmpty(pending)}" class="muted">No applications are currently pending.</div>
+            <div th:if="${#lists.isEmpty(pending)}" class="muted">Нема барања на чекање во моментов.</div>
             <div class="grid" th:if="${!#lists.isEmpty(pending)}">
                 <!-- Iterate pending rows with th:each -->
                 <div class="tile"
                      th:each="p : ${pending}"
                      th:attr="data-href=@{/admin/verification/{id}(id=${p.id})}">
-                    <div class="name" th:text="${p.client.users.firstName + ' ' + p.client.users.lastName}">Client Name</div>
+                    <div class="name" th:text="${p.client.users.firstName + ' ' + p.client.users.lastName}">Име на клиент</div>
                 </div>
             </div>
         </div>

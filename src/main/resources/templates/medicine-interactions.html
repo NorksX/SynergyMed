@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynergyMed - Medicine Interactions</title>
+    <title>SynergyMed - Интеракции на лекови</title>
 
     <!-- Header styles -->
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
@@ -104,48 +104,48 @@
 <body>
 
 <!-- Global header -->
-<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="container">
     <!-- Header -->
     <div class="header">
         <div class="header-content">
-            <h1>Medicine Interactions</h1>
-            <p>Check for potential drug interactions to ensure safe medication combinations</p>
+            <h1>Интеракции на лекови</h1>
+            <p>Проверете можни интеракции меѓу лекови за безбедни комбинации на терапија</p>
         </div>
     </div>
 
     <!-- Navigation -->
     <div class="nav-bar">
         <div class="nav-links">
-            <a href="#" class="nav-link">Medicine</a>
-            <a href="#" class="nav-link active">Interactions</a>
-            <a href="#" class="nav-link back-btn">Back to Dashboard</a>
+            <a href="#" class="nav-link">Лекови</a>
+            <a href="#" class="nav-link active">Интеракции</a>
+            <a href="#" class="nav-link back-btn">Назад кон таблата</a>
         </div>
     </div>
 
     <!-- Alert Messages -->
     <div th:if="${hasError}" class="alert alert-danger">
-        <span th:text="${error}">Error message</span>
+        <span th:text="${error}">Порака за грешка</span>
     </div>
 
     <div th:if="${hasInfo}" class="alert alert-info">
-        <span th:text="${info}">Info message</span>
+        <span th:text="${info}">Информативна порака</span>
     </div>
 
     <!-- Search Section -->
     <div class="card">
-        <div class="card-header">Search for Medicine Interactions</div>
+        <div class="card-header">Пребарај интеракции на лекови</div>
         <div class="card-body">
             <form th:action="@{/medicine/interactions/search}" method="post" class="search-form">
                 <div class="form-group search-input">
                     <input type="text"
                            class="form-control"
                            name="searchTerm"
-                           placeholder="Enter medicine name to check interactions..."
+                           placeholder="Внесете име на лек за проверка на интеракции..."
                            th:value="${searchedMedicine != null ? searchedMedicine : ''}">
                 </div>
-                <button type="submit" class="btn-submit">Search Interactions</button>
+                <button type="submit" class="btn-submit">Пребарај интеракции</button>
             </form>
         </div>
     </div>
@@ -153,87 +153,5 @@
     <!-- Interaction Results -->
     <div th:if="${interactions != null}" class="card">
         <div class="card-header">
-            Interaction Results
-            <span th:if="${searchedMedicine != null and !searchedMedicine.isEmpty()}"
-                  style="font-weight:400; opacity:0.9;">
-                for <strong th:text="${searchedMedicine}"></strong>
-            </span>
-        </div>
-        <div class="card-body">
-            <div th:if="${interactions.isEmpty()}" class="no-interactions">
-                <i>✓</i>
-                <h4>No Interactions Found</h4>
-                <p>This medicine appears to have no recorded interactions with other medicines in our database.</p>
-            </div>
-
-            <div th:if="${!interactions.isEmpty()}">
-                <div th:each="interaction : ${interactions}"
-                     class="interaction-item"
-                     th:classappend="${interaction.severity.toLowerCase() == 'high'} ? 'severity-high' :
-                                        (${interaction.severity.toLowerCase() == 'medium'} ? 'severity-medium' : 'severity-low')">
-
-                        <span class="severity-badge"
-                              th:classappend="${interaction.severity.toLowerCase() == 'high'} ? 'high' :
-                                             (${interaction.severity.toLowerCase() == 'medium'} ? 'medium' : 'low')"
-                              th:text="${interaction.severity}">Severity</span>
-
-                    <div class="interaction-medicines">
-                        <span th:text="${interaction.medicineId1.medicineName}">Medicine 1</span>
-                        <span style="color:#888; font-weight:400;"> ↔ </span>
-                        <span th:text="${interaction.medicineId2.medicineName}">Medicine 2</span>
-                    </div>
-
-                    <div class="interaction-type" th:text="${interaction.type}">Interaction Type</div>
-
-                    <div class="interaction-description"
-                         th:if="${interaction.description != null and !interaction.description.isEmpty()}"
-                         th:text="${interaction.description}">Description</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- All Medicines -->
-    <div class="card">
-        <div class="card-header">All Available Medicines</div>
-        <div class="card-body">
-            <div th:if="${medicineList != null and !medicineList.isEmpty()}" class="medicine-grid">
-                <div th:each="medicine : ${medicineList}" class="medicine-card">
-                    <div class="medicine-name" th:text="${medicine.medicineName}">Medicine Name</div>
-                    <div class="medicine-ingredient" th:text="${medicine.activeIngredient}">Active Ingredient</div>
-                    <a th:href="@{/medicine/interactions/{id}(id=${medicine.id})}"
-                       class="check-interactions-btn">Check Interactions</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- Dropdown script -->
-<th:block th:replace="fragments/header :: headerScripts"></th:block>
-
-<script>
-    // Add loading state to search form
-    document.querySelector('form').addEventListener('submit', function() {
-        const btn = this.querySelector('.btn-submit');
-        btn.textContent = 'Searching...';
-        btn.disabled = true;
-    });
-
-    // Add subtle animations
-    document.addEventListener('DOMContentLoaded', function() {
-        const cards = document.querySelectorAll('.medicine-card');
-        cards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                card.style.transition = 'all 0.5s ease';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 100);
-        });
-    });
-</script>
-</body>
-</html>
+            Резултати од интеракции
+            <span th:if="${searchedMedicine != null and !searched

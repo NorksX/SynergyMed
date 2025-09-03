@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynergyMed - Profile</title>
+    <title>SynergyMed - Профил</title>
 
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
 
@@ -106,7 +106,7 @@
 </head>
 <body>
 
-<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="container">
     <!-- Profile Header (same as profile) -->
@@ -120,9 +120,9 @@
                 <p th:text="'@' + ${username}">@johndoe</p>
                 <p th:text="${user.email}">john.doe@email.com</p>
                 <div class="profile-meta">
-                    <div class="meta-item" th:text="'Member since ' + ${#temporals.format(user.dateCreated, 'MMM yyyy')}">Member since Jan 2024</div>
-                    <div class="meta-item" th:text="'Age ' + ${T(java.time.Period).between(user.dateOfBirth, T(java.time.LocalDate).now()).getYears()}">Age 30</div>
-                    <div class="meta-item" th:text="${user.gender ?: 'Not specified'}">Male</div>
+                    <div class="meta-item" th:text="'Член од ' + ${#temporals.format(user.dateCreated, 'MMM yyyy')}">Член од јан 2024</div>
+                    <div class="meta-item" th:text="'Возраст ' + ${T(java.time.Period).between(user.dateOfBirth, T(java.time.LocalDate).now()).getYears()}">Возраст 30</div>
+                    <div class="meta-item" th:text="${user.gender ?: 'Не е наведено'}">Машки</div>
                 </div>
             </div>
         </div>
@@ -131,12 +131,12 @@
     <!-- Nav with Contact Info active -->
     <div class="nav-bar">
         <div class="nav-links">
-            <a th:href="@{/profile}" class="nav-link" th:classappend="${activeTab}=='profile' ? ' active'">Profile</a>
-            <a th:href="@{/profile/prescriptions}" class="nav-link" th:classappend="${activeTab}=='prescriptions' ? ' active'">Prescriptions</a>
-            <a th:href="@{/profile/clubcard}" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Club Card</a>
-            <a th:href="@{/allergies/manage}" class="nav-link">Manage Allergies</a>
-            <a th:href="@{/profile/contacts}" class="nav-link" th:classappend="${activeTab}=='contacts' ? ' active'">Contact Info</a>
-            <a th:href="@{/logout}" class="logout-btn">Logout</a>
+            <a th:href="@{/profile}" class="nav-link" th:classappend="${activeTab}=='profile' ? ' active'">Профил</a>
+            <a th:href="@{/profile/prescriptions}" class="nav-link" th:classappend="${activeTab}=='prescriptions' ? ' active'">Рецепти</a>
+            <a th:href="@{/profile/clubcard}" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Клуб-картичка</a>
+            <a th:href="@{/allergies/manage}" class="nav-link">Управување со алергии</a>
+            <a th:href="@{/profile/contacts}" class="nav-link" th:classappend="${activeTab}=='contacts' ? ' active'">Контакт податоци</a>
+            <a th:href="@{/logout}" class="logout-btn">Одјава</a>
         </div>
     </div>
 
@@ -145,41 +145,41 @@
     <div class="main-content">
         <!-- Left: same personal info card as profile -->
         <div class="card">
-            <div class="card-header">Personal Information</div>
+            <div class="card-header">Лични информации</div>
             <div class="card-body">
                 <div class="info-grid">
-                    <div class="info-item"><span class="info-label">Full Name</span><span class="info-value" th:text="${user.firstName + ' ' + user.lastName}">John Doe</span></div>
-                    <div class="info-item"><span class="info-label">Username</span><span class="info-value" th:text="${username}">johndoe</span></div>
-                    <div class="info-item"><span class="info-label">Email</span><span class="info-value" th:text="${user.email}">john@email.com</span></div>
-                    <div class="info-item"><span class="info-label">Date of Birth</span><span class="info-value" th:text="${#temporals.format(user.dateOfBirth, 'dd MMM yyyy')}">15 Jan 1990</span></div>
-                    <div class="info-item"><span class="info-label">Gender</span><span class="info-value" th:text="${user.gender ?: 'Not specified'}">Male</span></div>
-                    <div class="info-item"><span class="info-label">Member Since</span><span class="info-value" th:text="${#temporals.format(user.dateCreated, 'dd MMM yyyy')}">01 Jan 2024</span></div>
+                    <div class="info-item"><span class="info-label">Целосно име</span><span class="info-value" th:text="${user.firstName + ' ' + user.lastName}">John Doe</span></div>
+                    <div class="info-item"><span class="info-label">Корисничко име</span><span class="info-value" th:text="${username}">johndoe</span></div>
+                    <div class="info-item"><span class="info-label">Е-пошта</span><span class="info-value" th:text="${user.email}">john@email.com</span></div>
+                    <div class="info-item"><span class="info-label">Датум на раѓање</span><span class="info-value" th:text="${#temporals.format(user.dateOfBirth, 'dd MMM yyyy')}">15 Jan 1990</span></div>
+                    <div class="info-item"><span class="info-label">Пол</span><span class="info-value" th:text="${user.gender ?: 'Не е наведено'}">Машки</span></div>
+                    <div class="info-item"><span class="info-label">Член од</span><span class="info-value" th:text="${#temporals.format(user.dateCreated, 'dd MMM yyyy')}">01 Jan 2024</span></div>
                 </div>
             </div>
         </div>
 
         <!-- Right: Contact Information (two editable fields; create/update in one form) -->
         <div class="card">
-            <div class="card-header">Contact Information</div>
+            <div class="card-header">Контакт податоци</div>
             <div class="card-body">
                 <!-- Save form (create or update) -->
                 <form th:action="@{/profile/contacts/save}" method="post" style="display:inline;">
                     <input type="hidden" name="id" th:if="${contact != null}" th:value="${contact.id}">
                     <div class="row">
-                        <label for="phone">Phone</label>
+                        <label for="phone">Телефон</label>
                         <input id="phone" name="phone" type="text"
                                th:value="${contact != null ? contact.phone : ''}"
                                placeholder="+389 70 000 000">
                     </div>
                     <div class="row">
-                        <label for="address">Address</label>
+                        <label for="address">Адреса</label>
                         <input id="address" name="address" type="text"
                                th:value="${contact != null ? contact.address : ''}"
-                               placeholder="Street, City">
+                               placeholder="Улица, Град">
                     </div>
                     <div class="actions" style="align-items:center;">
                         <button type="submit" class="btn btn-primary"
-                                th:text="${contact != null} ? 'Update' : 'Create'">Create</button>
+                                th:text="${contact != null} ? 'Ажурирај' : 'Креирај'">Креирај</button>
                     </div>
                 </form>
 
@@ -188,12 +188,12 @@
                       th:action="@{/profile/contacts/delete}"
                       method="post" style="display:inline;">
                     <input type="hidden" name="id" th:value="${contact.id}">
-                    <button type="submit" class="btn btn-danger" style="margin-left:12px;">Delete</button>
+                    <button type="submit" class="btn btn-danger" style="margin-left:12px;">Избриши</button>
                 </form>
 
                 <!-- Optional helper when creating -->
                 <p class="info-value" th:if="${contact == null}" style="margin-top:10px;color:#6b7280;">
-                    Fill the fields and press Create to add contact info.
+                    Пополнете ги полињата и притиснете „Креирај“ за да додадете контакт податоци.
                 </p>
             </div>
         </div>

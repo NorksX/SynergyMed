@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SynergyMed – Payment</title>
+  <title>SynergyMed – Уплата</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <th:block th:replace="fragments/header :: headerStyles"></th:block>
   <style>
@@ -29,38 +29,38 @@
   </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader('payment', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('payment')"></th:block>
 
 <div class="container">
   <div class="card">
-    <div class="card-header">Complete Your Payment</div>
+    <div class="card-header">Заврши ја уплатата</div>
     <div class="card-body">
       <form th:action="@{/payment}" method="post">
         <input type="hidden" name="useCard" th:value="${useCard}">
         <div class="form-group">
-          <label for="paymentMethodId">Select Payment Method</label>
+          <label for="paymentMethodId">Избери метод на плаќање</label>
           <select id="paymentMethodId" name="paymentMethodId" class="form-control" required>
-            <option value="">Choose a payment method...</option>
-            <option th:each="pm : ${methods}" th:value="${pm.id}" th:text="${pm.methodName}">Card</option>
+            <option value="">Одбери метод на плаќање...</option>
+            <option th:each="pm : ${methods}" th:value="${pm.id}" th:text="${pm.methodName}">Картичка</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="deliveryCompanyId">Select Delivery Company</label>
+          <label for="deliveryCompanyId">Избери достава</label>
           <select id="deliveryCompanyId" name="deliveryCompanyId" class="form-control" required>
-            <option value="">Choose a delivery company...</option>
-            <option th:each="dc : ${deliveryCompanies}" th:value="${dc.id}" th:text="${dc.company.companyName}">Courier</option>
+            <option value="">Одбери компанија за достава...</option>
+            <option th:each="dc : ${deliveryCompanies}" th:value="${dc.id}" th:text="${dc.company.companyName}">Курир</option>
           </select>
         </div>
 
         <div class="cart-total">
           <div class="muted" th:if="${discount != null && discount > 0}">
-            Discount: <span th:text="${discount + ' ден.'}">0 ден.</span>
+            Попуст: <span th:text="${discount + ' ден.'}">0 ден.</span>
           </div>
-          Total: <span th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</span>
+          Вкупно: <span th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</span>
         </div>
 
-        <button type="submit" class="btn-submit">Pay Now</button>
+        <button type="submit" class="btn-submit">Плати сега</button>
       </form>
     </div>
   </div>

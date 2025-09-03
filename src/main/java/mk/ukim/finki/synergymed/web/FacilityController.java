@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/companies/{companyId}/facilities")
+@RequestMapping("/admin/companies/{companyId}/facilities")
 @RequiredArgsConstructor
 public class FacilityController {
 
@@ -47,7 +47,7 @@ public class FacilityController {
                          org.springframework.web.servlet.mvc.support.RedirectAttributes ra) {
         Facility saved = facilityService.create(companyId, facilityName, code);
         ra.addFlashAttribute("message", "Facility created: " + saved.getFacilityName());
-        return "redirect:/companies/" + companyId + "/facilities";
+        return "redirect:/admin/companies/" + companyId + "/facilities";
     }
 
     @GetMapping("/{id}/edit")
@@ -70,7 +70,7 @@ public class FacilityController {
                          org.springframework.web.servlet.mvc.support.RedirectAttributes ra) {
         Facility updated = facilityService.update(id, facilityName, code);
         ra.addFlashAttribute("message", "Facility updated: " + updated.getFacilityName());
-        return "redirect:/companies/" + companyId + "/facilities";
+        return "redirect:/admin/companies/" + companyId + "/facilities";
     }
 
     @PostMapping("/{id}/delete")
@@ -79,7 +79,7 @@ public class FacilityController {
                          org.springframework.web.servlet.mvc.support.RedirectAttributes ra) {
         facilityService.delete(id);
         ra.addFlashAttribute("message", "Facility deleted");
-        return "redirect:/companies/" + companyId + "/facilities";
+        return "redirect:/admin/companies/" + companyId + "/facilities";
     }
 
     @GetMapping("/{id}/inventory")
@@ -119,8 +119,8 @@ public class FacilityController {
         model.addAttribute("company", company);
         model.addAttribute("facility", facility);
         model.addAttribute("context", "facility");
-        model.addAttribute("postUrl", "/companies/" + companyId + "/facilities/" + id + "/contacts/save");
-        model.addAttribute("backUrl", "/companies/" + companyId + "/facilities/" + id + "/contacts");
+        model.addAttribute("postUrl", "/admin/companies/" + companyId + "/facilities/" + id + "/contacts/save");
+        model.addAttribute("backUrl", "/admin/companies/" + companyId + "/facilities/" + id + "/contacts");
         return "contact-form";
     }
 
@@ -135,7 +135,7 @@ public class FacilityController {
         } else {
             contactInformationService.updateForFacility(contactId, id, phone, address);
         }
-        return "redirect:/companies/" + companyId + "/facilities/" + id + "/contacts";
+        return "redirect:/admin/companies/" + companyId + "/facilities/" + id + "/contacts";
     }
 
     @PostMapping("/{id}/contacts/delete")
@@ -143,6 +143,6 @@ public class FacilityController {
                                         @PathVariable Integer id,
                                         @RequestParam Integer contactId) {
         contactInformationService.deleteForFacility(contactId, id);
-        return "redirect:/companies/" + companyId + "/facilities/" + id + "/contacts";
+        return "redirect:/admin/companies/" + companyId + "/facilities/" + id + "/contacts";
     }
 }

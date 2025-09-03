@@ -1,3 +1,4 @@
+// src/main/java/mk/ukim/finki/synergymed/models/Supplyorder.java
 package mk.ukim.finki.synergymed.models;
 
 import jakarta.persistence.*;
@@ -24,6 +25,10 @@ public class Supplyorder {
     @JoinColumn(name = "pharmacy_id", nullable = false)
     private Pharmacy pharmacy;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "facility_id", nullable = false)
+    private Facility facility;
+
     @Column(name = "order_date", nullable = false)
     private LocalDate orderDate;
 
@@ -32,5 +37,4 @@ public class Supplyorder {
 
     @Column(name = "status", nullable = false, length = 50)
     private String status;
-
 }

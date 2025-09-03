@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynergyMed - Payment Success</title>
+    <title>SynergyMed - Успешна уплата</title>
 
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
 
@@ -37,20 +37,20 @@
 </head>
 <body>
 
-<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="container">
     <div class="card">
-        <div class="card-header">Payment Successful 🎉</div>
+        <div class="card-header">Уплатата е успешна 🎉</div>
         <div class="card-body">
             <div class="success-icon">✔</div>
-            <p>Thank you! Your payment has been processed successfully.</p>
-            <p>Order ID: <span th:text="${order.id}">123</span></p>
-            <p>Amount Paid: <span th:text="${payment.amount} + ' ден.'">0.00 ден.</span></p>
-            <p>Status: <span th:text="${payment.status}">COMPLETED</span></p>
-            <p>Expected Arrival: <span th:text="${order.expectedArrivalDate}">2025-09-05</span></p>
+            <p>Ви благодариме! Вашата уплата е успешно обработена.</p>
+            <p>Број на нарачка: <span th:text="${order.id}">123</span></p>
+            <p>Платен износ: <span th:text="${payment.amount} + ' ден.'">0.00 ден.</span></p>
+            <p>Статус: <span th:text="${payment.status}">ЗАВРШЕНО</span></p>
+            <p>Очекувано пристигнување: <span th:text="${order.expectedArrivalDate}">2025-09-05</span></p>
 
-            <a th:href="@{/branded-medicines}" class="btn-back">Continue Shopping</a>
+            <a th:href="@{/catalog}" class="btn-back">Продолжи со купување</a>
         </div>
     </div>
 </div>

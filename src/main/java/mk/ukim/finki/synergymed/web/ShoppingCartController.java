@@ -56,7 +56,7 @@ public class ShoppingCartController {
                 .orElseThrow(() -> new IllegalArgumentException("Medicine not found with id " + medicineId));
 
         shoppingCartService.addMedicine(cart, medicine, quantity);
-        return "redirect:/branded-medicines";
+        return "redirect:/catalog";
     }
 
     @PostMapping("/plus/{medicineId}")
@@ -98,20 +98,25 @@ public class ShoppingCartController {
         return "redirect:/cart";
     }
 
+    // in ShoppingCartController
     @GetMapping
-    public String showCart(Model model,
-                           @AuthenticationPrincipal UserDetails ud) {
+    public String showCart(Model model, @AuthenticationPrincipal UserDetails ud) {
         Client client = getClient(ud);
         Shoppingcart cart = getOrCreateCart(client);
 
-        model.addAttribute("items", shoppingCartService.getMedicinesInCart(cart));
+        var items = shoppingCartService.getMedicinesInCart(cart);
+        model.addAttribute("items", items);
         model.addAttribute("total", shoppingCartService.getTotal(cart));
         model.addAttribute("username", ud.getUsername());
-        model.addAttribute("firstImageById", null);
+
+        var meds = new java.util.ArrayList<>(items.keySet());
+        var firstImageById = brandedmedicineService.cardImageUrlsFor(meds);
+        model.addAttribute("firstImageById", firstImageById);
 
         clubCardService.getByClientId(client.getId())
                 .ifPresent(card -> model.addAttribute("clubCard", card));
 
         return "cart";
     }
+
 }

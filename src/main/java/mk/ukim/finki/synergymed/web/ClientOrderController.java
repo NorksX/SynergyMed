@@ -15,6 +15,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("orders")
 public class ClientOrderController {
 
     private final ClientOrderService orderService;
@@ -25,7 +26,7 @@ public class ClientOrderController {
                 .orElseThrow(() -> new RuntimeException("User not found: " + ud.getUsername()));
     }
 
-    @GetMapping("/orders")
+    @GetMapping
     public String myOrders(@AuthenticationPrincipal UserDetails ud, Model model) {
         User user = getCurrentUser(ud);
         List<Clientorder> orders = orderService.findAllForClient(user.getId());
@@ -33,7 +34,7 @@ public class ClientOrderController {
         return "orders";
     }
 
-    @GetMapping("/orders/{orderId}")
+    @GetMapping("{orderId}")
     public String myOrderDetail(@PathVariable Integer orderId,
                                 @AuthenticationPrincipal UserDetails ud,
                                 Model model) {

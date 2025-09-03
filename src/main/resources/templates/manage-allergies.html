@@ -1,17 +1,42 @@
+<!-- templates/manage-allergies.html -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SynergyMed - Manage Allergies</title>
+  <title>SynergyMed - Управување со алергии</title>
+
+  <!-- Shared header styles (wrapped fragment expression) -->
+  <th:block th:replace="~{fragments/header :: headerStyles}"></th:block>
+
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
+
+    /* IMPORTANT: remove page padding here so header can be full-bleed */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
-      min-height:100vh; padding:20px;
+      min-height:100vh;
+      padding:0; /* was 20px; removing this eliminates the left/right/top gaps */
     }
-    .container { max-width:800px; margin:0 auto; }
+
+    /* Full-width global header - identical to other pages */
+    .site-header{
+      position:sticky;
+      top:0;
+      left:0;
+      right:0;
+      width:100%;
+      border-radius:0;
+      margin:0;
+      z-index:1000;
+      background:white !important;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Put spacing on the content container instead of body */
+    .container { max-width:800px; margin:0 auto; padding:20px; }
+
     .header { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); margin-bottom:30px; overflow:hidden; }
     .header-content { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:30px; text-align:center; }
     .header-content h1 { font-size:2.5rem; font-weight:300; margin-bottom:10px; }
@@ -58,13 +83,17 @@
   </style>
 </head>
 <body>
+
+<!-- Global header (wrapped fragment expression) -->
+<th:block th:replace="~{fragments/header :: siteHeader(${null})}"></th:block>
+
 <div class="container">
   <!-- Header -->
   <div class="header">
     <div class="header-content">
-      <h1>Manage Allergies</h1>
-      <p th:text="${'Managing allergic reactions for ' + user.firstName + ' ' + user.lastName}">
-        Managing allergic reactions for John Doe
+      <h1>Управување со алергии</h1>
+      <p th:text="${'Управување со алергиски реакции за ' + user.firstName + ' ' + user.lastName}">
+        Управување со алергиски реакции за John Doe
       </p>
     </div>
   </div>
@@ -72,94 +101,96 @@
   <!-- Navigation -->
   <div class="nav-bar">
     <div class="nav-links">
-      <a th:href="@{/profile}" class="nav-link">Profile</a>
-      <a href="#" class="nav-link active">Manage Allergies</a>
-      <a th:href="@{/profile}" class="nav-link back-btn">Back to Profile</a>
+      <a th:href="@{/profile}" class="nav-link">Профил</a>
+      <a href="#" class="nav-link active">Управување со алергии</a>
+      <a th:href="@{/profile}" class="nav-link back-btn">Назад кон профил</a>
     </div>
   </div>
 
   <!-- Current Allergies -->
   <div class="card">
-    <div class="card-header">Current Allergic Reactions</div>
+    <div class="card-header">Тековни алергиски реакции</div>
     <div class="card-body">
       <div th:if="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}">
         <div th:each="allergy : ${healthProfile.allergicReactions}" class="allergy-item">
           <div class="allergy-info">
-            <div class="medicine-name" th:text="${allergy.medicine.medicineName}">Aspirin</div>
-            <div class="allergy-description" th:text="${allergy.description}">Causes severe skin reactions</div>
+            <div class="medicine-name" th:text="${allergy.medicine.medicineName}">Аспирин</div>
+            <div class="allergy-description" th:text="${allergy.description}">Предизвикува сериозни кожни реакции</div>
           </div>
           <span th:class="${'severity-badge ' + #strings.toLowerCase(allergy.severity)}"
-                th:text="${allergy.severity}">HIGH</span>
+                th:text="${allergy.severity}">ВИСОКО</span>
         </div>
       </div>
       <div th:unless="${healthProfile.allergicReactions != null and not #lists.isEmpty(healthProfile.allergicReactions)}" class="no-allergies">
-        No allergic reactions recorded yet.
+        Нема евидентирани алергиски реакции.
       </div>
     </div>
   </div>
 
   <!-- Add New Allergy Form -->
   <div class="card">
-    <div class="card-header">Add New Allergic Reaction</div>
+    <div class="card-header">Додади нова алергиска реакција</div>
     <div class="card-body">
-      <!-- Messages -->
-      <div th:if="${error}" class="alert alert-danger"><span th:text="${error}">Error message</span></div>
-      <div th:if="${success}" class="alert alert-success"><span th:text="${success}">Success message</span></div>
+      <div th:if="${error}" class="alert alert-danger"><span th:text="${error}">Порака за грешка</span></div>
+      <div th:if="${success}" class="alert alert-success"><span th:text="${success}">Порака за успех</span></div>
 
       <form th:action="@{/allergies/add}" method="post" id="allergyForm">
         <div class="form-group">
-          <label for="medicineId">Medicine</label>
+          <label for="medicineId">Лек</label>
           <select id="medicineId" name="medicineId" class="form-control" required>
-            <option value="">Select a medicine...</option>
+            <option value="">Одберете лек...</option>
             <option th:each="medicine : ${medicines}"
                     th:value="${medicine.id}"
                     th:text="${medicine.medicineName + ' (' + medicine.activeIngredient + ')'}">
-              Aspirin (Acetylsalicylic acid)
+              Аспирин (ацетилсалицилна киселина)
             </option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="dateDiagnosed">Date Diagnosed</label>
+          <label for="dateDiagnosed">Датум на дијагностицирање</label>
           <input type="date" id="dateDiagnosed" name="dateDiagnosed" class="form-control"
                  th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
         </div>
 
         <div class="form-group">
-          <label for="description">Description</label>
+          <label for="description">Опис</label>
           <textarea id="description" name="description" class="form-control"
-                    placeholder="Describe the allergic reaction symptoms, triggers, and any additional details..."
+                    placeholder="Опишете ги симптомите, тригерите и дополнителни детали за реакцијата..."
                     required></textarea>
         </div>
 
         <div class="form-group">
-          <label>Severity Level</label>
+          <label>Ниво на сериозност</label>
           <div class="severity-options">
             <div class="severity-option">
               <input type="radio" id="low" name="severity" value="LOW" required>
-              <label for="low" class="severity-label low">Low</label>
+              <label for="low" class="severity-label low">Ниско</label>
             </div>
             <div class="severity-option">
               <input type="radio" id="medium" name="severity" value="MEDIUM" required>
-              <label for="medium" class="severity-label medium">Medium</label>
+              <label for="medium" class="severity-label medium">Средно</label>
             </div>
             <div class="severity-option">
               <input type="radio" id="high" name="severity" value="HIGH" required>
-              <label for="high" class="severity-label high">High</label>
+              <label for="high" class="severity-label high">Високо</label>
             </div>
           </div>
         </div>
 
-        <button type="submit" class="btn-submit">Add Allergic Reaction</button>
+        <button type="submit" class="btn-submit">Додади алергиска реакција</button>
       </form>
     </div>
   </div>
 </div>
 
+<!-- Shared header behavior scripts -->
+<th:block th:replace="~{fragments/header :: headerScripts}"></th:block>
+
 <script>
   document.getElementById('allergyForm').addEventListener('submit', function() {
     const btn = this.querySelector('.btn-submit');
-    btn.textContent = 'Adding...';
+    btn.textContent = 'Се додава...';
     btn.disabled = true;
   });
   document.querySelectorAll('input[name="severity"]').forEach(radio => {

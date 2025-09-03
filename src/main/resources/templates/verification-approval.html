@@ -24,19 +24,18 @@
     </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader('verification', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('verification')"></th:block>
 
 <div class="page">
     <div class="card">
-        <div class="card-header" th:text="${item.client.users.firstName + ' ' + item.client.users.lastName}">Client Name</div>
+        <div class="card-header" th:text="${item.client.users.firstName + ' ' + item.client.users.lastName}">Име на клиент</div>
         <div class="card-body">
             <div class="row">
-                <div class="label">EMBG</div>
+                <div class="label">ЕМБГ</div>
                 <div class="val" th:text="${item.embg}">0000000000000</div>
             </div>
             <div class="row" style="align-items:flex-start;">
                 <div class="label">Portrait</div>
-                <!-- Adjust the src mapping to how portraits are served in your app -->
                 <img class="portrait"
                      th:src="@{'/uploads/images/portraits/' + ${item.portraitPhoto}}"
                      alt="portrait">
@@ -44,12 +43,12 @@
 
             <div class="actions">
                 <form th:action="@{/admin/verification/{id}/approve(id=${item.id})}" method="post">
-                    <button type="submit" class="btn btn-primary">Approve</button>
+                    <button type="submit" class="btn btn-primary">Одобри</button>
                 </form>
                 <form th:action="@{/admin/verification/{id}/deny(id=${item.id})}" method="post">
-                    <button type="submit" class="btn btn-danger">Deny</button>
+                    <button type="submit" class="btn btn-danger">Одби</button>
                 </form>
-                <a class="btn" th:href="@{/admin/verification}">Back</a>
+                <a class="btn" th:href="@{/admin/verification}">Назад</a>
             </div>
         </div>
     </div>

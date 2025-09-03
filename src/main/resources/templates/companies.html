@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SynergyMed – Companies</title>
+    <title>SynergyMed – Компании</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Header styles -->
@@ -120,35 +120,35 @@
 <body>
 
 <!-- Global header -->
-<th:block th:replace="fragments/header :: siteHeader('companies', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('companies')"></th:block>
 
 <div class="page">
     <!-- Companies card -->
     <div class="card">
         <div class="card-header">
-            <span>Companies</span>
-            <a class="btn btn-primary" th:href="@{/companies/new}">Create</a>
+            <span>Компании</span>
+            <a class="btn btn-primary" th:href="@{/admin/companies/new}">Креирај</a>
         </div>
         <div class="card-body">
             <div class="grid">
                 <div class="company-card clickable"
                      th:each="c : ${companies}"
-                     th:attr="data-href=@{/companies/{id}/facilities(id=${c.id})}">
+                     th:attr="data-href=@{/admin/companies/{id}/facilities(id=${c.id})}">
                     <div class="content">
-                        <div class="title" th:text="${c.companyName}">Company Name</div>
-                        <div class="muted" th:text="${'Reg. No: ' + c.registrationNumber}">Reg No</div>
-                        <div class="muted" th:text="${c.description}">Description</div>
+                        <div class="title" th:text="${c.companyName}">Име на компанија</div>
+                        <div class="muted" th:text="${'Рег. број: ' + c.registrationNumber}">Регистрациски број</div>
+                        <div class="muted" th:text="${c.description}">Опис</div>
 
                         <div style="margin-top:8px;">
-                            <span class="badge" th:each="r : ${rolesByCompany[c.id]}" th:text="${r}">ROLE</span>
+                            <span class="badge" th:each="r : ${rolesByCompany[c.id]}" th:text="${r}">УЛОГА</span>
                         </div>
 
                         <div class="row">
                             <div>
-                                <a class="btn-outline" th:href="@{/companies/{id}/edit(id=${c.id})}" style="margin-right:8px;">Edit</a>
+                                <a class="btn-outline" th:href="@{/admin/companies/{id}/edit(id=${c.id})}" style="margin-right:8px;">Измени</a>
                             </div>
-                            <form th:action="@{/companies/{id}/delete(id=${c.id})}" method="post" style="display:inline">
-                                <button type="submit" class="btn-outline" style="color:#b3261e;border-color:#f0caca">Delete</button>
+                            <form th:action="@{/admin/companies/{id}/delete(id=${c.id})}" method="post" style="display:inline">
+                                <button type="submit" class="btn-outline" style="color:#b3261e;border-color:#f0caca">Избриши</button>
                             </form>
                         </div>
                     </div>

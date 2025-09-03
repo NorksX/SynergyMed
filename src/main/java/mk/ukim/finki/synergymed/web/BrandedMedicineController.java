@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping({"/","branded-medicines"})
+@RequestMapping("/admin/branded-medicines")
 public class BrandedMedicineController {
 
     private final BrandedMedicineService brandedMedicineService;
@@ -27,6 +27,7 @@ public class BrandedMedicineController {
         this.brandedMedicineService = brandedMedicineService;
         this.manufacturerService = manufacturerService;
     }
+
 
     @GetMapping
     public String index(Model model) {
@@ -84,13 +85,13 @@ public class BrandedMedicineController {
                 id, manufacturerId, price, description, dosageForm, strength, originCountry, name,
                 images, removeImageIds, mainExistingId, mainNewIndex
         );
-        return "redirect:/";
+        return "redirect:/admin/branded-medicines";
     }
 
 
     @PostMapping("/branded-medicines/{id}/delete")
     public String deleteBrandedMedicine(@PathVariable Integer id) throws IOException {
         brandedMedicineService.deleteById(id);
-        return "redirect:/";
+        return "redirect:/admin/branded-medicines";
     }
 }

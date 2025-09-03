@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.*;
 
 @Controller
-@RequestMapping("/companies")
+@RequestMapping("/admin/companies")
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -76,7 +76,7 @@ public class CompanyController {
                 companyName, description, registrationNumber, roles == null ? List.of() : roles
         );
         ra.addFlashAttribute("message", "Company created: " + saved.getCompanyName());
-        return "redirect:/companies";
+        return "redirect:/admin/companies";
     }
 
     // GET /companies/{id}/edit — pre-check roles using current DB state
@@ -130,7 +130,7 @@ public class CompanyController {
         }
 
         ra.addFlashAttribute("message", "Company updated: " + companyName);
-        return "redirect:/companies";
+        return "redirect:/admin/companies";
     }
 
 
@@ -139,6 +139,6 @@ public class CompanyController {
     public String delete(@PathVariable Integer id, RedirectAttributes ra) {
         companyService.deleteById(id);
         ra.addFlashAttribute("message", "Company deleted");
-        return "redirect:/companies";
+        return "redirect:/admin/companies";
     }
 }

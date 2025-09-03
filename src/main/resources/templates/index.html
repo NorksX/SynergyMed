@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SynergyMed – Branded Medicines</title>
+    <title>SynergyMed – Брендирани лекови</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Header styles -->
@@ -220,7 +220,7 @@
 </head>
 <body>
 <!-- Header -->
-<th:block th:replace="fragments/header :: siteHeader('medicines', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('medicines')"></th:block>
 <div class="after-site-header"></div>
 
 <!-- Toast Container -->
@@ -228,19 +228,19 @@
 
 <div class="page">
     <div class="header">
-        <h2>Branded Medicines</h2>
+        <h2>Брендирани лекови</h2>
         <div class="header-buttons">
-            <a class="btn btn-primary" th:href="@{/branded-medicines/new}">Create</a>
+            <a class="btn btn-primary" th:href="@{/branded-medicines/new}">Креирај</a>
         </div>
     </div>
 
     <div class="grid">
         <div class="card" th:each="bm : ${medicines}">
-            <img class="thumb" th:src="@{${firstImageById[bm.id]}}" alt="product image">
+            <img class="thumb" th:src="@{${firstImageById[bm.id]}}" alt="слика на производ">
             <div class="content">
                 <div class="product-info">
-                    <div class="title" th:text="${bm.name}">Name</div>
-                    <div class="muted" th:text="${bm.dosageForm}">Dosage Form</div>
+                    <div class="title" th:text="${bm.name}">Име</div>
+                    <div class="muted" th:text="${bm.dosageForm}">Фармацевтска форма</div>
                 </div>
 
                 <div class="actions-section">
@@ -248,7 +248,7 @@
                          th:text="${#numbers.formatDecimal(bm.price, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</div>
 
                     <div class="button-group">
-                        <a class="btn-outline" th:href="@{/branded-medicines/{id}/edit(id=${bm.id})}">Edit</a>
+                        <a class="btn-outline" th:href="@{/branded-medicines/{id}/edit(id=${bm.id})}">Уреди</a>
                     </div>
                 </div>
             </div>
@@ -312,7 +312,7 @@
                 const originalText = button.textContent;
 
                 // Show loading state
-                button.textContent = 'Adding...';
+                button.textContent = 'Се додава...';
                 button.disabled = true;
 
                 // Submit the form via fetch
@@ -326,8 +326,8 @@
                         if (response.ok) {
                             // Show success toast
                             showToast(
-                                'Added to Cart!',
-                                `${productName} has been added to your cart successfully.`,
+                                'Додадено во кошничката!',
+                                `${productName} е додаден во кошничката.`,
                                 'success'
                             );
                         } else {
@@ -337,8 +337,8 @@
                     .catch(error => {
                         console.error('Error:', error);
                         showToast(
-                            'Error',
-                            'Failed to add item to cart. Please try again.',
+                            'Грешка',
+                            'Неуспешно додавање во кошничката. Обидете се повторно.',
                             'error'
                         );
                     })

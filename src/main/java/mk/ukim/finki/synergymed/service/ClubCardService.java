@@ -7,6 +7,6 @@ import mk.ukim.finki.synergymed.models.Clubcard;
 import java.util.Optional;
 
 public interface ClubCardService {
-    Clubcard createForClient(Client client);
+    Clubcard createForClient(Integer clientId, String program);
     Optional<Clubcard> getByClientId(Integer clientId);
 }
