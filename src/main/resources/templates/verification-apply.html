@@ -27,28 +27,28 @@
     </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="page">
     <div class="card">
-        <div class="card-header">Apply for Verification</div>
+        <div class="card-header">Аплицирај за верификација</div>
         <div class="card-body">
             <div th:if="${message}" class="notice" th:text="${message}">Message</div>
             <div th:if="${error}" class="notice error" th:text="${error}">Error</div>
 
             <form th:action="@{/profile/verification/apply}" method="post" enctype="multipart/form-data">
                 <div class="row">
-                    <label for="embg">EMBG</label>
+                    <label for="embg">ЕМБГ</label>
                     <input id="embg" name="embg" type="text" placeholder="EMBG" required>
                 </div>
                 <div class="row">
-                    <label for="portrait">Portrait photo</label>
+                    <label for="portrait">Портрет слика</label>
                     <input id="portrait" name="portrait" type="file" accept="image/*" required>
                 </div>
-                <div class="hint">Accepted: jpg, jpeg, png, webp, gif. Max 5MB.</div>
+                <div class="hint">Прифатени се: jpg, jpeg, png, webp, gif. Max 5MB.</div>
                 <div class="actions">
-                    <button type="submit" class="btn btn-primary">Apply</button>
-                    <a class="btn" th:href="@{/profile/prescriptions}">Back to Prescriptions</a>
+                    <button type="submit" class="btn btn-primary">Аплицирај</button>
+                    <a class="btn" th:href="@{/profile/prescriptions}">Назадs</a>
                 </div>
             </form>
         </div>

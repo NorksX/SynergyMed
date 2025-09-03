@@ -1,6 +1,7 @@
 package mk.ukim.finki.synergymed.web;
 
 import lombok.RequiredArgsConstructor;
+import mk.ukim.finki.synergymed.models.Clubcard;
 import mk.ukim.finki.synergymed.models.Contactinformation;
 import mk.ukim.finki.synergymed.models.Healthprofile;
 import mk.ukim.finki.synergymed.models.User;
@@ -26,6 +27,8 @@ public class ProfileController {
     private final SensitiveClientDataService sensitiveClientDataService;
     private final PrescriptionService prescriptionService;
     private final ClientService clientService;
+    private final ClubCardService clubcardService;
+
 
     private User getCurrentUser(UserDetails ud) {
         return userRepository.findByUsername(ud.getUsername())
@@ -53,6 +56,8 @@ public class ProfileController {
     @GetMapping("/contacts")
     public String profileContacts(@AuthenticationPrincipal UserDetails ud, Model model) {
         User user = getCurrentUser(ud);
+        model.addAttribute("user", user);
+        model.addAttribute("username", user.getUsername());
         List<Contactinformation> list = contactInformationService.listForUser(user.getId());
         Contactinformation contact = list.isEmpty() ? null : list.get(0);
         model.addAttribute("contact", contact);
@@ -94,6 +99,8 @@ public class ProfileController {
     @GetMapping("/prescriptions")
     public String prescriptions(@AuthenticationPrincipal UserDetails ud, Model model) {
         User user = getCurrentUser(ud);
+        model.addAttribute("user", user);
+        model.addAttribute("username", user.getUsername());
         Integer clientId = user.getId();
 
         boolean verified = isVerified(clientId);
@@ -109,4 +116,31 @@ public class ProfileController {
         model.addAttribute("prescriptions", rx);
         return "profile-prescriptions";
     }
+    @GetMapping("/clubcard")
+    public String clubcard(@AuthenticationPrincipal UserDetails ud, Model model) {
+        User user = getCurrentUser(ud);
+        model.addAttribute("user", user);
+        model.addAttribute("username", user.getUsername());
+
+        Optional<Clubcard> opt = clubcardService.getByClientId(user.getId());
+        model.addAttribute("hasClubcard", opt.isPresent());
+        model.addAttribute("clubcard", opt.orElse(null));
+
+        model.addAttribute("activeTab", "clubcard");
+        return "profile-clubcard";
+
+    }
+    @PostMapping("/clubcard/create")
+    public String createClubcard(@AuthenticationPrincipal UserDetails ud,
+                                 @RequestParam("program") String program) {
+        User user = getCurrentUser(ud);
+
+        Optional<Clubcard> existing = clubcardService.getByClientId(user.getId());
+        if (existing.isEmpty()) {
+            clubcardService.createForClient(user.getId(), program);
+        }
+
+        return "redirect:/profile/clubcard";
+    }
+
 }

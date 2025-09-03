@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynergyMed - Admin: Create Health Profile</title>
+    <title>SynergyMed - Админ: Креирај здравствен профил</title>
 
     <!-- Shared header styles -->
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
@@ -137,43 +137,43 @@
 <body>
 
 <!-- Full-width global header -->
-<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="container">
     <!-- Header -->
     <div class="header">
         <div class="header-content">
-            <h1>Admin Panel</h1>
-            <p>Create Health Profiles for Clients</p>
-            <div class="admin-badge">Administrator Access</div>
+            <h1>Админ панел</h1>
+            <p>Креирај здравствени профили за клиенти</p>
+            <div class="admin-badge">Администраторски пристап</div>
         </div>
     </div>
 
     <!-- Navigation -->
     <div class="nav-bar">
         <div class="nav-links">
-            <a href="/admin/dashboard" class="nav-link">Dashboard</a>
-            <a href="/admin/clients" class="nav-link">Manage Clients</a>
-            <a href="/admin/health-profile/create" class="nav-link active">Create Health Profile</a>
-            <a href="/profile" class="nav-link">Back to Profile</a>
+            <a href="/admin/dashboard" class="nav-link">Табла</a>
+            <a href="/admin/clients" class="nav-link">Управување со клиенти</a>
+            <a href="/admin/health-profile/create" class="nav-link active">Креирај здравствен профил</a>
+            <a href="/profile" class="nav-link">Назад кон профил</a>
         </div>
     </div>
 
     <!-- Flash Messages -->
-    <div th:if="${success}" class="alert alert-success"><span th:text="${success}">Success</span></div>
-    <div th:if="${error}" class="alert alert-danger"><span th:text="${error}">Error</span></div>
+    <div th:if="${success}" class="alert alert-success"><span th:text="${success}">Успех</span></div>
+    <div th:if="${error}" class="alert alert-danger"><span th:text="${error}">Грешка</span></div>
 
     <!-- Main -->
     <div class="main-content">
         <div class="card">
-            <div class="card-header">Create Health Profile for Client</div>
+            <div class="card-header">Креирај здравствен профил за клиент</div>
             <div class="card-body">
                 <!-- Search -->
                 <form class="search-form" th:action="@{/admin/health-profile/create}" method="get">
                     <input type="text" name="searchTerm" class="search-input"
-                           placeholder="Search clients by first or last name..."
+                           placeholder="Пребарај клиенти по име или презиме..."
                            th:value="${searchTerm}">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" class="btn btn-primary">Пребарај</button>
                 </form>
 
                 <!-- Clients -->
@@ -187,22 +187,22 @@
                             <h4 th:text="${client.users.firstName + ' ' + client.users.lastName}">John Doe</h4>
                             <p th:text="${client.users.email}">john@email.com</p>
                         </div>
-                        <div>ID: <span th:text="${client.id}">1</span></div>
+                        <div>ИД: <span th:text="${client.id}">1</span></div>
                     </div>
                 </div>
 
                 <!-- Empty -->
-                <div th:if="${#lists.isEmpty(clients)}" class="alert alert-info">No clients found.</div>
+                <div th:if="${#lists.isEmpty(clients)}" class="alert alert-info">Нема пронајдени клиенти.</div>
 
                 <!-- Form -->
                 <form th:action="@{/admin/health-profile/create}" method="post" id="createProfileForm">
                     <input type="hidden" name="clientId" id="selectedClientId">
                     <div id="selectedClientInfo" class="selected-client-info" style="display:none;">
-                        <h4>Creating profile for:</h4>
+                        <h4>Се креира профил за:</h4>
                         <p id="selectedClientName"></p>
                     </div>
                     <div class="blood-type-section" id="bloodTypeSection">
-                        <h3>Select Blood Type</h3>
+                        <h3>Избери крвна група</h3>
                         <div class="blood-type-grid">
                             <div><input type="radio" id="a+" name="bloodType" value="A+" class="blood-type-radio"><label for="a+" class="blood-type-label">A+</label></div>
                             <div><input type="radio" id="a-" name="bloodType" value="A-" class="blood-type-radio"><label for="a-" class="blood-type-label">A-</label></div>
@@ -214,8 +214,8 @@
                             <div><input type="radio" id="o-" name="bloodType" value="O-" class="blood-type-radio"><label for="o-" class="blood-type-label">O-</label></div>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Create</button>
-                            <button type="button" class="btn btn-secondary" onclick="clearSelection()">Clear</button>
+                            <button type="submit" class="btn btn-primary">Креирај</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearSelection()">Исчисти</button>
                         </div>
                     </div>
                 </form>

@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${'SynergyMed – Facilities'}">SynergyMed – Facilities</title>
+    <title th:text="${'SynergyMed – Објекти'}">SynergyMed – Објекти</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Header styles -->
@@ -110,16 +110,16 @@
 <body>
 
 <!-- Global header -->
-<th:block th:replace="fragments/header :: siteHeader('facilities', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="page">
     <div class="card">
         <div class="card-header">
-            <span th:text="${'Facilities — ' + company.companyName}">Facilities</span>
+            <span th:text="${'Објекти — ' + company.companyName}">Објекти</span>
             <!-- Always show Add New -->
             <a class="btn btn-primary"
-               th:href="@{/companies/{cid}/facilities/new(cid=${company.id})}">
-                Add New
+               th:href="@{/admin/companies/{cid}/facilities/new(cid=${company.id})}">
+                Додади нов
             </a>
         </div>
 
@@ -128,25 +128,25 @@
             <div class="grid" th:if="${!#lists.isEmpty(facilities)}">
                 <div class="company-card clickable"
                      th:each="f : ${facilities}"
-                     th:attr="data-href=@{/companies/{cid}/facilities/{id}/inventory(cid=${company.id}, id=${f.id})}">
+                     th:attr="data-href=@{/admin/companies/{cid}/facilities/{id}/inventory(cid=${company.id}, id=${f.id})}">
                     <div class="content">
-                        <div class="title" th:text="${f.facilityName}">Facility Name</div>
-                        <div class="muted" th:text="${'Code: ' + f.code}">Code</div>
+                        <div class="title" th:text="${f.facilityName}">Име на објект</div>
+                        <div class="muted" th:text="${'Код: ' + f.code}">Код</div>
 
                         <div class="row" style="margin-top:12px;">
                             <div>
                                 <a class="btn-outline"
-                                   th:href="@{/companies/{cid}/facilities/{id}/edit(cid=${company.id}, id=${f.id})}"
-                                   style="margin-right:8px;">Edit</a>
+                                   th:href="@{/admin/companies/{cid}/facilities/{id}/edit(cid=${company.id}, id=${f.id})}"
+                                   style="margin-right:8px;">Уреди</a>
 
                                 <a class="btn-outline"
-                                   th:href="@{/companies/{cid}/facilities/{id}/contacts(cid=${company.id}, id=${f.id})}"
-                                   style="margin-right:8px;">Contact Info</a>
+                                   th:href="@{/admin/companies/{cid}/facilities/{id}/contacts(cid=${company.id}, id=${f.id})}"
+                                   style="margin-right:8px;">Контакт податоци</a>
                             </div>
 
-                            <form th:action="@{/companies/{cid}/facilities/{id}/delete(cid=${company.id}, id=${f.id})}"
+                            <form th:action="@{/admin/companies/{cid}/facilities/{id}/delete(cid=${company.id}, id=${f.id})}"
                                   method="post" style="display:inline">
-                                <button type="submit" class="btn-outline" style="color:#b3261e;border-color:#f0caca">Delete</button>
+                                <button type="submit" class="btn-outline" style="color:#b3261e;border-color:#f0caca">Избриши</button>
                             </form>
                         </div>
                     </div>
@@ -155,7 +155,7 @@
 
             <!-- Empty state -->
             <div th:if="${#lists.isEmpty(facilities)}" class="muted" style="margin-top:8px;">
-                No facilities yet for this company.
+                Сè уште нема објекти за оваа компанија.
             </div>
 
             <!-- Click navigation script -->

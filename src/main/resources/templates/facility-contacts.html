@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${'Facility Contact – ' + facility.facilityName}">Facility Contact</title>
+    <title th:text="${'Контакт на објект – ' + facility.facilityName}">Контакт на објект</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
     <style>
@@ -23,51 +23,51 @@
     </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader('facilities', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="page">
     <div class="card">
-        <div class="card-header" th:text="${'Contact – ' + facility.facilityName + ' (' + company.companyName + ')'}">Contact</div>
+        <div class="card-header" th:text="${'Контакт – ' + facility.facilityName + ' (' + company.companyName + ')'}">Контакт</div>
         <div class="card-body">
 
             <!-- Single form handles both create and update -->
-            <form th:action="@{/companies/{cid}/facilities/{id}/contacts/save(cid=${company.id}, id=${facility.id})}" method="post">
+            <form th:action="@{/admin/companies/{cid}/facilities/{id}/contacts/save(cid=${company.id}, id=${facility.id})}" method="post">
                 <!-- When updating, send contactId; in create mode contact is null so input is absent -->
                 <input type="hidden" name="contactId" th:if="${contact != null}" th:value="${contact.id}">
 
                 <div class="row">
-                    <label for="phone">Phone</label>
+                    <label for="phone">Телефон</label>
                     <input id="phone" name="phone" type="text"
                            th:value="${contact != null ? contact.phone : ''}"
                            placeholder="+389 70 000 000">
                 </div>
 
                 <div class="row">
-                    <label for="address">Address</label>
+                    <label for="address">Адреса</label>
                     <input id="address" name="address" type="text"
                            th:value="${contact != null ? contact.address : ''}"
-                           placeholder="Street, City">
+                           placeholder="Улица, Град">
                 </div>
 
                 <div class="actions">
                     <!-- Primary button toggles label based on create vs update -->
                     <button type="submit" class="btn btn-primary"
-                            th:text="${contact != null} ? 'Update' : 'Create'">Create</button>
+                            th:text="${contact != null} ? 'Ажурирај' : 'Креирај'">Креирај</button>
 
                     <!-- Delete only visible when contact exists -->
                     <form th:if="${contact != null}"
-                          th:action="@{/companies/{cid}/facilities/{id}/contacts/delete(cid=${company.id}, id=${facility.id})}"
+                          th:action="@{/admin/companies/{cid}/facilities/{id}/contacts/delete(cid=${company.id}, id=${facility.id})}"
                           method="post" style="display:inline;">
                         <input type="hidden" name="contactId" th:value="${contact.id}">
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-danger">Избриши</button>
                     </form>
 
-                    <a class="btn" th:href="@{/companies/{cid}/facilities(cid=${company.id})}">Back</a>
+                    <a class="btn" th:href="@{/admin/companies/{cid}/facilities(cid=${company.id})}">Назад</a>
                 </div>
             </form>
 
             <!-- Helper text for empty state (optional) -->
-            <p class="muted" th:if="${contact == null}" style="margin-top:8px;">No contact exists yet — fill the fields and press Create.</p>
+            <p class="muted" th:if="${contact == null}" style="margin-top:8px;">Сè уште нема контакт — пополнете ги полињата и притиснете „Креирај“.</p>
         </div>
     </div>
 </div>

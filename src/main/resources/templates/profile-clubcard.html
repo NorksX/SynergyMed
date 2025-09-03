@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynergyMed - Club Card</title>
+    <title>SynergyMed - Клуб-картичка</title>
 
     <!-- Shared header styles -->
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
@@ -126,7 +126,7 @@
 <body>
 
 <!-- Top site header; activePage null for profile area -->
-<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="container">
     <!-- Profile Header (same as profile) -->
@@ -140,9 +140,9 @@
                 <p th:text="'@' + ${username}">@johndoe</p>
                 <p th:text="${user.email}">john.doe@email.com</p>
                 <div class="profile-meta">
-                    <div class="meta-item" th:text="'Member since ' + ${#temporals.format(user.dateCreated, 'MMM yyyy')}">Member since Jan 2024</div>
-                    <div class="meta-item" th:text="'Age ' + ${T(java.time.Period).between(user.dateOfBirth, T(java.time.LocalDate).now()).getYears()}">Age 30</div>
-                    <div class="meta-item" th:text="${user.gender ?: 'Not specified'}">Male</div>
+                    <div class="meta-item" th:text="'Член од ' + ${#temporals.format(user.dateCreated, 'MMM yyyy')}">Член од јан 2024</div>
+                    <div class="meta-item" th:text="'Возраст ' + ${T(java.time.Period).between(user.dateOfBirth, T(java.time.LocalDate).now()).getYears()}">Возраст 30</div>
+                    <div class="meta-item" th:text="${user.gender ?: 'Не е наведено'}">Машки</div>
                 </div>
             </div>
         </div>
@@ -151,12 +151,12 @@
     <!-- Navigation with Club Card active -->
     <div class="nav-bar">
         <div class="nav-links">
-            <a th:href="@{/profile}" class="nav-link" th:classappend="${activeTab}=='profile' ? ' active'">Profile</a>
-            <a th:href="@{/profile/prescriptions}" class="nav-link" th:classappend="${activeTab}=='prescriptions' ? ' active'">Prescriptions</a>
-            <a th:href="@{/profile/clubcard}" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Club Card</a>
-            <a th:href="@{/allergies/manage}" class="nav-link">Manage Allergies</a>
-            <a th:href="@{/profile/contacts}" class="nav-link" th:classappend="${activeTab}=='contacts' ? ' active'">Contact Info</a>
-            <a th:href="@{/logout}" class="logout-btn">Logout</a>
+            <a th:href="@{/profile}" class="nav-link" th:classappend="${activeTab}=='profile' ? ' active'">Профил</a>
+            <a th:href="@{/profile/prescriptions}" class="nav-link" th:classappend="${activeTab}=='prescriptions' ? ' active'">Рецепти</a>
+            <a th:href="@{/profile/clubcard}" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Клуб-картичка</a>
+            <a th:href="@{/allergies/manage}" class="nav-link">Управување со алергии</a>
+            <a th:href="@{/profile/contacts}" class="nav-link" th:classappend="${activeTab}=='contacts' ? ' active'">Контакт податоци</a>
+            <a th:href="@{/logout}" class="logout-btn">Одјава</a>
         </div>
     </div>
 
@@ -164,55 +164,56 @@
     <div class="main-content">
         <!-- Left: Personal information (same as profile) -->
         <div class="card">
-            <div class="card-header">Personal Information</div>
+            <div class="card-header">Лични информации</div>
             <div class="card-body">
                 <div class="info-grid">
-                    <div class="info-item"><span class="info-label">Full Name</span><span class="info-value" th:text="${user.firstName + ' ' + user.lastName}">John Doe</span></div>
-                    <div class="info-item"><span class="info-label">Username</span><span class="info-value" th:text="${username}">johndoe</span></div>
-                    <div class="info-item"><span class="info-label">Email</span><span class="info-value" th:text="${user.email}">john@email.com</span></div>
-                    <div class="info-item"><span class="info-label">Date of Birth</span><span class="info-value" th:text="${#temporals.format(user.dateOfBirth, 'dd MMM yyyy')}">15 Jan 1990</span></div>
-                    <div class="info-item"><span class="info-label">Gender</span><span class="info-value" th:text="${user.gender ?: 'Not specified'}">Male</span></div>
-                    <div class="info-item"><span class="info-label">Member Since</span><span class="info-value" th:text="${#temporals.format(user.dateCreated, 'dd MMM yyyy')}">01 Jan 2024</span></div>
+                    <div class="info-item"><span class="info-label">Целосно име</span><span class="info-value" th:text="${user.firstName + ' ' + user.lastName}">John Doe</span></div>
+                    <div class="info-item"><span class="info-label">Корисничко име</span><span class="info-value" th:text="${username}">johndoe</span></div>
+                    <div class="info-item"><span class="info-label">Е-пошта</span><span class="info-value" th:text="${user.email}">john@email.com</span></div>
+                    <div class="info-item"><span class="info-label">Датум на раѓање</span><span class="info-value" th:text="${#temporals.format(user.dateOfBirth, 'dd MMM yyyy')}">15 Jan 1990</span></div>
+                    <div class="info-item"><span class="info-label">Пол</span><span class="info-value" th:text="${user.gender ?: 'Не е наведено'}">Машки</span></div>
+                    <div class="info-item"><span class="info-label">Член од</span><span class="info-value" th:text="${#temporals.format(user.dateCreated, 'dd MMM yyyy')}">01 Jan 2024</span></div>
                 </div>
             </div>
         </div>
 
         <!-- Right: Club Card -->
         <div class="card">
-            <div class="card-header">Club Card</div>
+            <div class="card-header">Клуб-картичка</div>
             <div class="card-body">
                 <!-- If user already has a club card, show its data -->
                 <div th:if="${hasClubcard}">
                     <div class="stat">
-                        <span class="stat-label">Program</span>
+                        <span class="stat-label">Програма</span>
                         <span class="stat-value" th:text="${clubcard.clubProgram}">Default Loyalty Program</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-label">Points</span>
+                        <span class="stat-label">Поени</span>
                         <span class="stat-value" th:text="${clubcard.points}">0</span>
                     </div>
-                    <p class="muted" style="margin-top:10px;">Earn points with purchases and enjoy benefits under your current program.</p>
+                    <p class="muted" style="margin-top:10px;">Заработувајте поени со купувања и искористете бенефити според активната програма.</p>
                 </div>
 
                 <!-- Otherwise, allow creating a new card and choosing a program -->
                 <div th:unless="${hasClubcard}">
-                    <p class="muted" style="margin-bottom:14px;">No club card found. Choose a program and create a new card to start earning points.</p>
+                    <p class="muted" style="margin-bottom:14px;">Нема пронајдена клуб-картичка. Изберете програма и креирајте нова картичка за да започнете со собирање поени.</p>
                     <form th:action="@{/profile/clubcard/create}" method="post">
                         <div class="row">
-                            <label for="program">Program</label>
+                            <label for="program">Програма</label>
                             <select id="program" name="program" required>
-                                <option value="Default Loyalty Program" selected>Default Loyalty Program</option>
-                                <option value="Silver Rewards">Silver Rewards</option>
-                                <option value="Gold Rewards">Gold Rewards</option>
-                                <option value="Platinum Elite">Platinum Elite</option>
+                                <!-- keep values in English to match backend; show text in Macedonian -->
+                                <option value="Default Loyalty Program" selected>Стандардна лојалти програма</option>
+                                <option value="Silver Rewards">Сребрени награди</option>
+                                <option value="Gold Rewards">Златни награди</option>
+                                <option value="Platinum Elite">Платинум елит</option>
                             </select>
                         </div>
 
                         <div class="actions" style="align-items:center;">
-                            <button type="submit" class="btn btn-primary">Create Club Card</button>
+                            <button type="submit" class="btn btn-primary">Креирај клуб-картичка</button>
                         </div>
                     </form>
-                    <p class="muted" style="margin-top:10px;">Program benefits and point accrual may vary by tier.</p>
+                    <p class="muted" style="margin-top:10px;">Бенефитите и собирањето поени може да се разликуваат по ниво.</p>
                 </div>
             </div>
         </div>

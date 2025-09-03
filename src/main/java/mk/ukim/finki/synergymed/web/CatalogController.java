@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.synergymed.service.BrandedMedicineService;
 import mk.ukim.finki.synergymed.service.CatalogService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/catalog")
+@RequestMapping({"/","catalog"})
 public class CatalogController {
 
     private final CatalogService catalogService;
@@ -32,6 +33,7 @@ public class CatalogController {
         return "catalog";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','PHARMACIST')")
     @GetMapping("/edit")
     public String edit(Model model, HttpSession session) {
         var all = brandedMedicineService.findAll();
@@ -42,6 +44,7 @@ public class CatalogController {
         return "catalog-edit";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','PHARMACIST')")
     @PostMapping("/edit")
     public String saveEdit(@RequestParam(name="ids", required=false) java.util.List<Integer> ids) {
         catalogService.setCatalog(3, ids);

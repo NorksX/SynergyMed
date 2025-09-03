@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SynergyMed – Edit Catalog</title>
+    <title>SynergyMed – Уреди производи</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
     <style>
@@ -28,14 +28,14 @@
     </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader('medicines', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('medicines')"></th:block>
 
 <div class="page">
     <div class="card">
         <div class="card-header">
-            <span>Edit Catalog</span>
+            <span>Измен ја достапноста на лековите</span>
             <div class="actions">
-                <a class="btn btn-secondary" th:href="@{/catalog}">Back</a>
+                <a class="btn btn-secondary" th:href="@{/catalog}">Назад</a>
             </div>
         </div>
         <div class="card-body">
@@ -44,10 +44,10 @@
                 <table>
                     <thead>
                     <tr>
-                        <th style="width:48px;">Show</th>
-                        <th>Name</th>
-                        <th class="muted">Dosage</th>
-                        <th class="muted">Price</th>
+                        <th style="width:48px;">Достапен</th>
+                        <th>Име</th>
+                        <th class="muted">Форма</th>
+                        <th class="muted">Цена</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -56,15 +56,15 @@
                             <input type="checkbox" name="ids" th:value="${m.id}"
                                    th:checked="${selectedIds != null and selectedIds.contains(m.id)}">
                         </td>
-                        <td th:text="${m.name}">Medicine</td>
-                        <td class="muted" th:text="${m.dosageForm}">Dosage</td>
+                        <td th:text="${m.name}">Лек</td>
+                        <td class="muted" th:text="${m.dosageForm}">Форма</td>
                         <td class="muted" th:text="${#numbers.formatDecimal(m.price, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</td>
                     </tr>
                     </tbody>
                 </table>
                 <div class="actions" style="margin-top:16px;">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <a class="btn btn-secondary" th:href="@{/catalog}">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Зачувај</button>
+                    <a class="btn btn-secondary" th:href="@{/catalog}">Откажи</a>
                 </div>
             </form>
         </div>

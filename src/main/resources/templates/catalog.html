@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SynergyMed – Catalog</title>
+    <title>SynergyMed – Производи</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
     <style>
@@ -37,31 +37,31 @@
     </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader('medicines', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('medicines')"></th:block>
 
 <div class="toast-container" id="toastContainer"></div>
 
 <div class="page">
     <div class="card">
         <div class="card-header">
-            <span>Branded Medicines</span>
-            <a class="btn btn-primary" th:href="@{/catalog/edit}">Edit</a>
+            <span>Производи</span>
+            <a sec:authorize="hasRole('ADMIN')" class="btn btn-primary" th:href="@{/catalog/edit}">Измени ги достапните производи</a>
         </div>
         <div class="card-body">
-            <div th:if="${#lists.isEmpty(medicines)}" class="muted">No items in the catalog.</div>
+            <div th:if="${#lists.isEmpty(medicines)}" class="muted">Нема достапни производи.</div>
             <div class="grid" th:unless="${#lists.isEmpty(medicines)}">
                 <div class="item" th:each="m : ${medicines}">
-                    <img class="thumb" th:if="${firstImageById != null}" th:src="${firstImageById[m.id]}" alt="image">
-                    <img class="thumb" th:if="${firstImageById == null}" src="/images/default-medicine.png" alt="image">
+                    <img class="thumb" th:if="${firstImageById != null}" th:src="${firstImageById[m.id]}" alt="слика">
+                    <img class="thumb" th:if="${firstImageById == null}" src="/images/default-medicine.png" alt="слика">
                     <div class="content">
                         <div>
-                            <div class="title" th:text="${m.name}">Medicine</div>
-                            <div class="muted" th:text="${m.dosageForm}">Dosage</div>
+                            <div class="title" th:text="${m.name}">Лек</div>
+                            <div class="muted" th:text="${m.dosageForm}">Форма</div>
                         </div>
                         <div class="price" th:text="${#numbers.formatDecimal(m.price, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</div>
                         <form th:action="@{/cart/add/{id}(id=${m.id})}" method="post" style="display:inline;">
                             <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <button type="submit" class="btn-outline add-to-cart-btn" th:data-name="${m.name}">Add to Cart</button>
+                            <button type="submit" class="btn-outline add-to-cart-btn" th:data-name="${m.name}">Додај во кошничка</button>
                         </form>
                     </div>
                 </div>
@@ -90,6 +90,8 @@
         setTimeout(() => removeToast(toast), 4000);
     }
     function removeToast(t){ t.classList.remove('show'); setTimeout(()=>t?.parentElement?.removeChild(t),300); }
+
+    // FormData + same-origin credentials + redirect-aware success
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('form[action*="/cart/add/"]').forEach(form => {
             form.addEventListener('submit', function(e) {
@@ -97,10 +99,22 @@
                 const button = form.querySelector('.add-to-cart-btn');
                 const name = button.getAttribute('data-name');
                 const original = button.textContent;
-                button.textContent = 'Adding...'; button.disabled = true;
-                fetch(form.action, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'} })
-                    .then(r => { if (!r.ok) throw new Error('Add failed'); showToast('Added to Cart!', `${name} has been added to your cart.`,'success'); })
-                    .catch(() => showToast('Error','Failed to add item to cart. Please try again.','error'))
+                button.textContent = 'Се додава...';
+                button.disabled = true;
+
+                const fd = new FormData(form); // includes hidden CSRF field
+                fetch(form.action, {
+                    method: 'POST',
+                    body: fd,
+                    credentials: 'same-origin',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                    .then(r => {
+                        const ok = r.ok || r.redirected || (r.status >= 200 && r.status < 400);
+                        if (!ok) throw new Error(`HTTP ${r.status}`);
+                        showToast('Додадено во кошничката!', `${name} е додаден во кошничката.`, 'success');
+                    })
+                    .catch(() => showToast('Грешка','Неуспешно додавање во кошничката. Обидете се повторно.','error'))
                     .finally(() => { button.textContent = original; button.disabled = false; });
             });
         });

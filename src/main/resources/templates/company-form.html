@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${mode=='create' ? 'Create Company' : 'Edit Company'}">Company</title>
+    <title th:text="${mode=='create' ? 'Креирај компанија' : 'Уреди компанија'}">Компанија</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Shared global header styles -->
@@ -97,52 +97,51 @@
 <body>
 
 <!-- Global sticky header (white, full width) -->
-<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null} )"></th:block>
 
 <div class="content-wrapper">
     <div class="wrap">
         <div class="head">
-            <h2 th:text="${mode=='create' ? 'Create Company' : 'Edit Company'}">Company</h2>
+            <h2 th:text="${mode=='create' ? 'Креирај компанија' : 'Уреди компанија'}">Компанија</h2>
         </div>
 
         <div class="body">
-            <form th:action="${mode=='create'} ? @{/companies} : @{/companies/{id}/update(id=${company.id})}" method="post">
+            <form th:action="${mode=='create'} ? @{/admin/companies} : @{/companies/{id}/update(id=${company.id})}" method="post">
 
                 <div class="row">
                     <div>
-                        <label>Company Name</label>
+                        <label>Име на компанија</label>
                         <input type="text" name="companyName" th:value="${mode=='edit' ? company.companyName : ''}" required>
                     </div>
                     <div>
-                        <label>Registration Number</label>
+                        <label>Регистрациски број</label>
                         <input type="text" name="registrationNumber" th:value="${mode=='edit' ? company.registrationNumber : ''}" required>
                     </div>
                 </div>
 
                 <div class="row-1">
                     <div>
-                        <label>Description</label>
+                        <label>Опис</label>
                         <textarea name="description" th:text="${mode=='edit' ? company.description : ''}"></textarea>
                     </div>
                 </div>
 
                 <div class="row-1">
                     <div>
-                        <label>Company Types</label>
+                        <label>Тип на компанија</label>
                         <div class="roles">
                             <label class="chip" th:each="rt : ${roleTypes}">
                                 <input type="checkbox" name="roles" th:value="${rt}"
                                        th:checked="${mode=='edit' and selectedRoles != null and selectedRoles.contains(rt)}">
-                                <span th:text="${rt}">ROLE</span>
+                                <span th:text="${rt}">УЛОГА</span>
                             </label>
                         </div>
-                        <div class="hint">Select roles; on update, existing roles are pre-checked based on current state.</div>
                     </div>
                 </div>
 
                 <div class="actions">
-                    <button class="btn btn-primary" type="submit" th:text="${mode=='create' ? 'Create' : 'Update'}">Save</button>
-                    <a class="btn btn-secondary" th:href="@{/companies}">Cancel</a>
+                    <button class="btn btn-primary" type="submit" th:text="${mode=='create' ? 'Креирај' : 'Измени'}">Зачувај</button>
+                    <a class="btn btn-secondary" th:href="@{/admin/companies}">Откажи</a>
                 </div>
             </form>
         </div>

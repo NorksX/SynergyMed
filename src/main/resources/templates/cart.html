@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SynergyMed – Shopping Cart</title>
+    <title>SynergyMed – Кошничка</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
     <style>
@@ -14,13 +14,18 @@
         .cart-container{max-width:1000px;margin:28px auto;padding:20px;background:white;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,0.1)}
         .cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
         .cart-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #eee}
-        .cart-item img{width:100px;height:80px;object-fit:cover;border-radius:10px;margin-right:18px}
+        .thumb{width:100px;height:80px;object-fit:cover;border-radius:10px;margin-right:18px}
         .cart-info{flex:1}
         .cart-title{font-weight:700;font-size:1.1rem}
-        .cart-qty{display:flex;align-items:center;gap:6px;margin-top:8px}
+        .cart-qty{display:flex;align-items:center;gap:10px;margin-top:8px}
         .btn-outline{background:#fff;border:2px solid rgba(32,178,170,.25);color:#20b2aa;padding:6px 10px;border-radius:8px;text-decoration:none;font-weight:600;transition:.2s ease}
         .btn-outline:hover{border-color:#20b2aa;box-shadow:0 6px 14px rgba(32,178,170,.18)}
+        .btn-outline.is-disabled{opacity:.5;cursor:not-allowed;box-shadow:none;border-color:rgba(32,178,170,.18)}
         .btn-remove{color:#b3261e;border-color:#f0caca}
+        .qty-badge{
+            min-width:34px; text-align:center; font-weight:700;
+            border:2px solid rgba(32,178,170,.25); border-radius:8px; padding:6px 10px; background:#fff; color:#20b2aa
+        }
         .cart-total{text-align:right;margin-top:20px;font-size:1.4rem;font-weight:700}
         .btn-checkout{margin-top:20px;display:inline-block;background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:600;transition:.2s ease}
         .btn-checkout:hover{transform:translateY(-2px)}
@@ -30,36 +35,52 @@
     </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader('cart', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('cart')"></th:block>
 
 <div class="cart-container">
     <div class="cart-header">
-        <h2>Your Shopping Cart</h2>
-        <a th:href="@{/branded-medicines}" class="btn-outline">← Continue Shopping</a>
+        <h2>Вашата Кошничка</h2>
+        <a th:href="@{/catalog}" class="btn-outline">← Продолжете со пазарење</a>
     </div>
 
-    <div th:if="${#lists.isEmpty(items)}">
-        <p>Your cart is empty.</p>
+    <!-- Empty state for Map items -->
+    <div th:if="${items == null or #maps.isEmpty(items)}">
+        <p>Вашата кошничка е празна.</p>
     </div>
 
     <div th:each="entry : ${items}" class="cart-item">
-        <img th:if="${firstImageById != null}"
-             th:src="@{${firstImageById[entry.key.id]}}" alt="medicine">
-        <img th:if="${firstImageById == null}"
-             src="/images/default-medicine.png" alt="medicine">
+        <img class="thumb"
+             th:if="${firstImageById != null and firstImageById.containsKey(entry.key.id)}"
+             th:src="@{${firstImageById[entry.key.id]}}"
+             alt="лек">
+        <img class="thumb"
+             th:unless="${firstImageById != null and firstImageById.containsKey(entry.key.id)}"
+             src="/images/default-medicine.png"
+             alt="лек">
 
         <div class="cart-info">
-            <div class="cart-title" th:text="${entry.key.name}">Medicine</div>
-            <div class="muted" th:text="${entry.key.dosageForm}">Dosage</div>
+            <div class="cart-title" th:text="${entry.key.name}">Лек</div>
+            <div class="muted" th:text="${entry.key.dosageForm}">Форма</div>
+
+            <!-- Quantity controls -->
             <div class="cart-qty">
                 <form th:action="@{/cart/minus/{id}(id=${entry.key.id})}" method="post" style="display:inline">
-                    <button type="submit" class="btn-outline">−</button>
+                    <button type="submit"
+                            class="btn-outline"
+                            th:classappend="${entry.value <= 1} ? ' is-disabled'"
+                            th:disabled="${entry.value <= 1}"
+                            aria-label="Намали количина">−</button>
                 </form>
+
+                <!-- Live quantity between − and ＋ -->
+                <span class="qty-badge" th:text="${entry.value}">1</span>
+
                 <form th:action="@{/cart/plus/{id}(id=${entry.key.id})}" method="post" style="display:inline">
-                    <button type="submit" class="btn-outline">＋</button>
+                    <button type="submit" class="btn-outline" aria-label="Зголеми количина">＋</button>
                 </form>
+
                 <form th:action="@{/cart/remove/{id}(id=${entry.key.id})}" method="post" style="display:inline">
-                    <button type="submit" class="btn-outline btn-remove">Remove</button>
+                    <button type="submit" class="btn-outline btn-remove">Одстрани</button>
                 </form>
             </div>
         </div>
@@ -67,11 +88,11 @@
         <div th:text="${#numbers.formatDecimal(entry.key.price * entry.value, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0 ден.</div>
     </div>
 
-    <!-- Loyalty card panel (rendered if controller added 'clubCard') -->
+    <!-- Loyalty card -->
     <div class="loyalty" th:if="${clubCard != null}">
-        <h4>Клуб карта</h4>
+        <h4>Клуб картичка</h4>
         <div class="muted">
-            Програма: <span th:text="${clubCard.clubProgram}">Default Program</span> •
+            Програма: <span th:text="${clubCard.clubProgram}">Стандардна програма</span> •
             Поени: <span id="cardPoints" th:text="${clubCard.points}">0</span>
         </div>
         <label style="display:flex;align-items:center;gap:8px;margin-top:6px;">
@@ -81,15 +102,19 @@
         <div class="muted" id="pointsNote" style="margin-top:6px;"></div>
     </div>
 
-    <div class="cart-total">
-        Total:
+    <!-- Totals only when Map has entries -->
+    <div class="cart-total" th:if="${items != null and !#maps.isEmpty(items)}">
+        Вкупно:
         <span id="totalValue"
               th:data-basetotal="${total.intValue()}"
               th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT') + ' ден.'}">0.00 ден.</span>
-        <div class="muted" id="discountLine" style="display:none;">Discount: <span id="discountValue">0</span> ден.</div>
+        <div class="muted" id="discountLine" style="display:none;">Попуст: <span id="discountValue">0</span> ден.</div>
     </div>
 
-    <a class="btn-checkout" id="proceedLink" th:href="@{/payment}">Proceed to Payment</a>
+    <!-- Hide checkout when cart is empty (items is a Map) -->
+    <a class="btn-checkout" id="proceedLink"
+       th:href="@{/payment}"
+       th:if="${items != null and !#maps.isEmpty(items)}">Продолжете кон плаќање</a>
 </div>
 
 <th:block th:replace="fragments/header :: headerScripts"></th:block>
@@ -114,15 +139,13 @@
             const newTotal = Math.max(0, baseTotal - applied);
 
             totalEl.textContent = newTotal.toFixed(2) + ' ден.';
-            discountLine.style.display = applied > 0 ? 'block' : 'none';
-            discountValue.textContent = applied.toString();
+            if (discountLine) discountLine.style.display = applied > 0 ? 'block' : 'none';
+            if (discountValue) discountValue.textContent = applied.toString();
 
-            // carry the choice to payment
             if (proceed) {
                 proceed.setAttribute('href', apply ? (baseHref + '?useCard=true') : baseHref);
             }
 
-            // note
             const note = document.getElementById('pointsNote');
             if (note) note.textContent = 'Достапен попуст: ' + maxDiscount + ' ден. (од ' + pts + ' поени)';
         }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SynergyMed - Add Interaction</title>
+    <title>SynergyMed - Додај интеракција</title>
 
     <!-- Header styles -->
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
@@ -87,35 +87,35 @@
 <body>
 
 <!-- Global header -->
-<th:block th:replace="fragments/header :: siteHeader(${null}, ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="container">
     <!-- Header -->
     <div class="header">
         <div class="header-content">
-            <h1>Add Interaction</h1>
-            <p>Select two different medicines and define their interaction</p>
+            <h1>Додади интеракција</h1>
+            <p>Избери два различни лека и дефинирај ја нивната интеракција</p>
         </div>
     </div>
 
     <!-- Alerts -->
     <div th:if="${hasError}" class="alert alert-danger">
-        <span th:text="${error}">Error message</span>
+        <span th:text="${error}">Порака за грешка</span>
     </div>
     <div th:if="${hasSuccess}" class="alert alert-success">
-        <span th:text="${success}">Success message</span>
+        <span th:text="${success}">Порака за успех</span>
     </div>
 
     <!-- Add Interaction Form -->
     <div class="card">
-        <div class="card-header">Interaction Form</div>
+        <div class="card-header">Интеракции</div>
         <div class="card-body">
             <form th:action="@{/medicine/interactions/add}" method="post">
 
                 <div class="form-group">
-                    <label for="medicine1Id">First Medicine</label>
+                    <label for="medicine1Id">Прв лек</label>
                     <select id="medicine1Id" name="medicine1Id" class="form-control" required>
-                        <option value="">-- Select medicine --</option>
+                        <option value="">-- Избери лек --</option>
                         <option th:each="med : ${medicineList}"
                                 th:value="${med.id}"
                                 th:text="${med.medicineName + ' (' + med.activeIngredient + ')'}">
@@ -124,9 +124,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="medicine2Id">Second Medicine</label>
+                    <label for="medicine2Id">Втор лек</label>
                     <select id="medicine2Id" name="medicine2Id" class="form-control" required>
-                        <option value="">-- Select another medicine --</option>
+                        <option value="">-- Избери друг лек --</option>
                         <option th:each="med : ${medicineList}"
                                 th:value="${med.id}"
                                 th:text="${med.medicineName + ' (' + med.activeIngredient + ')'}">
@@ -135,35 +135,35 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Severity Level</label>
+                    <label>Ниво на интензивност</label>
                     <div class="severity-options">
                         <div class="severity-option">
                             <input type="radio" id="low" name="severity" value="НИСКА" required>
-                            <label for="low" class="severity-label severity-low">LOW</label>
+                            <label for="low" class="severity-label severity-low">НИСКА</label>
                         </div>
                         <div class="severity-option">
                             <input type="radio" id="medium" name="severity" value="УМЕРЕНА" required>
-                            <label for="medium" class="severity-label severity-medium">MEDIUM</label>
+                            <label for="medium" class="severity-label severity-medium">УМЕРЕНА</label>
                         </div>
                         <div class="severity-option">
                             <input type="radio" id="high" name="severity" value="ВИСОКА" required>
-                            <label for="high" class="severity-label severity-high">HIGH</label>
+                            <label for="high" class="severity-label severity-high">ВИСОКА</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="type">Interaction Type</label>
-                    <input type="text" id="type" name="type" class="form-control" placeholder="Pharmacological, Clinical..." required>
+                    <label for="type">Тип на интеракција</label>
+                    <input type="text" id="type" name="type" class="form-control" placeholder="" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description</label>
+                    <label for="description">Опис</label>
                     <textarea id="description" name="description" class="form-control" rows="4"
-                              placeholder="Enter detailed explanation for the interaction..."></textarea>
+                              placeholder="Внеси детален опис за интеракцијата..."></textarea>
                 </div>
 
-                <button type="submit" class="btn-submit">Add Interaction</button>
+                <button type="submit" class="btn-submit">Зачувај интеракција</button>
             </form>
         </div>
     </div>

@@ -1,0 +1,83 @@
+<!-- templates/supplyorder-details.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="mk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SynergyMed – Набавка</title>
+  <th:block th:replace="~{fragments/header :: headerStyles}"></th:block>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:linear-gradient(135deg,#a4ecba 0%, #f7f7f8 100%);
+      min-height:100vh;
+    }
+    .site-header { position:sticky; top:0; left:0; right:0; width:100%; z-index:1000; }
+    .container { max-width:1200px; margin:0 auto; padding:20px; }
+
+    .card { background:#fff; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; }
+    .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; padding:22px 28px; font-size:1.25rem; font-weight:600; }
+    .card-body { padding:26px; }
+    .muted { color:#6b7280; }
+
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { padding:12px 10px; border-bottom:1px solid #eef2f7; text-align:left; }
+
+    .btn { padding:10px 16px; border-radius:12px; border:2px solid #20b2aa; background:#fff; color:#20b2aa; text-decoration:none; font-weight:600; }
+    .actions { display:flex; gap:10px; margin-top:16px; }
+  </style>
+</head>
+<body>
+<th:block th:replace="~{fragments/header :: siteHeader(${null})}"></th:block>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">Набавка #<span th:text="${order.id}">1</span></div>
+    <div class="card-body">
+      <div class="muted">
+        Аптека: <strong th:text="${order.pharmacy.company.companyName}">Аптека</strong> •
+        Објект: <strong th:text="${order.facility.facilityName}">Објект</strong> •
+        Дистрибутер: <strong th:text="${order.distributor.company.companyName}">Дистрибутер</strong>
+      </div>
+      <div class="muted" style="margin-top:6px;">
+        Датум: <strong th:text="${order.orderDate}">2025-09-03</strong> •
+        Очекувана испорака: <strong th:text="${order.expectedArrivalDate}">2025-09-10</strong> •
+        Статус: <strong th:text="${order.status}">во тек</strong>
+      </div>
+
+      <table>
+        <thead>
+        <tr>
+          <th>Брендиран лек</th>
+          <th>Форма/јачина</th>
+          <th style="width:120px;">Количина</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ln : ${lines}">
+          <td th:text="${ln.brandedMedicine.name}">Лек</td>
+          <td>
+            <span th:text="${ln.brandedMedicine.dosageForm}">табл.</span>
+            <span class="muted" th:if="${ln.brandedMedicine.strength != null}"
+                  th:text="' • ' + ${ln.brandedMedicine.strength}"> • 500mg</span>
+          </td>
+          <td th:text="${ln.quantity}">1</td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(lines)}">
+          <td colspan="3" class="muted">Нема ставки.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="actions">
+        <a class="btn" th:href="@{/admin/supply-orders}">Сите набавки</a>
+        <a class="btn" th:href="@{/admin/supply-orders/new}">Нова набавка</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block th:replace="~{fragments/header :: headerScripts}"></th:block>
+</body>
+</html>

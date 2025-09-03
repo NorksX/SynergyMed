@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${'Inventory — ' + facility.facilityName}">Inventory</title>
+    <title th:text="${'Залиха — ' + facility.facilityName}">Залиха</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Shared header styles -->
@@ -11,7 +11,7 @@
 
     <style>
         :root {
-            --teal-1:#20b2aa; --teal-2:#48d1cc;
+            --teал-1:#20b2aa; --teал-2:#48d1cc;
             --bg:#fefeff; --card:#ffffff;
             --muted:#6c757d; --text:#1f2937;
             --shadow:0 20px 40px rgba(0,0,0,0.10);
@@ -44,7 +44,7 @@
         }
 
         .card-header{
-            background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+            background:linear-gradient(135deg,var(--teал-1),var(--teал-2));
             color:#fff;
             padding:20px 24px;
             display:flex; justify-content:space-between; align-items:center;
@@ -58,7 +58,7 @@
             padding:12px 16px; border-radius:12px; font-weight:600;
         }
         .btn-primary{
-            background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+            background:linear-gradient(135deg,var(--teал-1),var(--teал-2));
             color:#fff; box-shadow:0 10px 20px rgba(32,178,170,.25);
         }
 
@@ -82,51 +82,51 @@
 <body>
 
 <!-- Global header -->
-<th:block th:replace="fragments/header :: siteHeader('facilities', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="page">
     <div class="card">
         <div class="card-header">
-            <span th:text="${'Inventory — ' + facility.facilityName}">Inventory</span>
+            <span th:text="${'Залиха — ' + facility.facilityName}">Залиха</span>
             <a class="btn btn-primary"
-               th:href="@{/companies/{cid}/facilities(cid=${company.id})}">
-                Back to Facilities
+               th:href="@{/admin/companies/{cid}/facilities(cid=${company.id})}">
+                Назад кон објектите
             </a>
         </div>
 
         <div class="card-body">
-            <div class="muted" th:text="${'Company: ' + company.companyName}" style="margin-bottom:10px;">
-                Company: ACME
+            <div class="muted" th:text="${'Компанија: ' + company.companyName}" style="margin-bottom:10px;">
+                Компанија: ACME
             </div>
 
             <div th:if="${#lists.isEmpty(items)}" class="muted">
-                No stock entries yet for this facility.
+                Сè уште нема внесови за залиха за овој објект.
             </div>
 
             <div class="list" th:if="${!#lists.isEmpty(items)}">
                 <div class="row" th:each="it : ${items}">
                     <div>
-                        <div th:text="${it.brandedMedicine.name}">Medicine Name</div>
+                        <div th:text="${it.brandedMedicine.name}">Име на лек</div>
                         <div class="muted"
-                             th:text="${'Manufacturer: ' + it.brandedMedicine.manufacturer.company.companyName}">
-                            Manufacturer
+                             th:text="${'Производител: ' + it.brandedMedicine.manufacturer.company.companyName}">
+                            Производител
                         </div>
                     </div>
 
                     <div>
-                        <div class="muted">Dosage</div>
+                        <div class="muted">Дозирање</div>
                         <div th:text="${it.brandedMedicine.dosageForm + ' • ' + it.brandedMedicine.strength}">
-                            Dosage • Strength
+                            Дозирање • Јачина
                         </div>
                     </div>
 
                     <div>
-                        <div class="muted">Quantity</div>
+                        <div class="muted">Количина</div>
                         <div th:text="${it.quantity}">0</div>
                     </div>
 
                     <div>
-                        <div class="muted">Last stocked</div>
+                        <div class="muted">Последно дополнување</div>
                         <div th:text="${#temporals.format(it.lastChanged, 'dd MMM yyyy')}">01 Jan 2025</div>
                     </div>
                 </div>

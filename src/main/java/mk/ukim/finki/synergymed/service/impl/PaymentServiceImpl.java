@@ -60,7 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentMethod(method);
         payment.setPaymentDate(LocalDate.now());
         payment.setAmount(finalAmount);
-        //payment.setStatus("во тек");
+        payment.setStatus("во тек");
         paymentRepo.save(payment);
 
         Deliverycompany deliveryCompany = deliveryRepo.findById(deliveryCompanyId)
@@ -110,10 +110,10 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }
         order.setStatus("во тек");
+        payment.setStatus("завршено");
 
         orderRepo.save(order);
 
-        payment.setStatus("завршено");
         paymentRepo.save(payment);
 
         shoppingCartService.clearCart(cart);

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${mode=='create' ? 'Create Branded Medicine' : 'Edit Branded Medicine'}">SynergyMed – Branded Medicine</title>
+    <title th:text="${mode=='create' ? 'Креирај нов брендиран лек' : 'Измени Брендиран Лек'}">SynergyMed – Брендиран Лек</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Global header styles (fragment) -->
@@ -95,70 +95,69 @@
 <body>
 
 <!-- Global header (fragment with parameters) -->
-<th:block th:replace="fragments/header :: siteHeader('medicines', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('medicines')"></th:block>
 
 <div class="page">
     <div class="card">
         <div class="card-header">
-            <span th:text="${mode=='create' ? 'Create Branded Medicine' : 'Edit Branded Medicine'}">Form</span>
+            <span th:text="${mode=='create' ? 'Креирај нов брендиран лек' : 'Измени Брендиран Лек'}">Формулар</span>
         </div>
 
         <div class="card-body">
-            <!-- Single SAVE form for both create and edit -->
             <form th:action="@{/branded-medicines/save}" method="post" enctype="multipart/form-data" id="saveForm">
                 <input type="hidden" name="id" th:if="${mode=='edit'}" th:value="${bm.id}"/>
 
                 <div class="row">
                     <div>
-                        <label>Manufacturer</label>
+                        <label>Производител</label>
                         <select name="manufacturerId" required>
-                            <option th:if="${mode=='create'}" value="" disabled selected>Select manufacturer</option>
+                            <option th:if="${mode=='create'}" value="" disabled selected>Избери производител</option>
                             <option th:each="m : ${manufacturers}"
                                     th:value="${m.id}"
                                     th:text="${m.company.companyName}"
                                     th:selected="${mode=='edit' and bm.manufacturer != null and m.id == bm.manufacturer.id}">
-                                Manufacturer
+                                Производител
                             </option>
                         </select>
-                        <div class="hint">Pick the company that manufactured this medicine.</div>
+                        <div class="hint">Избери ја компанијата производител на Брендираниот Лек</div>
                     </div>
                     <div>
-                        <label>Price</label>
+                        <label>Цена</label>
                         <input type="number" step="0.01" name="price" th:value="${mode=='edit' ? bm.price : ''}" required/>
                     </div>
                 </div>
 
                 <div class="row">
                     <div>
-                        <label>Dosage Form</label>
+                        <label>Форма на лекот</label>
                         <input type="text" name="dosageForm" th:value="${mode=='edit' ? bm.dosageForm : ''}" required/>
                     </div>
                     <div>
-                        <label>Strength</label>
+                        <label>Јачина</label>
                         <input type="text" name="strength" th:value="${mode=='edit' ? bm.strength : ''}" required/>
                     </div>
                 </div>
 
                 <div class="row">
                     <div>
-                        <label>Origin Country</label>
+                        <label>Земја на потекло</label>
                         <input type="text" name="originCountry" th:value="${mode=='edit' ? bm.originCountry : ''}"/>
                     </div>
                     <div>
-                        <label>Name</label>
+                        <label>Име</label>
                         <input type="text" name="name" th:value="${mode=='edit' ? bm.name : ''}" required/>
                     </div>
                 </div>
 
                 <div class="row-1">
                     <div>
-                        <label>Description</label>
+                        <label>Опис</label>
                         <textarea name="description" th:text="${mode=='edit' ? bm.description : ''}"></textarea>
                     </div>
                     <div>
-                        <label>New Images (preview only until Save)</label>
+                        <label>Нови слики</label>
                         <input type="file" id="newImages" name="images" multiple accept="image/*"/>
-                        <div class="hint">Choose multiple images to preview; they are saved only when Save is clicked.</div>
+                        <div class="hint">Изберете повеќе слики да ги прикачите, се зачувуваат само по кликнување на копчето „Зачувај“</div>
                         <div id="preview" class="grid" style="margin-top:12px;"></div>
                     </div>
                 </div>
@@ -167,18 +166,18 @@
                 <div th:if="${mode=='edit' and images != null and !images.isEmpty()}" style="margin-top:18px;">
                     <div class="grid">
                         <div class="img-card" th:each="img : ${images}">
-                            <img class="thumb" th:src="@{${img.image}}" alt="image">
+                            <img class="thumb" th:src="@{${img.image}}" alt="слика">
                             <input type="hidden" name="removeImageIds" th:value="${img.id}" disabled>
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
                                 <button type="button" class="btn-remove-existing"
                                         th:attr="data-id=${img.id}"
                                         style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:4px 8px;cursor:pointer;">
-                                    Remove
+                                    Одстрани
                                 </button>
                                 <label style="margin-left:8px;">
                                     <input type="radio" name="mainPick" th:value="${'existing:'+img.id}"
                                            th:checked="${img.mainImage}">
-                                    Main
+                                    Главна слика
                                 </label>
                             </div>
                         </div>
@@ -190,8 +189,8 @@
                 <input type="hidden" id="mainNewIndex"   name="mainNewIndex">
 
                 <div class="actions">
-                    <button class="btn btn-primary" type="submit">Save</button>
-                    <a class="btn btn-secondary" th:href="@{/}">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Зачувај</button>
+                    <a class="btn btn-secondary" th:href="@{/}">Откажи</a>
                 </div>
             </form>
 
@@ -208,7 +207,7 @@
                             const hidden = card.querySelector('input[type="hidden"][name="removeImageIds"]');
                             const wasEnabled = !hidden.disabled;
                             hidden.disabled = wasEnabled ? true : false;
-                            btn.textContent = wasEnabled ? 'Remove' : 'Undo';
+                            btn.textContent = wasEnabled ? 'Отстрани' : 'Врати';
                             btn.style.borderColor = wasEnabled ? '#e5e7eb' : '#f0caca';
                             btn.style.color = wasEnabled ? '#111' : '#b3261e';
 
@@ -258,11 +257,11 @@
         <img class="thumb" src="${dataUrl}" alt="${fileName}">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
           <label>
-            <input type="radio" name="mainPick" value="new:${idx}"> Main (new)
+            <input type="radio" name="mainPick" value="new:${idx}"> Главна (нова)
           </label>
           <button type="button" class="remove-new-btn" data-index="${idx}"
                   style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:4px 8px;cursor:pointer;">
-            Remove
+            Отстрани
           </button>
         </div>
       `;

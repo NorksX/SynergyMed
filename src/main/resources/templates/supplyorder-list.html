@@ -1,0 +1,78 @@
+<!-- templates/supplyorder-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynergyMed – Набавки</title>
+    <th:block th:replace="~{fragments/header :: headerStyles}"></th:block>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:linear-gradient(135deg,#a4ecba 0%, #f7f7f8 100%);
+            min-height:100vh;
+        }
+        .site-header { position:sticky; top:0; left:0; right:0; width:100%; z-index:1000; }
+        .container { max-width:1200px; margin:0 auto; padding:20px; }
+
+        .card { background:#fff; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; }
+        .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; padding:22px 28px; font-size:1.25rem; font-weight:600; }
+        .card-body { padding:26px; }
+
+        table { width:100%; border-collapse:collapse; margin-top:6px; }
+        th, td { padding:12px 10px; border-bottom:1px solid #eef2f7; text-align:left; }
+        .muted { color:#6b7280; }
+        .row-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+        .btn { padding:8px 12px; border-radius:12px; border:2px solid #20b2aa; background:#fff; color:#20b2aa; text-decoration:none; font-weight:600; }
+        @media (max-width: 992px) { .row-top { flex-direction:column; gap:10px; align-items:flex-start; } }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{fragments/header :: siteHeader(${null})}"></th:block>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">Листа на набавки</div>
+        <div class="card-body">
+            <div class="row-top">
+                <div class="muted">Прикажани се сите досега креирани набавки.</div>
+                <a class="btn" th:href="@{/admin/supply-orders/new}">+ Нова набавка</a>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Аптека</th>
+                    <th>Објект</th>
+                    <th>Дистрибутер</th>
+                    <th>Датум</th>
+                    <th>Испорака</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="o : ${orders}">
+                    <td th:text="${o.id}">1</td>
+                    <td th:text="${o.pharmacy.company.companyName}">Аптека</td>
+                    <td th:text="${o.facility.facilityName}">Објект</td>
+                    <td th:text="${o.distributor.company.companyName}">Дистрибутер</td>
+                    <td th:text="${o.orderDate}">2025-09-03</td>
+                    <td th:text="${o.expectedArrivalDate}">2025-09-10</td>
+                    <td th:text="${o.status}">во тек</td>
+                    <td><a class="btn" th:href="@{|/admin/supply-orders/${o.id}|}">Преглед</a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(orders)}">
+                    <td colspan="8" class="muted">Нема креирани набавки.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/header :: headerScripts}"></th:block>
+</body>
+</html>

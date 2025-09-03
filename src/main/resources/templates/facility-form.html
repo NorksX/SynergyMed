@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${mode=='create' ? 'Create Facility' : 'Edit Facility'}">Facility</title>
+    <title th:text="${mode=='create' ? 'Креирај објект' : 'Уреди објект'}">Објект</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Shared global header styles -->
@@ -85,27 +85,27 @@
 <body>
 
 <!-- Global sticky header (white, full width) -->
-<th:block th:replace="fragments/header :: siteHeader('facilities', ${username})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
 <div class="content-wrapper">
     <div class="wrap">
         <div class="head">
-            <h2 th:text="${mode=='create' ? 'Create Facility' : 'Edit Facility'}">Facility</h2>
+            <h2 th:text="${mode=='create' ? 'Креирај објект' : 'Уреди објект'}">Објект</h2>
         </div>
 
         <div class="body">
-            <form th:action="${mode=='create'} ? @{/companies/{cid}/facilities(cid=${company.id})}
-                                 : @{/companies/{cid}/facilities/{id}/update(cid=${company.id}, id=${facility.id})}"
+            <form th:action="${mode=='create'} ? @{/admin/companies/{cid}/facilities(cid=${company.id})}
+                                 : @{/admin/companies/{cid}/facilities/{id}/update(cid=${company.id}, id=${facility.id})}"
                   method="post">
 
                 <div class="row">
                     <div>
-                        <label>Facility Name</label>
+                        <label>Име на објект</label>
                         <input type="text" name="facilityName"
                                th:value="${mode=='edit' ? facility.facilityName : ''}" required>
                     </div>
                     <div>
-                        <label>Code</label>
+                        <label>Код</label>
                         <input type="text" name="code"
                                th:value="${mode=='edit' ? facility.code : ''}" required>
                     </div>
@@ -113,12 +113,12 @@
 
                 <div class="actions">
                     <button class="btn btn-primary" type="submit"
-                            th:text="${mode=='create' ? 'Create' : 'Update'}">
-                        Save
+                            th:text="${mode=='create' ? 'Креирај' : 'Ажурирај'}">
+                        Зачувај
                     </button>
                     <a class="btn btn-secondary"
-                       th:href="@{/companies/{cid}/facilities(cid=${company.id})}">
-                        Cancel
+                       th:href="@{/admin/companies/{cid}/facilities(cid=${company.id})}">
+                        Откажи
                     </a>
                 </div>
             </form>
