@@ -26,16 +26,10 @@
             color:var(--text);
         }
 
-        /* Full-width global header - FIXED STYLING */
+        /* Full-width global header */
         .site-header{
-            position:sticky;
-            top:0;
-            left:0;
-            right:0;
-            width:100%;
-            border-radius:0;
-            margin:0;
-            z-index:1000;
+            position:sticky; top:0; left:0; right:0; width:100%;
+            border-radius:0; margin:0; z-index:1000;
             background:white !important;
             box-shadow:0 2px 10px rgba(0,0,0,0.1);
         }
@@ -99,7 +93,18 @@
             transition:.2s ease;
         }
         .btn-outline:hover{border-color:#20b2aa;box-shadow:0 6px 14px rgba(32,178,170,.18)}
-        .row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+
+        /* Three-column action row: left / center / right */
+        .row{
+            display:grid;
+            grid-template-columns: 1fr auto 1fr; /* left fills, middle auto, right fills */
+            align-items:center; /* center vertically */
+            gap:8px;
+            margin-top:12px;
+        }
+        .row > .left   { justify-self:start; }   /* left button aligns to start of col 1 */
+        .row > .middle { justify-self:center; } /* middle button perfectly centered */
+        .row > .right  { justify-self:end; }    /* right delete aligns to end of col 3 */
 
         /* Clickable card cursor */
         .clickable { cursor: pointer; }
@@ -116,7 +121,6 @@
     <div class="card">
         <div class="card-header">
             <span th:text="${'Објекти — ' + company.companyName}">Објекти</span>
-            <!-- Always show Add New -->
             <a class="btn btn-primary"
                th:href="@{/admin/companies/{cid}/facilities/new(cid=${company.id})}">
                 Додади нов
@@ -133,20 +137,26 @@
                         <div class="title" th:text="${f.facilityName}">Име на објект</div>
                         <div class="muted" th:text="${'Код: ' + f.code}">Код</div>
 
-                        <div class="row" style="margin-top:12px;">
-                            <div>
-                                <a class="btn-outline"
-                                   th:href="@{/admin/companies/{cid}/facilities/{id}/edit(cid=${company.id}, id=${f.id})}"
-                                   style="margin-right:8px;">Уреди</a>
+                        <div class="row">
+                            <!-- Left: Edit -->
+                            <a class="btn-outline left"
+                               th:href="@{/admin/companies/{cid}/facilities/{id}/edit(cid=${company.id}, id=${f.id})}">
+                                Уреди
+                            </a>
 
-                                <a class="btn-outline"
-                                   th:href="@{/admin/companies/{cid}/facilities/{id}/contacts(cid=${company.id}, id=${f.id})}"
-                                   style="margin-right:8px;">Контакт податоци</a>
-                            </div>
+                            <!-- Middle: Contact (centered) -->
+                            <a class="btn-outline middle"
+                               th:href="@{/admin/companies/{cid}/facilities/{id}/contacts(cid=${company.id}, id=${f.id})}">
+                                Контакт
+                            </a>
 
-                            <form th:action="@{/admin/companies/{cid}/facilities/{id}/delete(cid=${company.id}, id=${f.id})}"
+                            <!-- Right: Delete -->
+                            <form class="right"
+                                  th:action="@{/admin/companies/{cid}/facilities/{id}/delete(cid=${company.id}, id=${f.id})}"
                                   method="post" style="display:inline">
-                                <button type="submit" class="btn-outline" style="color:#b3261e;border-color:#f0caca">Избриши</button>
+                                <button type="submit" class="btn-outline" style="color:#b3261e;border-color:#f0caca">
+                                    Избриши
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -178,7 +188,7 @@
     </div>
 </div>
 
-<!-- Dropdown script -->
+<!-- Scripts -->
 <th:block th:replace="fragments/header :: headerScripts"></th:block>
 </body>
 </html>

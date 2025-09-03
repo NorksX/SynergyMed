@@ -104,7 +104,7 @@
         </div>
 
         <div class="card-body">
-            <form th:action="@{/branded-medicines/save}" method="post" enctype="multipart/form-data" id="saveForm">
+            <form th:action="@{/admin/branded-medicines/save}" method="post" enctype="multipart/form-data" id="saveForm">
                 <input type="hidden" name="id" th:if="${mode=='edit'}" th:value="${bm.id}"/>
 
                 <div class="row">
@@ -190,7 +190,7 @@
 
                 <div class="actions">
                     <button class="btn btn-primary" type="submit">Зачувај</button>
-                    <a class="btn btn-secondary" th:href="@{/}">Откажи</a>
+                    <a class="btn btn-secondary" th:href="@{/admin/branded-medicines}">Откажи</a>
                 </div>
             </form>
 

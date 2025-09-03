@@ -59,21 +59,22 @@
         .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:.3s; font-weight:500; }
         .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
 
-        /* Ensure logout looks identical to profile */
-        .logout-btn {
+        /* Logout button */
+        .logout-btn{
             margin-left:auto;
-            background:linear-gradient(135deg,#ff6b6b,#ee5a24);
+            background-color:#ee5a24;
+            background-image:linear-gradient(135deg,#ff6b6b,#ee5a24);
             color:#fff;
             padding:10px 20px;
             border-radius:25px;
             text-decoration:none;
             font-weight:600;
             border:none;
-            box-shadow: 0 5px 15px rgba(238,90,36,.30);
-            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow:0 5px 15px rgba(238,90,36,.30);
+            transition:.2s;
             display:inline-flex; align-items:center; justify-content:center;
         }
-        .logout-btn:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(238,90,36,.35); }
+        .logout-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 20px rgba(238,90,36,.35); }
 
         .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
 
@@ -96,8 +97,18 @@
         .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0; gap:12px; }
         label { font-weight:600; color:#374151; min-width:120px; }
         input[type=text] { padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px; flex:1; }
-        .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; }
-        .btn { display:inline-block; padding:10px 16px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; font-weight:600; cursor:pointer; }
+
+        /* New: single flex row for both actions */
+        .actions-row{
+            display:flex;
+            align-items:center;  /* vertical alignment on same baseline */
+            gap:12px;            /* space between the two buttons/forms */
+            margin-top:16px;
+        }
+        .actions-row form{ margin:0; } /* remove default margins */
+
+        /* Buttons baseline consistency */
+        .btn{ display:inline-flex; align-items:center; justify-content:center; padding:10px 16px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; font-weight:600; cursor:pointer; }
         .btn-primary { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; border:none; }
         .btn-danger { color:#b3261e; border-color:#f0caca; }
 
@@ -132,14 +143,13 @@
     <div class="nav-bar">
         <div class="nav-links">
             <a th:href="@{/profile}" class="nav-link" th:classappend="${activeTab}=='profile' ? ' active'">Профил</a>
-            <a th:href="@{/profile/prescriptions}" class="nav-link" th:classappend="${activeTab}=='prescriptions' ? ' active'">Рецепти</a>
-            <a th:href="@{/profile/clubcard}" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Клуб-картичка</a>
-            <a th:href="@{/allergies/manage}" class="nav-link">Управување со алергии</a>
-            <a th:href="@{/profile/contacts}" class="nav-link" th:classappend="${activeTab}=='contacts' ? ' active'">Контакт податоци</a>
-            <a th:href="@{/logout}" class="logout-btn">Одјава</a>
+            <a th:href="@{/profile/prescriptions}" sec:authorize="hasRole('CLIENT')" class="nav-link" th:classappend="${activeTab}=='prescriptions' ? ' active'">Рецепти</a>
+            <a th:href="@{/profile/clubcard}" sec:authorize="hasRole('CLIENT')" class="nav-link" th:classappend="${activeTab}=='clubcard' ? ' active'">Клуб-картичка</a>
+            <a th:href="@{/allergies/manage}" sec:authorize="hasRole('CLIENT')"  class="nav-link">Управување со алергии</a>
+            <a th:href="@{/profile/contacts}"  class="nav-link" th:classappend="${activeTab}=='contacts' ? ' active'">Контакт податоци</a>
+            <a th:href="@{/logout}" class="logout-btn">Одјави се</a>
         </div>
     </div>
-
 
     <!-- Main Content -->
     <div class="main-content">
@@ -158,12 +168,12 @@
             </div>
         </div>
 
-        <!-- Right: Contact Information (two editable fields; create/update in one form) -->
+        <!-- Right: Contact Information (create/update + delete) -->
         <div class="card">
             <div class="card-header">Контакт податоци</div>
             <div class="card-body">
-                <!-- Save form (create or update) -->
-                <form th:action="@{/profile/contacts/save}" method="post" style="display:inline;">
+                <!-- Save form holds inputs (no button inside) -->
+                <form id="saveContactForm" th:action="@{/profile/contacts/save}" method="post">
                     <input type="hidden" name="id" th:if="${contact != null}" th:value="${contact.id}">
                     <div class="row">
                         <label for="phone">Телефон</label>
@@ -177,19 +187,23 @@
                                th:value="${contact != null ? contact.address : ''}"
                                placeholder="Улица, Град">
                     </div>
-                    <div class="actions" style="align-items:center;">
-                        <button type="submit" class="btn btn-primary"
-                                th:text="${contact != null} ? 'Ажурирај' : 'Креирај'">Креирај</button>
-                    </div>
                 </form>
 
-                <!-- Delete form (separate to avoid nested forms) -->
-                <form th:if="${contact != null}"
-                      th:action="@{/profile/contacts/delete}"
-                      method="post" style="display:inline;">
-                    <input type="hidden" name="id" th:value="${contact.id}">
-                    <button type="submit" class="btn btn-danger" style="margin-left:12px;">Избриши</button>
-                </form>
+                <!-- Side-by-side actions -->
+                <div class="actions-row">
+                    <!-- Submit outside form using form attribute -->
+                    <button type="submit" class="btn btn-primary"
+                            form="saveContactForm"
+                            th:text="${contact != null} ? 'Ажурирај' : 'Креирај'">Креирај</button>
+
+                    <!-- Delete form -->
+                    <form th:if="${contact != null}"
+                          th:action="@{/profile/contacts/delete}"
+                          method="post">
+                        <input type="hidden" name="id" th:value="${contact.id}">
+                        <button type="submit" class="btn btn-danger">Избриши</button>
+                    </form>
+                </div>
 
                 <!-- Optional helper when creating -->
                 <p class="info-value" th:if="${contact == null}" style="margin-top:10px;color:#6b7280;">

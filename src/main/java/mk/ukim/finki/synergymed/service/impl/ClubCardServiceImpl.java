@@ -20,6 +20,7 @@ public class ClubCardServiceImpl implements ClubCardService {
         Client client = clientService.findClientById(clientId);
         Clubcard card = new Clubcard();
         card.setUser(client);
+        card.setClubProgram(program);
         card.setPoints(0);
         return clubcardRepository.save(card);
     }

@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/health-profile")
+@RequestMapping("/pharmacist/health-profile")
 @RequiredArgsConstructor
 public class HealthProfileController {
 
@@ -70,11 +70,11 @@ public class HealthProfileController {
             redirectAttributes.addFlashAttribute("success",
                     "Health profile created successfully.");
 
-            return "redirect:/admin/health-profile/create";
+            return "redirect:/pharmacist/health-profile/create";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to create health profile: " + e.getMessage());
-            return "redirect:/admin/health-profile/create";
+            return "redirect:/pharmacist/health-profile/create";
         }
     }
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/verification")
+@RequestMapping("/pharmacist/verification")
 @RequiredArgsConstructor
 public class VerificationController {
 
@@ -32,12 +32,12 @@ public class VerificationController {
     @PostMapping("/{id}/approve")
     public String approve(@PathVariable Integer id) {
         reviewService.approve(id);
-        return "redirect:/admin/verification";
+        return "redirect:/pharmacist/verification";
     }
 
     @PostMapping("/{id}/deny")
     public String deny(@PathVariable Integer id) {
         reviewService.deny(id);
-        return "redirect:/admin/verification";
+        return "redirect:/pharmacist/verification";
     }
 }

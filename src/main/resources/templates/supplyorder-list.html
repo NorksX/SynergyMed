@@ -37,7 +37,7 @@
         <div class="card-body">
             <div class="row-top">
                 <div class="muted">Прикажани се сите досега креирани набавки.</div>
-                <a class="btn" th:href="@{/admin/supply-orders/new}">+ Нова набавка</a>
+                <a class="btn" th:href="@{/pharmacist/supply-orders/new}">+ Нова набавка</a>
             </div>
 
             <table>
@@ -62,7 +62,7 @@
                     <td th:text="${o.orderDate}">2025-09-03</td>
                     <td th:text="${o.expectedArrivalDate}">2025-09-10</td>
                     <td th:text="${o.status}">во тек</td>
-                    <td><a class="btn" th:href="@{|/admin/supply-orders/${o.id}|}">Преглед</a></td>
+                    <td><a class="btn" th:href="@{|/pharmacist/supply-orders/${o.id}|}">Преглед</a></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(orders)}">
                     <td colspan="8" class="muted">Нема креирани набавки.</td>

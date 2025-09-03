@@ -5,6 +5,5 @@ public enum CompanyRoleType {
     DISTRIBUTOR,
     MANUFACTURER,
     PHARMACY,
-
-    DELIVERYCOMPANY
+    DELIVERY_COMPANY
 }

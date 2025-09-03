@@ -61,7 +61,7 @@
     <div class="card">
         <div class="card-header">Креирај набавка</div>
         <div class="card-body">
-            <form th:action="@{/admin/supply-orders}" method="post" id="orderForm">
+            <form th:action="@{/phramacist/supply-orders}" method="post" id="orderForm">
                 <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="grid-2">

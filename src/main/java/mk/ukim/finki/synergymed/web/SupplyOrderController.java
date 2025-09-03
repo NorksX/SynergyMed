@@ -16,7 +16,7 @@ import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/supply-orders")
+@RequestMapping("/pharmacist/supply-orders")
 public class SupplyOrderController {
 
     private final SupplyOrderService supplyOrderService;
@@ -61,7 +61,7 @@ public class SupplyOrderController {
         Integer id = supplyOrderService.createSupplyOrder(
                 pharmacyId, facilityId, distributorId, medicineIds, quantities
         );
-        return "redirect:/admin/supply-orders/" + id;
+        return "redirect:/pharmacist/supply-orders/" + id;
     }
         @GetMapping
         public String list(Model model) {
