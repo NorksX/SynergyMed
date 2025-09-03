@@ -38,7 +38,7 @@ public class User implements UserDetails{
     @Column(name = "gender", length = 50)
     private String gender;
 
-    @Column(name = "date_created", nullable = false)
+    @Column(name = "date_created", nullable = false, insertable = false, updatable = false)
     private LocalDate dateCreated;
 
     @Column(name = "date_of_birth", nullable = false)
