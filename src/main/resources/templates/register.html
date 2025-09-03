@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynergyMed - Регистрација</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a4ecba 0%, #fefeff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+        }
+
+        .register-header {
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .register-header h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 8px;
+        }
+
+        .register-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .register-form {
+            padding: 40px 30px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            flex: 1;
+        }
+
+        .form-group.full-width {
+            flex: 1 1 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #20b2aa;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #20b2aa;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.1);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(32, 178, 170, 0.3);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .alert-danger {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #20b2aa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #1a9999;
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            position: relative;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .form-footer {
+            text-align: center;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .form-footer p {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .register-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .register-header {
+                padding: 30px 20px;
+            }
+
+            .register-form {
+                padding: 30px 20px;
+            }
+
+            .register-header h1 {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <div class="register-header">
+        <h1>SynergyMed</h1>
+        <p>Создајте вашата нова сметка за да започнете.</p>
+    </div>
+
+    <div class="register-form">
+        <!-- Error message -->
+        <div th:if="${hasError}" class="alert alert-danger">
+            <span th:text="${error}">Грешка при регистрација</span>
+        </div>
+
+        <form th:action="@{/register}" method="post" id="registerForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">Име</label>
+                    <input type="text"
+                           id="firstName"
+                           name="firstName"
+                           class="form-control"
+                           placeholder="Внесете име"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Презиме</label>
+                    <input type="text"
+                           id="lastName"
+                           name="lastName"
+                           class="form-control"
+                           placeholder="Внесете презиме"
+                           required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Корисничко име</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       class="form-control"
+                       placeholder="Внесете корисничко име"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Е-маил</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       class="form-control"
+                       placeholder="Внесете е-маил адреса"
+                       required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Лозинка</label>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Внесете лозинка"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="repeatPassword">Повторете лозинка</label>
+                    <input type="password"
+                           id="repeatPassword"
+                           name="repeatPassword"
+                           class="form-control"
+                           placeholder="Повторете лозинка"
+                           required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="gender">Пол</label>
+                    <select id="gender" name="gender" class="form-select" required>
+                        <option value="">Изберете пол</option>
+                        <option value="МАШКИ">Машки</option>
+                        <option value="ЖЕНСКИ">Женски</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateOfBirth">Датум на раѓање</label>
+                    <input type="date"
+                           id="dateOfBirth"
+                           name="dateOfBirth"
+                           class="form-control"
+                           required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register" id="registerBtn">
+                <span class="btn-text">Регистрирај се</span>
+                <div class="loading"></div>
+            </button>
+        </form>
+
+        <div class="login-link">
+            <a href="#" th:href="@{/login}">Веќе имате сметка? Најавете се</a>
+        </div>
+    </div>
+
+    <div class="form-footer">
+        <p>&copy; 2025 SynergyMed. Сите права задржани.</p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function() {
+        const btn = document.getElementById('registerBtn');
+        const btnText = btn.querySelector('.btn-text');
+        const loading = btn.querySelector('.loading');
+
+        btnText.style.display = 'none';
+        loading.style.display = 'block';
+        btn.disabled = true;
+    });
+
+    // Add input focus animations
+    document.querySelectorAll('.form-control, .form-select').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+    });
+
+    // Password confirmation validation
+    document.getElementById('repeatPassword').addEventListener('blur', function() {
+        const password = document.getElementById('password').value;
+        const repeatPassword = this.value;
+
+        if (password && repeatPassword && password !== repeatPassword) {
+            this.style.borderColor = '#dc3545';
+            this.style.backgroundColor = '#fff5f5';
+        } else {
+            this.style.borderColor = '#e1e5e9';
+            this.style.backgroundColor = '#f8f9fa';
+        }
+    });
+</script>
+</body>
+</html>

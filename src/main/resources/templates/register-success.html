@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SynergyMed - Успешна Регистрација</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #a4ecba 0%, #fefeff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .success-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      width: 100%;
+      max-width: 450px;
+      backdrop-filter: blur(10px);
+    }
+
+    .success-header {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      padding: 40px 30px;
+      text-align: center;
+      color: white;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+      animation: pulse 2s infinite;
+    }
+
+    .success-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+      }
+      70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+      }
+    }
+
+    .success-header h1 {
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 8px;
+    }
+
+    .success-header p {
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    .success-content {
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .success-message {
+      margin-bottom: 30px;
+    }
+
+    .success-message h2 {
+      color: #28a745;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .success-message p {
+      color: #666;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .btn-login {
+      padding: 15px;
+      background: linear-gradient(135deg, #20b2aa, #48d1cc);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(32, 178, 170, 0.3);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      padding: 15px;
+      background: #f8f9fa;
+      color: #6c757d;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+
+    .btn-secondary:hover {
+      background: #e9ecef;
+      color: #495057;
+      border-color: #ced4da;
+    }
+
+    .form-footer {
+      text-align: center;
+      padding: 20px 30px;
+      background-color: #f8f9fa;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .form-footer p {
+      color: #6c757d;
+      font-size: 0.85rem;
+    }
+
+    .welcome-info {
+      background: #e7f9f0;
+      border: 1px solid #b8e6cc;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    .welcome-info h3 {
+      color: #155724;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .welcome-info ul {
+      color: #155724;
+      font-size: 0.9rem;
+      padding-left: 20px;
+    }
+
+    .welcome-info li {
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 480px) {
+      .success-container {
+        margin: 10px;
+        border-radius: 15px;
+      }
+
+      .success-header {
+        padding: 30px 20px;
+      }
+
+      .success-content {
+        padding: 30px 20px;
+      }
+
+      .success-header h1 {
+        font-size: 1.7rem;
+      }
+
+      .success-message h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="success-container">
+  <div class="success-header">
+    <div class="success-icon">
+      <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+      </svg>
+    </div>
+    <h1>SynergyMed</h1>
+    <p>Успешно создавање на сметка</p>
+  </div>
+
+  <div class="success-content">
+    <div class="success-message">
+      <h2>Честитки!</h2>
+      <p>Вашата сметка е успешно создадена. Сега можете да се најавите и да ги користите сите функционалности на SynergyMed платформата.</p>
+    </div>
+
+    <div class="welcome-info">
+      <h3>Што можете да правите:</h3>
+      <ul>
+        <li>Online купување на продукти од нашите аптеки</li>
+        <li>Преглед на медицинската историја</li>
+        <li>Менаџирање на вашиот здравствен профил</li>
+        <li>Следење на здравствените показатели</li>
+      </ul>
+    </div>
+
+    <div class="action-buttons">
+      <a href="#" th:href="@{/login}" class="btn-login">Најави се сега</a>
+      <a href="#" th:href="@{/}" class="btn-secondary">Назад на почетна</a>
+    </div>
+  </div>
+
+  <div class="form-footer">
+    <p>&copy; 2025 SynergyMed. Сите права задржани.</p>
+  </div>
+</div>
+
+<script>
+  // Add a subtle entrance animation
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.success-container');
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(20px)';
+
+    setTimeout(() => {
+      container.style.transition = 'all 0.6s ease';
+      container.style.opacity = '1';
+      container.style.transform = 'translateY(0)';
+    }, 100);
+  });
+</script>
+</body>
+</html>
