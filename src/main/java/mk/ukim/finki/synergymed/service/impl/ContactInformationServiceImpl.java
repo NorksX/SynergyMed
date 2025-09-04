@@ -23,7 +23,6 @@ public class ContactInformationServiceImpl implements ContactInformationService 
     private final UserRepository userRepo;
     private final FacilityRepository facilityRepo;
 
-    // User-scoped
     @Override @Transactional(readOnly = true)
     public List<Contactinformation> listForUser(Integer userId) {
         return repo.findByUser_Id(userId);
@@ -56,7 +55,6 @@ public class ContactInformationServiceImpl implements ContactInformationService 
         repo.delete(ci);
     }
 
-    // Facility-scoped
     @Override @Transactional(readOnly = true)
     public List<Contactinformation> listForFacility(Integer facilityId) {
         return repo.findByFacility_Id(facilityId);

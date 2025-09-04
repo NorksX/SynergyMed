@@ -37,11 +37,10 @@ public class CompanyOrchestrationServiceImpl implements CompanyOrchestrationServ
                     case DELIVERY_COMPANY -> deliveryCompanyService.create(c.getId());
                 }
             } catch (DataIntegrityViolationException ignore) {
-                // idempotent add if another request just created the row under a unique/PK constraint
             }
         }
         return c;
-    } // service-level transaction boundary covers the whole use case [1][6]
+    }
 
     @Override
     @Transactional
@@ -59,7 +58,7 @@ public class CompanyOrchestrationServiceImpl implements CompanyOrchestrationServ
         Set<CompanyRoleType> requested = EnumSet.noneOf(CompanyRoleType.class);
         requested.addAll(requestedRoles);
 
-        if (current.equals(requested)) return; // no-op on unchanged roles
+        if (current.equals(requested)) return;
 
         // Adds
         for (CompanyRoleType r : requested) {
@@ -72,12 +71,11 @@ public class CompanyOrchestrationServiceImpl implements CompanyOrchestrationServ
                         case DELIVERY_COMPANY -> deliveryCompanyService.create(companyId);
                     }
                 } catch (DataIntegrityViolationException ignore) {
-                    // safe duplicate under unique/PK
                 }
             }
         }
 
-        // Removes
+        //
         for (CompanyRoleType r : current) {
             if (!requested.contains(r)) {
                 switch (r) {

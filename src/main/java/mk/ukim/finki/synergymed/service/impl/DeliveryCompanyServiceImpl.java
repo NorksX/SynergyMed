@@ -45,7 +45,6 @@ public class DeliveryCompanyServiceImpl implements DeliveryCompanyService {
                 .orElseThrow(() -> new EntityNotFoundException("Company not found: " + companyId));
 
         Deliverycompany dc = new Deliverycompany();
-        // If Deliverycompany uses @MapsId on its company mapping, this copies company.id into deliverycompany.id
         dc.setCompany(company);
 
         return deliveryCompanyRepository.save(dc);

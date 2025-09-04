@@ -22,7 +22,6 @@ public class FacilityController {
     private final FacilityService facilityService;
     private final ContactInformationService contactInformationService;
 
-    // Grid of facilities for a company
     @GetMapping
     public String index(@PathVariable Integer companyId, Model model) {
         Company company = companyService.findById(companyId).orElseThrow();
@@ -95,7 +94,6 @@ public class FacilityController {
         return "facility-inventory";
     }
 
-    // Contact Info: show/create/update/delete (single contact)
     @GetMapping("/{id}/contacts")
     public String facilityContacts(@PathVariable Integer companyId,
                                    @PathVariable Integer id,

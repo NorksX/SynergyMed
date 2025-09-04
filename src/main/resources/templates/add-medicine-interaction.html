@@ -26,8 +26,8 @@
             border-radius:0;
             margin:0;
             z-index:1000;
-            background:white !important; /* Force white background */
-            box-shadow:0 2px 10px rgba(0,0,0,0.1); /* Add subtle shadow */
+            background:white !important;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
         }
 
         .container { max-width:800px; margin:0 auto; padding:20px; }
@@ -36,6 +36,20 @@
         .header-content { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:30px; text-align:center; }
         .header-content h1 { font-size:2.2rem; font-weight:300; margin-bottom:10px; }
         .header-content p { font-size:1rem; opacity:.9; }
+
+        /* Header action row */
+        .header-buttons {
+            margin-top:14px;
+            display:flex;
+            justify-content:center;
+        }
+        .btn-back{
+            display:inline-flex; align-items:center; justify-content:center;
+            padding:10px 16px; border-radius:12px; font-weight:700; text-decoration:none; cursor:pointer;
+            background:#ffffff; color:#20b2aa; border:2px solid rgba(32,178,170,.25);
+            transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+        }
+        .btn-back:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,.10); border-color:#20b2aa; background:#f8fffe; }
 
         .card { background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; margin-bottom:30px; }
         .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; padding:20px 30px; font-size:1.3rem; font-weight:600; }
@@ -49,39 +63,22 @@
         .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(32,178,170,.3); }
         .btn-submit:active { transform:translateY(0); }
 
-        /* Alerts */
         .alert { padding:15px; border-radius:12px; margin-bottom:20px; font-size:.9rem; }
         .alert-danger { background-color:#fee; color:#c33; border:1px solid #fcc; }
         .alert-success { background-color:#efe; color:#363; border:1px solid #cfc; }
 
-        /* Severity fancy buttons */
         .severity-options { display:flex; gap:20px; justify-content:space-between; margin-top:15px; }
         .severity-option { flex:1; }
         .severity-option input { display:none; }
         .severity-label {
-            display:block;
-            padding:15px;
-            border-radius:12px;
-            text-align:center;
-            cursor:pointer;
-            font-weight:700;
-            text-transform:uppercase;
-            transition:all .3s ease;
-            border:2px solid transparent;
-            font-size:0.95rem;
-            letter-spacing:1px;
+            display:block; padding:15px; border-radius:12px; text-align:center; cursor:pointer; font-weight:700;
+            text-transform:uppercase; transition:all .3s ease; border:2px solid transparent; font-size:0.95rem; letter-spacing:1px;
             box-shadow:0 4px 8px rgba(0,0,0,0.08);
         }
-
         .severity-low    { background:linear-gradient(135deg,#d1ecf1,#b3e6f0); color:#0c5460; border-color:#0c5460; }
         .severity-medium { background:linear-gradient(135deg,#fff3cd,#ffe082); color:#856404; border-color:#856404; }
         .severity-high   { background:linear-gradient(135deg,#f8d7da,#f5b7b1); color:#721c24; border-color:#721c24; }
-
-        .severity-option input:checked + .severity-label {
-            transform:scale(1.07);
-            box-shadow:0 0 15px rgba(0,0,0,0.25);
-            border-width:3px;
-        }
+        .severity-option input:checked + .severity-label { transform:scale(1.07); box-shadow:0 0 15px rgba(0,0,0,0.25); border-width:3px; }
     </style>
 </head>
 <body>
@@ -95,6 +92,15 @@
         <div class="header-content">
             <h1>Додади интеракција</h1>
             <p>Избери два различни лека и дефинирај ја нивната интеракција</p>
+
+            <!-- Back button under the heading and description -->
+            <div class="header-buttons">
+                <a class="btn-back"
+                   href="http://localhost:8080/pharmacist/medicine/interactions"
+                   th:href="@{/pharmacist/medicine/interactions}">
+                    Назад
+                </a>
+            </div>
         </div>
     </div>
 
@@ -111,7 +117,6 @@
         <div class="card-header">Интеракции</div>
         <div class="card-body">
             <form th:action="@{/pharmacist/medicine/interactions/add}" method="post">
-
                 <div class="form-group">
                     <label for="medicine1Id">Прв лек</label>
                     <select id="medicine1Id" name="medicine1Id" class="form-control" required>

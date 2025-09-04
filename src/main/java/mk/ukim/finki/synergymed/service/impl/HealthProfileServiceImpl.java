@@ -23,7 +23,6 @@ public class HealthProfileServiceImpl implements HealthProfileService {
 
     @Override
     public Healthprofile createForClient(Client client, String bloodType) {
-        // TODO: 28.8.2025 Check if the client already has a health profile
 
         Healthprofile profile = new Healthprofile();
         profile.setClient(client);

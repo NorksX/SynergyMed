@@ -40,7 +40,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             entry.setQuantity(entry.getQuantity() + quantity);
         }
 
-        // TODO: 30.8.2025 stock check with trigger
 
         cartMedicineRepo.save(entry);
     }

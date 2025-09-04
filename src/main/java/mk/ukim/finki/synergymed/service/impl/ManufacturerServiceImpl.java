@@ -43,7 +43,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found: " + companyId));
         Manufacturer m = new Manufacturer();
-        m.setCompany(company); // @MapsId copies company.id into manufacturer.id
+        m.setCompany(company);
         return manufacturerRepository.save(m);
     }
 

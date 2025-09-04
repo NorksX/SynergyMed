@@ -43,7 +43,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found: " + companyId));
         Pharmacy p = new Pharmacy();
-        p.setCompany(company); // @MapsId copies company.id into pharmacy.id
+        p.setCompany(company);
         return pharmacyRepository.save(p);
     }
 

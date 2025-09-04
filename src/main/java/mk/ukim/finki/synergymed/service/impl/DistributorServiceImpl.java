@@ -43,7 +43,7 @@ public class DistributorServiceImpl implements DistributorService {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found: " + companyId));
         Distributor d = new Distributor();
-        d.setCompany(company); // @MapsId copies company.id into distributor.id
+        d.setCompany(company);
         return distributorRepository.save(d);
     }
 

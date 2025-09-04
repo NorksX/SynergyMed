@@ -136,10 +136,10 @@
                th:classappend="${activePage}=='Компании' ? ' active'">Компании</a>
             <a class="nav-btn" sec:authorize="hasAnyRole('PHARMACIST','ADMIN')" th:href="@{/admin/branded-medicines}"
                th:classappend="${activePage}=='Брендирани лекови' ? ' active'">Брендирани лекови</a>
-            <a class="nav-btn" sec:authorize="hasRole('PHARMACIST')" th:href="@{/pharmacist/verification}"
-               th:classappend="${activePage}=='Верификација' ? ' active'">Верификација</a>
-            <a class="nav-btn" sec:authorize="hasRole('PHARMACIST')" th:href="@{/pharmacist/supply-orders}"
-               th:classappend="${activePage}=='Нарачка на роба' ? ' active'">Нарачки на роба</a>
+            <a class="nav-btn" sec:authorize="hasAnyRole('PHARMACIST')" th:href="@{/admin/companies/3/facilities}"
+               th:classappend="${activePage}=='Објекти на аптеката' ? ' active'">Објекти на аптеката</a>
+
+
         </nav>
 
         <div class="account">
@@ -154,6 +154,7 @@
                 </button>
                 <div class="dropdown" id="userDropdown" role="menu" aria-labelledby="userButton">
                     <a class="dropdown-item" th:href="@{/profile}" role="menuitem">Подесувања за профилот</a>
+                    <a class="dropdown-item" sec:authorize="hasRole('PHARMACIST')" th:href="@{/pharmacist/health-profile/create}" role="menuitem">Контролна табла </a>
                     <a class="dropdown-item" sec:authorize="hasRole('CLIENT') "th:href="@{/orders}" role="menuitem">Мои нарачки</a>
                     <a class="dropdown-item" sec:authorize="hasRole('CLIENT')" th:href="@{/cart}" role="menuitem">Кошничка 🛒</a>
                     <form th:action="@{/logout}" method="post" style="margin:0">
@@ -162,8 +163,12 @@
                     </form>
                 </div>
             </div>
-
-            <a class="login-btn" th:unless="${u}" th:href="@{/login}">Најави се</a>
+            <div>
+            <a class="login-btn" th:unless="${u}" th:href="@{/login}">Најави се  </a>
+            </div>
+            <div>
+            <a class="login-btn" th:unless="${u}" th:href="@{/register}">Регистрирај се</a>
+            </div>
         </div>
     </header>
 </th:block>

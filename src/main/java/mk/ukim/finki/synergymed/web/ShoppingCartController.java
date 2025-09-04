@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+
 @Controller
 @RequestMapping("/cart")
 @RequiredArgsConstructor
@@ -98,7 +100,6 @@ public class ShoppingCartController {
         return "redirect:/cart";
     }
 
-    // in ShoppingCartController
     @GetMapping
     public String showCart(Model model, @AuthenticationPrincipal UserDetails ud) {
         Client client = getClient(ud);
@@ -109,7 +110,7 @@ public class ShoppingCartController {
         model.addAttribute("total", shoppingCartService.getTotal(cart));
         model.addAttribute("username", ud.getUsername());
 
-        var meds = new java.util.ArrayList<>(items.keySet());
+        var meds = new ArrayList<>(items.keySet());
         var firstImageById = brandedmedicineService.cardImageUrlsFor(meds);
         model.addAttribute("firstImageById", firstImageById);
 
