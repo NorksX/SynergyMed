@@ -45,7 +45,7 @@ public class CatalogController {
         model.addAttribute("username", session.getAttribute("username"));
         return "catalog-edit";
     }
-    @GetMapping("/{id}")
+    @GetMapping("details/{id}")
     public String details(@PathVariable Integer id, Model model) {
         Brandedmedicine bm = brandedMedicineService.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Branded medicine not found: " + id));

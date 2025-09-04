@@ -53,7 +53,7 @@
             <div class="grid" th:unless="${#lists.isEmpty(medicines)}">
                 <div class="item" th:each="m : ${medicines}">
                     <!-- Wrap the image in a link to details /catalog/{id} -->
-                    <a class="thumb-link" th:href="@{/catalog/{id}(id=${m.id})}" aria-label="Детали за [[${m.name}]]">
+                    <a class="thumb-link" th:href="@{/catalog/details/{id}(id=${m.id})}" aria-label="Детали за [[${m.name}]]">
                         <img class="thumb" th:if="${firstImageById != null}" th:src="${firstImageById[m.id]}" alt="слика">
                         <img class="thumb" th:if="${firstImageById == null}" src="/images/default-medicine.png" alt="слика">
                     </a>
