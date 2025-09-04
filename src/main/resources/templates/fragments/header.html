@@ -126,7 +126,7 @@
             isAuth=${#authorization.expression('isAuthenticated()')},
             u=${(session.username != null) ? session.username : (isAuth ? #authentication.name : null)}">
         <a class="brand" th:href="@{/}">
-            <img src="/logo.png" alt="SynergyMed лого" class="logo">
+            <img th:src="@{/logo.png}" alt="SynergyMed лого" class="logo">
         </a>
 
         <nav class="main-nav" aria-label="Главна навигација">
