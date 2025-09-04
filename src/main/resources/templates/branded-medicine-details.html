@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${bm != null ? 'Брендиран лек – ' + bm.name : 'Брендиран лек'}">SynergyMed – Брендиран лек</title>
+
+    <!-- Global header styles (fragment) -->
+    <th:block th:replace="~{fragments/header :: headerStyles}"></th:block>
+
+    <!-- Page styles (override header after fragment import) -->
+    <style>
+        /* Keep the global header flat and sticky at the top */
+        .site-header{
+            position: sticky;
+            top: 0; left: 0; right: 0; width: 100%;
+            z-index: 1000;
+            border-radius: 0;
+            background: #ffffff !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,.10);
+        }
+
+        :root {
+            --teal-1:#20b2aa; --teal-2:#48d1cc;
+            --muted:#6b7280; --text:#1f2937;
+            --shadow:0 20px 40px rgba(0,0,0,0.10);
+            --shadow-sm:0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height:100vh;
+            background:linear-gradient(135deg,#a4ecba 0%, #f7f7f8 100%);
+            color:var(--text);
+        }
+
+        .page{max-width:1200px; margin:0 auto; padding:24px}
+
+        .card{background:#fff; border-radius:18px; box-shadow:var(--shadow); overflow:hidden; margin-bottom:28px}
+        .card-header{
+            background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+            color:#fff; padding:20px 24px; display:flex; align-items:center; justify-content:space-between;
+            font-size:1.25rem; font-weight:700;
+        }
+        .card-body{padding:22px}
+
+        .grid{
+            display:grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap:22px;
+            align-items:start;
+        }
+
+        /* Gallery */
+        .gallery{
+            display:flex; flex-direction:column; gap:10px;
+        }
+        .viewport{
+            position:relative;
+            overflow-x:auto; overflow-y:hidden;
+            display:flex; gap:10px; scroll-behavior:smooth;
+            scroll-snap-type:x mandatory; /* enable horizontal snap */
+            border-radius:14px; box-shadow:var(--shadow-sm); background:#fff;
+        }
+        .slide{
+            flex:0 0 100%;
+            scroll-snap-align:center; /* each slide centers on snap */
+            position:relative;
+            aspect-ratio: 4 / 3;
+            background:#f3f4f6;
+            display:grid; place-items:center;
+        }
+        .slide img{width:100%; height:100%; object-fit:cover; display:block; border-radius:14px}
+
+        .controls{
+            display:flex; justify-content:space-between; gap:10px; align-items:center;
+        }
+        .pager{
+            display:flex; gap:6px; align-items:center; justify-content:center; flex:1;
+        }
+        .dot{
+            width:10px; height:10px; border-radius:50%;
+            background:#d1d5db; border:1px solid #e5e7eb;
+        }
+        .dot[aria-current="true"]{ background:#20b2aa; border-color:#20b2aa }
+
+        .ctrl-btn{
+            display:inline-flex; align-items:center; justify-content:center;
+            width:40px; height:40px; border-radius:10px;
+            background:#ffffff; border:1px solid rgba(0,0,0,.12);
+            cursor:pointer; transition:.15s ease; color:#111827;
+        }
+        .ctrl-btn:hover{ box-shadow:0 6px 14px rgba(0,0,0,.10) }
+
+        /* Details */
+        .meta{display:grid; grid-template-columns:1fr; gap:14px}
+        .row{display:flex; gap:10px; align-items:baseline; flex-wrap:wrap}
+        .label{min-width:160px; color:var(--muted); font-weight:600}
+        .value{font-weight:700}
+        .desc{white-space:pre-wrap; line-height:1.6}
+
+        .price{
+            font-size:1.6rem; font-weight:800;
+            background:linear-gradient(135deg,var(--teal-1),var(--teal-2));
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+        }
+
+        .actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap}
+        .btn{
+            display:inline-flex; align-items:center; gap:8px;
+            padding:10px 14px; border-radius:12px; font-weight:700; text-decoration:none; cursor:pointer;
+            transition:transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
+        }
+        .btn-primary{ background:linear-gradient(135deg,var(--teal-1),var(--teal-2)); color:#fff; box-shadow:0 10px 20px rgba(32,178,170,.25); border:none }
+        .btn-outline{ background:#fff; color:#20b2aa; border:2px solid rgba(32,178,170,.25) }
+        .btn:hover{ transform: translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,.10) }
+
+        @media (max-width: 900px){
+            .grid{ grid-template-columns:1fr; }
+            .label{min-width:120px}
+        }
+    </style>
+</head>
+<body>
+<!-- Global header -->
+<th:block th:replace="~{fragments/header :: siteHeader('Каталог')}"></th:block>
+
+<div class="page">
+    <div class="card">
+        <div class="card-header">
+        <span>
+          <span th:text="${bm.name}">Име на лек</span>
+        </span>
+            <a class="btn btn-outline" th:href="@{/catalog}">← Назад кон листата</a>
+        </div>
+
+        <div class="card-body">
+            <div class="grid">
+                <!-- Gallery -->
+                <section class="gallery"
+                         role="region"
+                         aria-roledescription="carousel"
+                         aria-label="Галерија слики за лек"
+                         aria-live="polite">
+                    <div class="viewport" id="viewport">
+                        <!-- Slides -->
+                        <div class="slide" th:each="img,iter : ${images}">
+                            <img th:src="@{${img.image}}" alt="Слика [[${iter.index + 1}]]">
+                        </div>
+                        <!-- Fallback if нема слики -->
+                        <div class="slide" th:if="${images == null or #lists.isEmpty(images)}">
+                            <img src="/images/placeholder.png" alt="Нема слика">
+                        </div>
+                    </div>
+
+                    <div class="controls" aria-label="Контроли на галеријата">
+                        <button type="button" class="ctrl-btn" id="prevBtn" aria-label="Претходна слика">◀</button>
+                        <div class="pager" id="pager" aria-label="Слајдови"></div>
+                        <button type="button" class="ctrl-btn" id="nextBtn" aria-label="Следна слика">▶</button>
+                    </div>
+                </section>
+
+                <!-- Details -->
+                <section class="details" aria-label="Детали за лек">
+                    <div class="meta">
+                        <div class="row">
+                            <div class="label">Назив</div>
+                            <div class="value" th:text="${bm.name}">Име</div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Производител</div>
+                            <div class="value"
+                                 th:text="${
+                        bm.manufacturer != null && bm.manufacturer.company != null
+                        ? bm.manufacturer.company.companyName : '—'
+                     }">Компанија</div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Цена</div>
+                            <div class="price"
+                                 th:text="${#numbers.formatDecimal(bm.price,1,'COMMA',2,'POINT')} + ' ден.'">0,00 ден.</div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Форма</div>
+                            <div class="value" th:text="${bm.dosageForm}">Таблети</div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Јачина</div>
+                            <div class="value" th:text="${bm.strength}">500 mg</div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Земја на потекло</div>
+                            <div class="value" th:text="${bm.originCountry != null ? bm.originCountry : '—'}">Македонија</div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Опис</div>
+                            <div class="desc" th:text="${bm.description != null ? bm.description : 'Нема опис.'}">Опис...</div>
+                        </div>
+
+                        <div class="actions">
+                            <!-- Example client action; gate with role if needed -->
+                            <form th:action="@{/cart/add/{id}(id=${bm.id})}" method="post" style="display:inline;">
+                                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-primary" sec:authorize="hasRole('CLIENT')">Додај во кошничка</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Header dropdown behavior (fragment) -->
+<th:block th:replace="~{fragments/header :: headerScripts}"></th:block>
+
+<script>
+    (function(){
+        const vp   = document.getElementById('viewport');
+        const prev = document.getElementById('prevBtn');
+        const next = document.getElementById('nextBtn');
+        const pager= document.getElementById('pager');
+
+        const slides = Array.from(vp.querySelectorAll('.slide'));
+        const slideCount = slides.length;
+        let idx = 0;
+
+        function buildDots(){
+            pager.innerHTML = '';
+            for(let i=0;i<slideCount;i++){
+                const d = document.createElement('button');
+                d.className = 'dot';
+                d.type = 'button';
+                d.setAttribute('aria-label', `Слајд ${i+1} од ${slideCount}`);
+                d.setAttribute('aria-current', i===idx ? 'true' : 'false');
+                d.addEventListener('click', ()=>scrollToIndex(i));
+                pager.appendChild(d);
+            }
+        }
+
+        function updateAria(){
+            slides.forEach((s, i)=>{
+                s.setAttribute('aria-hidden', i===idx ? 'false' : 'true');
+                s.toggleAttribute('aria-current', i===idx);
+            });
+            Array.from(pager.children).forEach((dot,i)=>{
+                dot.setAttribute('aria-current', i===idx ? 'true' : 'false');
+            });
+        }
+
+        function scrollToIndex(i){
+            if (i<0 || i>=slideCount) return;
+            idx = i;
+            slides[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+            updateAria();
+        }
+
+        function nearestIndex(){
+            const vw = vp.clientWidth;
+            const x  = vp.scrollLeft;
+            return Math.round(x / vw);
+        }
+
+        prev?.addEventListener('click', ()=>scrollToIndex(idx-1));
+        next?.addEventListener('click', ()=>scrollToIndex(idx+1));
+
+        vp?.addEventListener('scroll', ()=>{
+            const n = nearestIndex();
+            if (n !== idx){ idx = n; updateAria(); }
+        }, {passive:true});
+
+        // Keyboard support
+        vp?.addEventListener('keydown', (e)=>{
+            if (e.key === 'ArrowRight') { e.preventDefault(); scrollToIndex(idx+1); }
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); scrollToIndex(idx-1); }
+        });
+
+        // Init
+        buildDots();
+        updateAria();
+    })();
+</script>
+</body>
+</html>

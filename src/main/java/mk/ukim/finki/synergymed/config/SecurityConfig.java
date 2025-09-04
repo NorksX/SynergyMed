@@ -17,8 +17,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(reg -> reg
-                        .requestMatchers("/", "/login", "/register", "/error", "/css/**", "/js/**", "/uploads/**", "/logo.png", "catalog").permitAll()
-                        .requestMatchers("/admin/branded-medicines/**").hasAnyRole("ADMIN","PHARMACIST")
+                        .requestMatchers("/", "/login", "/register", "/error", "/css/**", "/js/**", "/uploads/**", "/logo.png", "/catalog").permitAll()
+                        .requestMatchers("/admin/branded-medicines/**", "/admin/companies/3/facilities/**").hasAnyRole("ADMIN","PHARMACIST")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/pharmacist/**").hasRole("PHARMACIST")
                         .anyRequest().permitAll()

@@ -21,7 +21,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<Client> findClientsWithoutHealthProfileByName(String searchTerm) {
-        // ensure case-insensitive search by wrapping with %...%
         String term = "%" + searchTerm.toLowerCase() + "%";
         return clientRepository.findClientsWithoutHealthProfileByName(term);
     }

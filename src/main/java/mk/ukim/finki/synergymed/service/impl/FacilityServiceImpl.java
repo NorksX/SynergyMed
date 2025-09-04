@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class FacilityServiceImpl implements FacilityService {
 
     private final FacilityRepository facilityRepository;
@@ -34,24 +33,22 @@ public class FacilityServiceImpl implements FacilityService {
         this.inventoryBrandedmedicineRepository = inventoryBrandedmedicineRepository;
     }
 
-    @Transactional
     @Override
     public Optional<Facility> findById(Integer id) {
         return facilityRepository.findById(id);
     }
 
-    @Transactional
     @Override
     public List<Facility> findAllByCompany(Integer companyId) {
         return facilityRepository.findAllByCompanyId(companyId);
     }
 
-    @Transactional
     @Override
     public List<Facility> findAll() {
         return facilityRepository.findAll();
     }
 
+    @Transactional
     @Override
     public Facility create(Integer companyId, String facilityName, String code) {
         Company company = companyService.findById(companyId).orElseThrow();
@@ -64,6 +61,7 @@ public class FacilityServiceImpl implements FacilityService {
         return saved;
     }
 
+    @Transactional
     @Override
     public Facility update(Integer id, String facilityName, String code) {
         Facility f = facilityRepository.findById(id).orElseThrow();
@@ -72,6 +70,7 @@ public class FacilityServiceImpl implements FacilityService {
         return facilityRepository.save(f);
     }
 
+    @Transactional
     @Override
     public void delete(Integer id) {
         inventoryService.deleteForFacility(id);

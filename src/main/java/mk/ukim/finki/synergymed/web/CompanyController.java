@@ -39,14 +39,14 @@ public class CompanyController {
         model.addAttribute("companies", companies);
         model.addAttribute("rolesByCompany", rolesByCompany);
         return "companies";
-    } // thin controller; business logic stays in services [7][1]
+    }
 
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("roleTypes", CompanyRoleType.values());
         model.addAttribute("mode", "create");
         return "company-form";
-    } // uses enum values for consistent binding [5][2]
+    }
 
     @PostMapping
     public String create(@RequestParam String companyName,
@@ -57,7 +57,7 @@ public class CompanyController {
                 companyName, description, registrationNumber, roles == null ? List.of() : roles
         );
         return "redirect:/admin/companies";
-    } // delegates creation and role adds to service [1][6]
+    }
 
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Integer id, Model model) {
@@ -73,7 +73,7 @@ public class CompanyController {
         model.addAttribute("selectedRoles", selectedRoles);
         model.addAttribute("mode", "edit");
         return "company-form";
-    } // pre-checks include delivery subtype [5][4]
+    }
 
     @PostMapping("/{id}/update")
     public String update(@PathVariable Integer id,
@@ -85,11 +85,11 @@ public class CompanyController {
                 id, companyName, description, registrationNumber, roles == null ? List.of() : roles
         );
         return "redirect:/admin/companies";
-    } // thin endpoint; service owns @Transactional set-diff [1][6]
+    }
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Integer id) {
         companyService.deleteById(id);
         return "redirect:/admin/companies";
-    } // deletion outside the role logic [1][6]
+    }
 }

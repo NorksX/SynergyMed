@@ -1,17 +1,19 @@
 package mk.ukim.finki.synergymed.web;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import mk.ukim.finki.synergymed.models.Brandedmedicine;
+import mk.ukim.finki.synergymed.models.Brandedmedicineimage;
 import mk.ukim.finki.synergymed.service.BrandedMedicineService;
 import mk.ukim.finki.synergymed.service.CatalogService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -43,10 +45,19 @@ public class CatalogController {
         model.addAttribute("username", session.getAttribute("username"));
         return "catalog-edit";
     }
+    @GetMapping("/{id}")
+    public String details(@PathVariable Integer id, Model model) {
+        Brandedmedicine bm = brandedMedicineService.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Branded medicine not found: " + id));
+        List<Brandedmedicineimage> images = brandedMedicineService.listImages(id);
+        model.addAttribute("bm", bm);
+        model.addAttribute("images", images);
+        return "branded-medicine-details";
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN','PHARMACIST')")
     @PostMapping("/edit")
-    public String saveEdit(@RequestParam(name="ids", required=false) java.util.List<Integer> ids) {
+    public String saveEdit(@RequestParam(name="ids", required=false) List<Integer> ids) {
         catalogService.setCatalog(3, ids);
         return "redirect:/catalog";
     }

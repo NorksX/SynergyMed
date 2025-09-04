@@ -41,17 +41,14 @@ public class CatalogServiceImpl implements CatalogService {
     public void setCatalog(Integer pharmacyId, Collection<Integer> brandedMedicineIds) {
         Set<Integer> desired = brandedMedicineIds == null ? Set.of() : new HashSet<>(brandedMedicineIds);
 
-        // Current
         Set<Integer> current = listCatalogMedicineIds(pharmacyId);
 
-        // To add and to remove
         Set<Integer> toAdd = new HashSet<>(desired);
         toAdd.removeAll(current);
 
         Set<Integer> toRemove = new HashSet<>(current);
         toRemove.removeAll(desired);
 
-        // Add
         if (!toAdd.isEmpty()) {
             Pharmacy pharmacy = pharmacyRepo.findById(pharmacyId)
                     .orElseThrow(() -> new IllegalArgumentException("Pharmacy not found: " + pharmacyId));
@@ -67,7 +64,6 @@ public class CatalogServiceImpl implements CatalogService {
             catalogRepo.saveAll(newLinks);
         }
 
-        // Remove
         for (Integer bmId : toRemove) {
             catalogRepo.deleteByPharmacy_IdAndBrandedMedicine_Id(pharmacyId, bmId);
         }

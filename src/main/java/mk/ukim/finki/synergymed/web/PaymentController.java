@@ -30,8 +30,8 @@ public class PaymentController {
     private final PaymentMethodService paymentMethodService;
     private final DeliveryCompanyService deliveryCompanyService;
     private final ClientService clientService;
-    private final UserRepository userRepository;          // from repo auth
-    private final ClubCardService clubCardService;        // from local logic
+    private final UserRepository userRepository;
+    private final ClubCardService clubCardService;
 
     private User getCurrentUser(UserDetails ud) {
         return userRepository.findByUsername(ud.getUsername())
@@ -42,12 +42,10 @@ public class PaymentController {
     public String getPaymentPage(@RequestParam(name = "useCard", defaultValue = "false") boolean useCard,
                                  @AuthenticationPrincipal UserDetails ud,
                                  Model model) {
-        // Resolve current user/client using repo auth strategy
         User user = getCurrentUser(ud);
         Client client = clientService.findClientById(user.getId());
         Shoppingcart cart = shoppingCartService.getOrCreateCart(client);
 
-        // Local discount logic with club card
         int base = shoppingCartService.getTotal(cart).intValue();
         int discount = 0;
         if (useCard) {
@@ -75,12 +73,10 @@ public class PaymentController {
                                  @RequestParam Integer deliveryCompanyId,
                                  @RequestParam(name = "useCard", defaultValue = "false") boolean useCard,
                                  Model model) {
-        // Resolve current user/client using repo auth strategy
         User user = getCurrentUser(ud);
         Client client = clientService.findClientById(user.getId());
         Shoppingcart cart = shoppingCartService.getOrCreateCart(client);
 
-        // Pass useCard through to service as in local logic
         Clientorder order = paymentService.checkout(client, cart, paymentMethodId, deliveryCompanyId, useCard);
 
         model.addAttribute("order", order);

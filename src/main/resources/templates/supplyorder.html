@@ -1,52 +1,71 @@
-<!-- templates/supplyorder.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="mk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SynergyMed – Креирај набавка</title>
+
+    <!-- Fragment styles -->
     <th:block th:replace="~{fragments/header :: headerStyles}"></th:block>
+
+    <!-- Page styles (override header after fragment import) -->
     <style>
+        /* Force the fragment header to be flat (no rounding) and stick to the very top */
+        .site-header{
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;            /* ensure it floats above content */
+            border-radius: 0;          /* remove rounding */
+            background: #ffffff;       /* solid white background */
+            box-shadow: 0 2px 10px rgba(0,0,0,.10);
+        }
+
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #a4ecba 0%, #f7f7f8 100%);
-            min-height: 100vh;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:linear-gradient(135deg,#a4ecba 0%, #f7f7f8 100%);
+            min-height:100vh;
+            color:#1f2937;
         }
-        .site-header { position:sticky; top:0; left:0; right:0; width:100%; z-index:1000; }
-        .container { max-width:1200px; margin:0 auto; padding:20px; }
 
-        .card {
-            background:#fff; border-radius:20px;
-            box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden;
+        /* Header & Nav-bar (unified style) */
+        .page-header {
+            background: linear-gradient(135deg,#20b2aa,#48d1cc);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-radius: 0;      /* remove rounding */
+            margin: 0 0 20px 0;    /* spacing below only */
+            box-shadow: none;      /* no floating card effect */
         }
-        .card-header {
-            background:linear-gradient(135deg,#20b2aa,#48d1cc);
-            color:#fff; padding:22px 28px; font-size:1.25rem; font-weight:600;
-        }
+        .page-header h1 { font-size:2rem; margin-bottom:6px; font-weight:400; }
+        .page-header p { font-size:1rem; opacity:0.85; }
+        .nav-bar { background:white; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,.1); margin-bottom:30px; padding:20px 30px; }
+        .nav-links { display:flex; gap:20px; align-items:center; }
+        .nav-link { color:#20b2aa; text-decoration:none; padding:10px 20px; border-radius:25px; transition:all .3s ease; font-weight:500; }
+        .nav-link:hover, .nav-link.active { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; }
+        .back-btn { margin-left:auto; background:linear-gradient(135deg,#6c757d,#495057); color:white; }
+
+        .container { max-width:1200px; margin:0 auto; padding:20px; }
+        .card { background:#fff; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1); overflow:hidden; margin-bottom:30px; }
+        .card-header { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; padding:22px 28px; font-size:1.25rem; font-weight:600; }
         .card-body { padding:26px; }
 
         .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
         .grid-1 { display:grid; grid-template-columns:1fr; gap:16px; }
 
         label { font-weight:600; margin-bottom:6px; display:block; color:#374151; }
-        select, input[type="number"] {
-            width:100%; padding:12px 12px;
-            border:2px solid #e5e7eb; border-radius:12px; background:#fff; color:#111827;
-        }
+        select, input[type="number"] { width:100%; padding:12px 12px; border:2px solid #e5e7eb; border-radius:12px; background:#fff; color:#111827; }
 
         table { width:100%; border-collapse:collapse; margin-top:12px; }
         th, td { padding:12px 10px; border-bottom:1px solid #eef2f7; text-align:left; }
 
-        .btn {
-            padding:10px 16px; border-radius:12px;
-            border:2px solid #20b2aa; background:#fff; color:#20b2aa;
-            text-decoration:none; font-weight:600; cursor:pointer; transition:.2s;
-        }
+        .btn { padding:10px 16px; border-radius:12px; border:2px solid #20b2aa; background:#fff; color:#20b2aa; text-decoration:none; font-weight:600; cursor:pointer; transition:.2s; }
         .btn:hover { box-shadow:0 6px 14px rgba(32,178,170,.18); }
-        .btn-primary {
-            background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; border:none;
-        }
+        .btn-primary { background:linear-gradient(135deg,#20b2aa,#48d1cc); color:#fff; border:none;  padding:10px 16px; border-radius:12px; text-decoration:none; font-weight:600; cursor:pointer; transition:.2s;  }
         .btn-danger { border-color:#f0caca; color:#b3261e; }
         .muted { color:#6b7280; }
         .actions { display:flex; gap:10px; margin-top:20px; }
@@ -58,20 +77,37 @@
 <th:block th:replace="~{fragments/header :: siteHeader(${null})}"></th:block>
 
 <div class="container">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Креирај набавка</h1>
+            <p>Пополнете форма за креирање нова нарачка</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a th:href="@{/pharmacist/health-profile/create}" class="nav-link">Здравствени профили</a>
+            <a th:href="@{/pharmacist/verification}" class="nav-link">Верификација на профили</a>
+            <a th:href="@{/pharmacist/supply-orders}" class="nav-link active">Нарачка на роба</a>
+            <a th:href="@{/pharmacist/medicine/interactions}" class="nav-link">Интеракции на лекови</a>
+            <a th:href="@{/profile}" class="nav-link back-btn">Назад кон профилот</a>
+        </div>
+    </div>
+
+    <!-- Supply Order Form Card -->
     <div class="card">
         <div class="card-header">Креирај набавка</div>
         <div class="card-body">
-            <form th:action="@{/phramacist/supply-orders}" method="post" id="orderForm">
+            <form th:action="@{/pharmacist/supply-orders}" method="post" id="orderForm">
                 <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
                 <div class="grid-2">
                     <div>
                         <label>Аптека</label>
                         <select name="pharmacyId" id="pharmacySel" required>
                             <option value="" disabled selected>Избери аптека</option>
-                            <option th:each="p : ${pharmacies}"
-                                    th:value="${p.id}"
-                                    th:text="${p.company != null ? p.company.companyName : 'Аптека #' + p.id}"></option>
+                            <option th:each="p : ${pharmacies}" th:value="${p.id}" th:text="${p.company != null ? p.company.companyName : 'Аптека #' + p.id}"></option>
                         </select>
                     </div>
                     <div>
@@ -87,9 +123,7 @@
                         <label>Дистрибутер</label>
                         <select name="distributorId" id="distributorSel" required>
                             <option value="" disabled selected>Избери дистрибутер</option>
-                            <option th:each="d : ${distributors}"
-                                    th:value="${d.id}"
-                                    th:text="${d.company != null ? d.company.companyName : 'Дистрибутер #' + d.id}"></option>
+                            <option th:each="d : ${distributors}" th:value="${d.id}" th:text="${d.company != null ? d.company.companyName : 'Дистрибутер #' + d.id}"></option>
                         </select>
                     </div>
                     <div>
@@ -99,45 +133,42 @@
                 </div>
 
                 <div class="grid-1" style="margin-top:16px;">
-                    <div>
-                        <table id="itemsTable">
-                            <thead>
-                            <tr>
-                                <th style="width:60%;">Брендиран лек</th>
-                                <th style="width:20%;">Количина</th>
-                                <th style="width:20%;"></th>
-                            </tr>
-                            </thead>
-                            <tbody id="itemsBody">
-                            <tr>
-                                <td>
-                                    <select name="medicineIds" class="medicineSel" required>
-                                        <option value="" disabled selected>Прво избери дистрибутер</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="number" name="quantities" min="1" step="1" value="1" required/>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger removeRow">Отстрани</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <button type="button" class="btn" id="addRowBtn" style="margin-top:10px;">+ Додади ред</button>
-                    </div>
+                    <table id="itemsTable">
+                        <thead>
+                        <tr>
+                            <th style="width:60%;">Брендиран лек</th>
+                            <th style="width:20%;">Количина</th>
+                            <th style="width:20%;"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                        <tr>
+                            <td>
+                                <select name="medicineIds" class="medicineSel" required>
+                                    <option value="" disabled selected>Прво избери дистрибутер</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" name="quantities" min="1" step="1" value="1" required/>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger removeRow">Отстрани</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn" id="addRowBtn" style="margin-top:10px;">+ Додади ред</button>
                 </div>
 
                 <div class="actions">
                     <button type="submit" class="btn-primary">Креирај нарачка</button>
-                    <a class="btn" th:href="@{/}">Откажи</a>
+                    <a class="btn" th:href="@{/pharmacist/supply-orders}">Откажи</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Hidden option banks (preloaded) -->
 <div id="optionBanks" style="display:none;">
     <div id="facilityBank">
         <select th:each="p : ${pharmacies}" th:attr="data-pharmacy=${p.id}">

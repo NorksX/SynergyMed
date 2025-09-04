@@ -1,46 +1,104 @@
-<!-- templates/verification_approval.html -->
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="mk" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Verification Review</title>
+    <title>Преглед на верификација</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="fragments/header :: headerStyles"></th:block>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100vh;background:linear-gradient(135deg,#a4ecba 0%,#fefeff 100%);color:#1f2937}
-
-        .site-header{
-            position: sticky;
-            top:0; left:0; right:0;
-            width:100%;
-            border-radius:0;
-            margin:0;
-            z-index:1000;
-            background:#fff !important;
-            box-shadow:0 2px 10px rgba(0,0,0,.1);
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            background:linear-gradient(135deg,#a4ecba 0%,#f7f7f8 100%);
+            min-height:100vh;
         }
-        .after-site-header{ height:16px; }
 
-        .page{width:100%;max-width:900px;padding:28px;margin:0 auto}
-        .card{background:#fff;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.10);overflow:hidden;margin-bottom:28px}
-        .card-header{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;padding:20px 24px;font-size:1.3rem;font-weight:600}
-        .card-body{padding:22px}
-        .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0}
-        .label{font-weight:600;color:#374151;min-width:140px}
-        .val{flex:1}
-        .portrait{max-width:260px;border-radius:12px;border:1px solid #eef2f7;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-        .actions{display:flex;gap:12px;margin-top:18px}
-        .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-weight:600;cursor:pointer}
-        .btn-primary{background:linear-gradient(135deg,#20b2aa,#48d1cc);color:#fff;border:none}
-        .btn-danger{color:#b3261e;border-color:#f0caca}
+        .site-header {
+            position:sticky; top:0; left:0; right:0;
+            width:100%; border-radius:0; margin:0;
+            z-index:1000; background:white !important;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container { max-width:900px; margin:0 auto; padding:20px; }
+
+        .header {
+            background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1);
+            margin-bottom:30px; overflow:hidden;
+        }
+        .header-content {
+            background:linear-gradient(135deg,#20b2aa,#48d1cc);
+            color:white; padding:30px; text-align:center;
+        }
+        .header-content h1 { font-size:2.3rem; font-weight:300; margin-bottom:10px; }
+        .header-content p { font-size:1rem; opacity:.9; }
+
+        .nav-bar {
+            background:white; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,.1);
+            margin-bottom:30px; padding:20px 30px;
+        }
+        .nav-links {
+            display:flex; gap:20px; align-items:center; flex-wrap:nowrap; overflow-x:auto;
+        }
+        .nav-link {
+            color:#20b2aa; text-decoration:none; padding:10px 20px;
+            border-radius:25px; transition:all .3s ease; font-weight:500;
+        }
+        .nav-link:hover, .nav-link.active {
+            background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white;
+        }
+        .back-btn { margin-left:auto; background:linear-gradient(135deg,#6c757d,#495057); color:white; }
+
+        .card {
+            background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.1);
+            overflow:hidden; margin-bottom:30px;
+        }
+        .card-header {
+            background:linear-gradient(135deg,#20b2aa,#48d1cc);
+            color:white; padding:25px 30px; font-size:1.3rem; font-weight:600;
+        }
+        .card-body { padding:30px; }
+        .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0; }
+        .label { font-weight:600; color:#374151; min-width:140px; }
+        .val { flex:1; }
+        .portrait { max-width:260px; border-radius:12px; border:1px solid #eef2f7; box-shadow:0 6px 18px rgba(0,0,0,.08); }
+        .actions { display:flex; gap:12px; margin-top:22px; }
+        .btn {
+            display:inline-block; padding:12px 20px; border-radius:12px;
+            border:1px solid #e5e7eb; background:#fff; font-weight:600; cursor:pointer;
+            transition:all .3s ease;
+        }
+        .btn-primary {
+            background:linear-gradient(135deg,#20b2aa,#48d1cc); color:white; border:none;
+        }
+        .btn-danger { color:#b3261e; border-color:#f0caca; background:#fff; }
+        .btn:hover { transform:translateY(-2px); }
     </style>
 </head>
 <body>
-<th:block th:replace="fragments/header :: siteHeader('verification')"></th:block>
-<div class="after-site-header"></div>
+<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
 
-<div class="page">
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>Преглед на верификација</h1>
+            <p>Потврдете или одбијте верификација на клиент</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="#" th:href="@{/pharmacist/health-profile/create}" class="nav-link">Здравствени профили</a>
+            <a href="#" th:href="@{/pharmacist/verification}" class="nav-link active">Верификација на профили</a>
+            <a href="#" th:href="@{/pharmacist/supply-orders}" class="nav-link">Нарачка на роба</a>
+            <a href="#" th:href="@{/pharmacist/medicine/interactions}" class="nav-link">Интеракции на лекови</a>
+            <a href="#" class="nav-link back-btn" th:href="@{/profile}">Назад кон профилот</a>
+        </div>
+    </div>
+
+    <!-- Content -->
     <div class="card">
         <div class="card-header" th:text="${item.client.users.firstName + ' ' + item.client.users.lastName}">Име на клиент</div>
         <div class="card-body">
@@ -49,7 +107,7 @@
                 <div class="val" th:text="${item.embg}">0000000000000</div>
             </div>
             <div class="row" style="align-items:flex-start;">
-                <div class="label">Portrait</div>
+                <div class="label">Фотографија</div>
                 <img class="portrait"
                      th:src="@{'/uploads/images/portraits/' + ${item.portraitPhoto}}"
                      alt="portrait">
@@ -60,7 +118,7 @@
                     <button type="submit" class="btn btn-primary">Одобри</button>
                 </form>
                 <form th:action="@{/pharmacist/verification/{id}/deny(id=${item.id})}" method="post">
-                    <button type="submit" class="btn btn-danger">Одби</button>
+                    <button type="submit" class="btn btn-danger">Одбиј</button>
                 </form>
                 <a class="btn" th:href="@{/pharmacist/verification}">Назад</a>
             </div>

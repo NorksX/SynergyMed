@@ -1,4 +1,3 @@
-// src/main/java/mk/ukim/finki/synergymed/web/SupplyOrderController.java
 package mk.ukim.finki.synergymed.web;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class SupplyOrderController {
         List<Pharmacy> pharmacies = pharmacyRepository.findAll();
         List<Distributor> distributors = distributorRepository.findAll();
 
-        // Preload facilities per pharmacy (by pharmacy.company.id)
         Map<Integer, List<Facility>> facilitiesByPharmacyId = new HashMap<>();
         for (Pharmacy p : pharmacies) {
             if (p.getCompany() == null) continue;
@@ -38,7 +36,6 @@ public class SupplyOrderController {
             facilitiesByPharmacyId.put(p.getId(), facs);
         }
 
-        // Preload medicines per distributor
         Map<Integer, List<Brandedmedicine>> medicinesByDistributorId = new HashMap<>();
         for (Distributor d : distributors) {
             var meds = distributorBrandedmedicineRepository.findMedicinesByDistributor(d.getId());
@@ -49,7 +46,7 @@ public class SupplyOrderController {
         model.addAttribute("distributors", distributors);
         model.addAttribute("facilitiesByPharmacyId", facilitiesByPharmacyId);
         model.addAttribute("medicinesByDistributorId", medicinesByDistributorId);
-        return "supplyorder"; // Thymeleaf template below
+        return "supplyorder";
     }
 
     @PostMapping

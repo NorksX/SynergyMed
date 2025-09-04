@@ -115,13 +115,13 @@
 <body>
 
 <!-- Global header -->
-<th:block th:replace="fragments/header :: siteHeader(${null})"></th:block>
+<th:block th:replace="fragments/header :: siteHeader('Објекти на аптеката')"></th:block>
 
 <div class="page">
     <div class="card">
         <div class="card-header">
             <span th:text="${'Објекти — ' + company.companyName}">Објекти</span>
-            <a class="btn btn-primary"
+            <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')"
                th:href="@{/admin/companies/{cid}/facilities/new(cid=${company.id})}">
                 Додади нов
             </a>
@@ -139,19 +139,19 @@
 
                         <div class="row">
                             <!-- Left: Edit -->
-                            <a class="btn-outline left"
+                            <a class="btn-outline left" sec:authorize="hasRole('ADMIN')"
                                th:href="@{/admin/companies/{cid}/facilities/{id}/edit(cid=${company.id}, id=${f.id})}">
                                 Уреди
                             </a>
 
                             <!-- Middle: Contact (centered) -->
-                            <a class="btn-outline middle"
+                            <a class="btn-outline middle" sec:authorize="hasRole('ADMIN')"
                                th:href="@{/admin/companies/{cid}/facilities/{id}/contacts(cid=${company.id}, id=${f.id})}">
                                 Контакт
                             </a>
 
                             <!-- Right: Delete -->
-                            <form class="right"
+                            <form class="right" sec:authorize="hasRole('ADMIN')"
                                   th:action="@{/admin/companies/{cid}/facilities/{id}/delete(cid=${company.id}, id=${f.id})}"
                                   method="post" style="display:inline">
                                 <button type="submit" class="btn-outline" style="color:#b3261e;border-color:#f0caca">
